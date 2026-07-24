@@ -1,4 +1,4 @@
-import { Coordinates } from "@/domain/entities/Coordinates";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class Movement {
   constructor(

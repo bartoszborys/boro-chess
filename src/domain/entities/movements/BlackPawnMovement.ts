@@ -1,6 +1,6 @@
-import type { Movement } from "@/domain/entities/Movement";
+import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
-import { Coordinates } from "../Coordinates";
+import { Coordinates } from "../../value-objects/Coordinates";
 
 export class BlackPawnMovement implements MovementValidator {
   constructor(private readonly startingPosition: Coordinates) {}

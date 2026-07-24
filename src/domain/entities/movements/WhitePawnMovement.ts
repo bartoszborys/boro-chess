@@ -1,5 +1,5 @@
-import { Coordinates } from "@/domain/entities/Coordinates";
-import type { Movement } from "@/domain/entities/Movement";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
+import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 
 export class WhitePawnMovement implements MovementValidator {

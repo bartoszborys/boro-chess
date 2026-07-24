@@ -1,5 +1,5 @@
-import { Coordinates } from "@/domain/entities/Coordinates";
-import { Movement } from "@/domain/entities/Movement";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
+import { Movement } from "@/domain/value-objects/Movement";
 import { HorseMovement } from "./HorseMovement";
 
 describe("HorseMovement", () => {

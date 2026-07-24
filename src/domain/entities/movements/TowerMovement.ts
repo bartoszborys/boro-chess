@@ -1,4 +1,4 @@
-import type { Movement } from "@/domain/entities/Movement";
+import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 
 export class TowerMovement implements MovementValidator {

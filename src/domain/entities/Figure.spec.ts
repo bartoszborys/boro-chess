@@ -13,36 +13,33 @@ describe("Figure", () => {
     });
   });
 
-  describe("move", () => {
-    it("updates current coordinates to the ones passed to move", () => {
+  describe("moveTo", () => {
+    it("updates current coordinates when the move is allowed", () => {
       const figure = new Figure(0, 0, alwaysAllowed);
 
-      figure.moveTo(new Coordinates(4, 7));
-
+      expect(figure.moveTo(new Coordinates(4, 7))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(4, 7));
     });
 
     it("updates current coordinates to an abstract position 80, 24", () => {
       const figure = new Figure(0, 0, alwaysAllowed);
 
-      figure.moveTo(new Coordinates(80, 24));
-
+      expect(figure.moveTo(new Coordinates(80, 24))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(80, 24));
     });
-  });
 
-  describe("canMoveTo", () => {
     it("asks the movement validator with current position and destination", () => {
       const canMove = jest.fn((_movement: Movement) => false);
       const movementValidator: MovementValidator = { canMove };
       const figure = new Figure(2, 3, movementValidator);
 
-      const result = figure.canMoveTo(new Coordinates(5, 6));
+      const result = figure.moveTo(new Coordinates(5, 6));
 
       expect(canMove).toHaveBeenCalledWith(
         new Movement(new Coordinates(2, 3), new Coordinates(5, 6)),
       );
       expect(result).toBe(false);
+      expect(figure.getCoordinates()).toEqual(new Coordinates(2, 3));
     });
 
     it("returns true when the movement validator allows the move", () => {
@@ -53,18 +50,21 @@ describe("Figure", () => {
       };
       const figure = new Figure(1, 1, movementValidator);
 
-      expect(figure.canMoveTo(new Coordinates(1, 5))).toBe(true);
-      expect(figure.canMoveTo(new Coordinates(4, 4))).toBe(false);
+      expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
+      expect(figure.getCoordinates()).toEqual(new Coordinates(1, 5));
+      expect(figure.moveTo(new Coordinates(4, 4))).toBe(false);
+      expect(figure.getCoordinates()).toEqual(new Coordinates(1, 5));
     });
 
-    it("uses updated coordinates after move when validating", () => {
+    it("uses updated coordinates after a successful move when validating", () => {
       const canMove = jest.fn(() => true);
       const figure = new Figure(0, 0, { canMove });
 
       figure.moveTo(new Coordinates(3, 3));
-      figure.canMoveTo(new Coordinates(4, 4));
+      figure.moveTo(new Coordinates(4, 4));
 
-      expect(canMove).toHaveBeenCalledWith(
+      expect(canMove).toHaveBeenNthCalledWith(
+        2,
         new Movement(new Coordinates(3, 3), new Coordinates(4, 4)),
       );
     });
@@ -73,7 +73,7 @@ describe("Figure", () => {
       const canMove = jest.fn(() => true);
       const figure = new Figure(2, 3, { canMove });
 
-      figure.canMoveTo(new Coordinates(5, 6), true);
+      figure.moveTo(new Coordinates(5, 6), true);
 
       expect(canMove).toHaveBeenCalledWith(
         new Movement(new Coordinates(2, 3), new Coordinates(5, 6), true),

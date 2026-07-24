@@ -3,7 +3,7 @@ import type { Movement } from "@/domain/entities/Movement";
 import type { MovementValidator } from "./MovementValidator";
 
 export class WhitePawnMovement implements MovementValidator {
-  constructor(private readonly startingPosition: Coordinates) {}
+  constructor(private readonly startingPosition: Coordinates) { }
 
   canMove(movement: Movement): boolean {
     const delta = movement.calculateDelta();
@@ -12,7 +12,7 @@ export class WhitePawnMovement implements MovementValidator {
       return false;
     }
 
-    if (movement.capturing && Math.abs(delta.x) !== 1) {
+    if (movement.capturing && (Math.abs(delta.x) !== 1 || delta.y !== 1)) {
       return false;
     }
 

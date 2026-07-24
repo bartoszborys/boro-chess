@@ -12,7 +12,7 @@ export class BlackPawnMovement implements MovementValidator {
       return false;
     }
 
-    if (movement.capturing && Math.abs(delta.x) !== 1) {
+    if (movement.capturing && (Math.abs(delta.x) !== 1 || delta.y !== -1)) {
       return false;
     }
 

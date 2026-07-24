@@ -56,6 +56,17 @@ describe("WhitePawnMovement", () => {
     ).toBe(false);
   });
 
+  it("rejects a move forward by two when not on the starting position", () => {
+    expect(
+      whitePawn.canMove(
+        new Movement(
+          fromAdvancedPosition,
+          addDeltaToCoordinates({ x: 0, y: 2 }, fromAdvancedPosition),
+        ),
+      ),
+    ).toBe(false);
+  });
+
   describe("domain directions", () => {
     describe("non capturing", () => {
       it("allows a move forward by one", () => {
@@ -116,6 +127,42 @@ describe("WhitePawnMovement", () => {
             ),
           ),
         ).toBe(true);
+      });
+
+      it("rejects capture by two diagonally from the starting position", () => {
+        expect(
+          whitePawn.canMove(
+            new Movement(
+              startingPosition,
+              addDeltaToCoordinates({ x: 1, y: 2 }, startingPosition),
+              true,
+            ),
+          ),
+        ).toBe(false);
+      });
+
+      it("rejects capture down-right", () => {
+        expect(
+          whitePawn.canMove(
+            new Movement(
+              fromAdvancedPosition,
+              addDeltaToCoordinates({ x: 1, y: -1 }, fromAdvancedPosition),
+              true,
+            ),
+          ),
+        ).toBe(false);
+      });
+
+      it("rejects capture down-left", () => {
+        expect(
+          whitePawn.canMove(
+            new Movement(
+              fromAdvancedPosition,
+              addDeltaToCoordinates({ x: -1, y: -1 }, fromAdvancedPosition),
+              true,
+            ),
+          ),
+        ).toBe(false);
       });
     });
   });

@@ -17,7 +17,7 @@ describe("Figure", () => {
     it("updates current coordinates to the ones passed to move", () => {
       const figure = new Figure(0, 0, alwaysAllowed);
 
-      figure.move(4, 7);
+      figure.moveTo(new Coordinates(4, 7));
 
       expect(figure.getCoordinates()).toEqual(new Coordinates(4, 7));
     });
@@ -25,7 +25,7 @@ describe("Figure", () => {
     it("updates current coordinates to an abstract position 80, 24", () => {
       const figure = new Figure(0, 0, alwaysAllowed);
 
-      figure.move(80, 24);
+      figure.moveTo(new Coordinates(80, 24));
 
       expect(figure.getCoordinates()).toEqual(new Coordinates(80, 24));
     });
@@ -37,7 +37,7 @@ describe("Figure", () => {
       const movementValidator: MovementValidator = { canMove };
       const figure = new Figure(2, 3, movementValidator);
 
-      const result = figure.canMoveTo(5, 6);
+      const result = figure.canMoveTo(new Coordinates(5, 6));
 
       expect(canMove).toHaveBeenCalledWith(
         new Movement(new Coordinates(2, 3), new Coordinates(5, 6)),
@@ -53,19 +53,30 @@ describe("Figure", () => {
       };
       const figure = new Figure(1, 1, movementValidator);
 
-      expect(figure.canMoveTo(1, 5)).toBe(true);
-      expect(figure.canMoveTo(4, 4)).toBe(false);
+      expect(figure.canMoveTo(new Coordinates(1, 5))).toBe(true);
+      expect(figure.canMoveTo(new Coordinates(4, 4))).toBe(false);
     });
 
     it("uses updated coordinates after move when validating", () => {
       const canMove = jest.fn(() => true);
       const figure = new Figure(0, 0, { canMove });
 
-      figure.move(3, 3);
-      figure.canMoveTo(4, 4);
+      figure.moveTo(new Coordinates(3, 3));
+      figure.canMoveTo(new Coordinates(4, 4));
 
       expect(canMove).toHaveBeenCalledWith(
         new Movement(new Coordinates(3, 3), new Coordinates(4, 4)),
+      );
+    });
+
+    it("passes capturing flag to the movement validator", () => {
+      const canMove = jest.fn(() => true);
+      const figure = new Figure(2, 3, { canMove });
+
+      figure.canMoveTo(new Coordinates(5, 6), true);
+
+      expect(canMove).toHaveBeenCalledWith(
+        new Movement(new Coordinates(2, 3), new Coordinates(5, 6), true),
       );
     });
   });

@@ -18,13 +18,13 @@ export class Figure {
     return new Coordinates(this.coordinates.x, this.coordinates.y);
   }
 
-  move(x: number, y: number): void {
-    this.coordinates = new Coordinates(x, y);
+  moveTo(to: Coordinates): void {
+    this.coordinates = to;
   }
 
-  canMoveTo(x: number, y: number): boolean {
+  canMoveTo(to: Coordinates, capturing: boolean = false): boolean {
     return this.movementValidator.canMove(
-      new Movement(this.coordinates, new Coordinates(x, y)),
+      new Movement(this.coordinates, to, capturing),
     );
   }
 }

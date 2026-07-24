@@ -1,7 +1,13 @@
-import { Coordinates, MovementValidator } from "./MovementValidator";
+import type { Movement } from "@/domain/entities/Movement";
+import type { MovementValidator } from "./MovementValidator";
+import { TowerMovement } from "./TowerMovement";
+import { BishopMovement } from "./BishopMovement";
 
 export class QueenMovement implements MovementValidator {
-  canMove(_from: Coordinates, _to: Coordinates): boolean {
-    return true;
+  private readonly bishopMovement = new BishopMovement();
+  private readonly towerMovement = new TowerMovement();
+
+  canMove(movement: Movement): boolean {
+    return this.bishopMovement.canMove(movement) || this.towerMovement.canMove(movement);
   }
 }

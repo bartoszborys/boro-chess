@@ -1,8 +1,4 @@
-import { Figure } from "./Figure";
-import {
-  Coordinates,
-  MovementValidator,
-} from "./movements/MovementValidator";
+import { Coordinates, Figure, Movement, MovementValidator } from "./Figure";
 
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
@@ -13,7 +9,7 @@ describe("Figure", () => {
     it("exposes initial X and Y passed to the constructor", () => {
       const figure = new Figure(3, 5, alwaysAllowed);
 
-      expect(figure.getCoordinates()).toEqual({ x: 3, y: 5 });
+      expect(figure.getCoordinates()).toEqual(new Coordinates(3, 5));
     });
   });
 
@@ -23,7 +19,7 @@ describe("Figure", () => {
 
       figure.move(4, 7);
 
-      expect(figure.getCoordinates()).toEqual({ x: 4, y: 7 });
+      expect(figure.getCoordinates()).toEqual(new Coordinates(4, 7));
     });
 
     it("updates current coordinates to an abstract position 80, 24", () => {
@@ -31,27 +27,29 @@ describe("Figure", () => {
 
       figure.move(80, 24);
 
-      expect(figure.getCoordinates()).toEqual({ x: 80, y: 24 });
+      expect(figure.getCoordinates()).toEqual(new Coordinates(80, 24));
     });
   });
 
   describe("canMoveTo", () => {
     it("asks the movement validator with current position and destination", () => {
-      const canMove = jest.fn(
-        (_from: Coordinates, _to: Coordinates) => false,
-      );
+      const canMove = jest.fn((_movement: Movement) => false);
       const movementValidator: MovementValidator = { canMove };
       const figure = new Figure(2, 3, movementValidator);
 
       const result = figure.canMoveTo(5, 6);
 
-      expect(canMove).toHaveBeenCalledWith({ x: 2, y: 3 }, { x: 5, y: 6 });
+      expect(canMove).toHaveBeenCalledWith(
+        new Movement(new Coordinates(2, 3), new Coordinates(5, 6)),
+      );
       expect(result).toBe(false);
     });
 
     it("returns true when the movement validator allows the move", () => {
       const movementValidator: MovementValidator = {
-        canMove: (from, to) => from.x === to.x || from.y === to.y,
+        canMove: (movement) =>
+          movement.from.x === movement.to.x ||
+          movement.from.y === movement.to.y,
       };
       const figure = new Figure(1, 1, movementValidator);
 
@@ -66,7 +64,9 @@ describe("Figure", () => {
       figure.move(3, 3);
       figure.canMoveTo(4, 4);
 
-      expect(canMove).toHaveBeenCalledWith({ x: 3, y: 3 }, { x: 4, y: 4 });
+      expect(canMove).toHaveBeenCalledWith(
+        new Movement(new Coordinates(3, 3), new Coordinates(4, 4)),
+      );
     });
   });
 });

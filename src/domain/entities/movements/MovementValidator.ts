@@ -1,8 +1,5 @@
-export type Coordinates = {
-  x: number;
-  y: number;
-};
+import type { Movement } from "@/domain/entities/Movement";
 
 export interface MovementValidator {
-  canMove(from: Coordinates, to: Coordinates): boolean;
+  canMove(movement: Movement): boolean;
 }

@@ -2,9 +2,6 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "@/domain/entities/movements/MovementValidator";
 
-export { Coordinates, Movement };
-export type { MovementValidator };
-
 export class Figure {
   private coordinates: Coordinates;
   private readonly movementValidator: MovementValidator;
@@ -29,5 +26,11 @@ export class Figure {
 
     this.coordinates = to;
     return true;
+  }
+
+  getCollisionCoordinatess(to: Coordinates, capturing: boolean = false): Coordinates[] {
+    return this.movementValidator.getCollisionCoordinates(
+      new Movement(this.coordinates, to, capturing),
+    );
   }
 }

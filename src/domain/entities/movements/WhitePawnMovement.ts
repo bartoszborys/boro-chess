@@ -26,4 +26,8 @@ export class WhitePawnMovement implements MovementValidator {
 
     return false;
   }
+
+  getCollisionCoordinates(_movement: Movement): Coordinates[] {
+    return [];
+  }
 }

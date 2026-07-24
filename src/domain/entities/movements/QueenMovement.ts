@@ -1,3 +1,4 @@
+import type { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 import { TowerMovement } from "./TowerMovement";
@@ -8,6 +9,13 @@ export class QueenMovement implements MovementValidator {
   private readonly towerMovement = new TowerMovement();
 
   canMove(movement: Movement): boolean {
-    return this.bishopMovement.canMove(movement) || this.towerMovement.canMove(movement);
+    return (
+      this.bishopMovement.canMove(movement) ||
+      this.towerMovement.canMove(movement)
+    );
+  }
+
+  getCollisionCoordinates(_movement: Movement): Coordinates[] {
+    return [];
   }
 }

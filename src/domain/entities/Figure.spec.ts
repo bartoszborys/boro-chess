@@ -1,7 +1,11 @@
-import { Coordinates, Figure, Movement, MovementValidator } from "./Figure";
+import { Figure } from "@/domain/entities/Figure";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
+import { Movement } from "@/domain/value-objects/Movement";
+import { MovementValidator } from "@/domain/entities/movements/MovementValidator";
 
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
+  getCollisionCoordinates: () => [],
 };
 
 describe("Figure", () => {
@@ -30,7 +34,10 @@ describe("Figure", () => {
 
     it("asks the movement validator with current position and destination", () => {
       const canMove = jest.fn((_movement: Movement) => false);
-      const movementValidator: MovementValidator = { canMove };
+      const movementValidator: MovementValidator = {
+        canMove,
+        getCollisionCoordinates: () => [],
+      };
       const figure = new Figure(2, 3, movementValidator);
 
       const result = figure.moveTo(new Coordinates(5, 6));
@@ -47,6 +54,7 @@ describe("Figure", () => {
         canMove: (movement) =>
           movement.from.x === movement.to.x ||
           movement.from.y === movement.to.y,
+        getCollisionCoordinates: () => [],
       };
       const figure = new Figure(1, 1, movementValidator);
 
@@ -58,7 +66,10 @@ describe("Figure", () => {
 
     it("uses updated coordinates after a successful move when validating", () => {
       const canMove = jest.fn(() => true);
-      const figure = new Figure(0, 0, { canMove });
+      const figure = new Figure(0, 0, {
+        canMove,
+        getCollisionCoordinates: () => [],
+      });
 
       figure.moveTo(new Coordinates(3, 3));
       figure.moveTo(new Coordinates(4, 4));
@@ -71,7 +82,10 @@ describe("Figure", () => {
 
     it("passes capturing flag to the movement validator", () => {
       const canMove = jest.fn(() => true);
-      const figure = new Figure(2, 3, { canMove });
+      const figure = new Figure(2, 3, {
+        canMove,
+        getCollisionCoordinates: () => [],
+      });
 
       figure.moveTo(new Coordinates(5, 6), true);
 

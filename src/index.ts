@@ -1,4 +1,5 @@
-import { Coordinates, Figure } from "@/domain/entities/Figure";
+import { Figure } from "@/domain/entities/Figure";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { WhitePawnMovement } from "@/domain/entities/movements/WhitePawnMovement";
 
 const pawn = new Figure(0, 0, new WhitePawnMovement(new Coordinates(0, 0)));

@@ -1,3 +1,4 @@
+import type { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 
@@ -10,5 +11,9 @@ export class KingMovement implements MovementValidator {
     return (
       absoluteX <= 1 && absoluteY <= 1 && (absoluteX !== 0 || absoluteY !== 0)
     );
+  }
+
+  getCollisionCoordinates(_movement: Movement): Coordinates[] {
+    return [];
   }
 }

@@ -1,6 +1,6 @@
 import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
-import { Coordinates } from "../../value-objects/Coordinates";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class BlackPawnMovement implements MovementValidator {
   constructor(private readonly startingPosition: Coordinates) {}
@@ -25,5 +25,9 @@ export class BlackPawnMovement implements MovementValidator {
     }
 
     return false;
+  }
+
+  getCollisionCoordinates(_movement: Movement): Coordinates[] {
+    return [];
   }
 }

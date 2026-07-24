@@ -8,6 +8,7 @@
     "start": "tsx src/index.ts",
     "start:dist": "node dist/index.js",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --watchAll=false",
     "typecheck": "tsc --noEmit",

@@ -11,4 +11,5 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  collectCoverageFrom: ["src/**/*.{ts,js}", "!src/**/*.spec.ts"],
 };

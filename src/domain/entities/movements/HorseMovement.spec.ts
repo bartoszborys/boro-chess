@@ -85,4 +85,14 @@ describe("HorseMovement", () => {
       );
     });
   });
+
+  describe("getCollisionCoordinates", () => {
+    it("always returns an empty array", () => {
+      expect(
+        horse.getCollisionCoordinates(
+          new Movement(from, new Coordinates(26, 25)),
+        ),
+      ).toEqual([]);
+    });
+  });
 });

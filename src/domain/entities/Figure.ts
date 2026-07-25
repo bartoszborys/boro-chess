@@ -1,6 +1,7 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "@/domain/entities/movements/MovementValidator";
+import { FigureInvalidMove } from "../exceptions/FigureCannotMove";
 
 export class Figure {
   private coordinates: Coordinates;
@@ -29,8 +30,12 @@ export class Figure {
   }
 
   getCollisionCoordinatess(to: Coordinates, capturing: boolean = false): Coordinates[] {
-    return this.movementValidator.getCollisionCoordinates(
-      new Movement(this.coordinates, to, capturing),
-    );
+    const movement = new Movement(this.coordinates, to, capturing);
+
+    if (!this.movementValidator.canMove(movement)) {
+      throw new FigureInvalidMove(`Figure cannot move from ${this.coordinates} to ${to}`);
+    }
+
+    return this.movementValidator.getCollisionCoordinates(movement);
   }
 }

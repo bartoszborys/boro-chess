@@ -85,4 +85,14 @@ describe("KingMovement", () => {
       );
     });
   });
+
+  describe("getCollisionCoordinates", () => {
+    it("always returns an empty array", () => {
+      expect(
+        king.getCollisionCoordinates(
+          new Movement(from, new Coordinates(25, 25)),
+        ),
+      ).toEqual([]);
+    });
+  });
 });

@@ -2,6 +2,7 @@ import { Figure } from "@/domain/entities/Figure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import { MovementValidator } from "@/domain/entities/movements/MovementValidator";
+import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
 
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
@@ -91,6 +92,35 @@ describe("Figure", () => {
 
       expect(canMove).toHaveBeenCalledWith(
         new Movement(new Coordinates(2, 3), new Coordinates(5, 6), true),
+      );
+    });
+  });
+
+  describe("getCollisionCoordinatess", () => {
+    it("throws FigureCannotMove when the movement validator rejects the move", () => {
+      const figure = new Figure(2, 3, {
+        canMove: () => false,
+        getCollisionCoordinates: () => [],
+      });
+
+      expect(() =>
+        figure.getCollisionCoordinatess(new Coordinates(5, 6)),
+      ).toThrow(FigureInvalidMove);
+    });
+
+    it("returns collision coordinates from the movement validator when the move is allowed", () => {
+      const collisionCoordinates = [
+        new Coordinates(3, 4),
+        new Coordinates(4, 5),
+        new Coordinates(5, 6),
+      ];
+      const figure = new Figure(2, 3, {
+        canMove: () => true,
+        getCollisionCoordinates: () => collisionCoordinates,
+      });
+
+      expect(figure.getCollisionCoordinatess(new Coordinates(5, 6))).toEqual(
+        collisionCoordinates,
       );
     });
   });

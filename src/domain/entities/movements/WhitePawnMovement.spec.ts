@@ -1,5 +1,6 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
+import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
 import { WhitePawnMovement } from "./WhitePawnMovement";
 
 interface Delta {
@@ -23,147 +24,213 @@ describe("WhitePawnMovement", () => {
   const whitePawn = new WhitePawnMovement(startingPosition);
   const fromAdvancedPosition = new Coordinates(24, 25);
 
-  it("rejects a sideways move to the right", () => {
-    expect(
-      whitePawn.canMove(
-        new Movement(
-          fromAdvancedPosition,
-          addDeltaToCoordinates({ x: 1, y: 0 }, fromAdvancedPosition),
-        ),
-      ),
-    ).toBe(false);
-  });
-
-  it("rejects a sideways move to the left", () => {
-    expect(
-      whitePawn.canMove(
-        new Movement(
-          fromAdvancedPosition,
-          addDeltaToCoordinates({ x: -1, y: 0 }, fromAdvancedPosition),
-        ),
-      ),
-    ).toBe(false);
-  });
-
-  it("rejects a backward move", () => {
-    expect(
-      whitePawn.canMove(
-        new Movement(
-          fromAdvancedPosition,
-          addDeltaToCoordinates({ x: 0, y: -1 }, fromAdvancedPosition),
-        ),
-      ),
-    ).toBe(false);
-  });
-
-  it("rejects a move forward by two when not on the starting position", () => {
-    expect(
-      whitePawn.canMove(
-        new Movement(
-          fromAdvancedPosition,
-          addDeltaToCoordinates({ x: 0, y: 2 }, fromAdvancedPosition),
-        ),
-      ),
-    ).toBe(false);
-  });
-
-  describe("domain directions", () => {
-    describe("non capturing", () => {
-      it("allows a move forward by one", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              fromAdvancedPosition,
-              addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
-            ),
+  describe("canMove", () => {
+    it("rejects a sideways move to the right", () => {
+      expect(
+        whitePawn.canMove(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 1, y: 0 }, fromAdvancedPosition),
           ),
-        ).toBe(true);
-      });
-
-      it("allows move forward by two from the starting position", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              cloneCoordinates(startingPosition),
-              addDeltaToCoordinates({ x: 0, y: 2 }, startingPosition),
-            ),
-          ),
-        ).toBe(true);
-      });
+        ),
+      ).toBe(false);
     });
 
-    describe("capturing", () => {
-      it("rejects capture straight forward", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              fromAdvancedPosition,
-              addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
-              true,
-            ),
+    it("rejects a sideways move to the left", () => {
+      expect(
+        whitePawn.canMove(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: -1, y: 0 }, fromAdvancedPosition),
           ),
-        ).toBe(false);
+        ),
+      ).toBe(false);
+    });
+
+    it("rejects a backward move", () => {
+      expect(
+        whitePawn.canMove(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 0, y: -1 }, fromAdvancedPosition),
+          ),
+        ),
+      ).toBe(false);
+    });
+
+    it("rejects a move forward by two when not on the starting position", () => {
+      expect(
+        whitePawn.canMove(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 0, y: 2 }, fromAdvancedPosition),
+          ),
+        ),
+      ).toBe(false);
+    });
+
+    describe("domain directions", () => {
+      describe("non capturing", () => {
+        it("allows a move forward by one", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                fromAdvancedPosition,
+                addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
+              ),
+            ),
+          ).toBe(true);
+        });
+
+        it("allows move forward by two from the starting position", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                cloneCoordinates(startingPosition),
+                addDeltaToCoordinates({ x: 0, y: 2 }, startingPosition),
+              ),
+            ),
+          ).toBe(true);
+        });
       });
 
-      it("allows capture up-right", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              fromAdvancedPosition,
-              addDeltaToCoordinates({ x: 1, y: 1 }, fromAdvancedPosition),
-              true,
+      describe("capturing", () => {
+        it("rejects capture straight forward", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                fromAdvancedPosition,
+                addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
+                true,
+              ),
             ),
-          ),
-        ).toBe(true);
-      });
+          ).toBe(false);
+        });
 
-      it("allows capture up-left", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              fromAdvancedPosition,
-              addDeltaToCoordinates({ x: -1, y: 1 }, fromAdvancedPosition),
-              true,
+        it("allows capture up-right", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                fromAdvancedPosition,
+                addDeltaToCoordinates({ x: 1, y: 1 }, fromAdvancedPosition),
+                true,
+              ),
             ),
-          ),
-        ).toBe(true);
-      });
+          ).toBe(true);
+        });
 
-      it("rejects capture by two diagonally from the starting position", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              startingPosition,
-              addDeltaToCoordinates({ x: 1, y: 2 }, startingPosition),
-              true,
+        it("allows capture up-left", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                fromAdvancedPosition,
+                addDeltaToCoordinates({ x: -1, y: 1 }, fromAdvancedPosition),
+                true,
+              ),
             ),
-          ),
-        ).toBe(false);
-      });
+          ).toBe(true);
+        });
 
-      it("rejects capture down-right", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              fromAdvancedPosition,
-              addDeltaToCoordinates({ x: 1, y: -1 }, fromAdvancedPosition),
-              true,
+        it("rejects capture by two diagonally from the starting position", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                startingPosition,
+                addDeltaToCoordinates({ x: 1, y: 2 }, startingPosition),
+                true,
+              ),
             ),
-          ),
-        ).toBe(false);
-      });
+          ).toBe(false);
+        });
 
-      it("rejects capture down-left", () => {
-        expect(
-          whitePawn.canMove(
-            new Movement(
-              fromAdvancedPosition,
-              addDeltaToCoordinates({ x: -1, y: -1 }, fromAdvancedPosition),
-              true,
+        it("rejects capture down-right", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                fromAdvancedPosition,
+                addDeltaToCoordinates({ x: 1, y: -1 }, fromAdvancedPosition),
+                true,
+              ),
             ),
-          ),
-        ).toBe(false);
+          ).toBe(false);
+        });
+
+        it("rejects capture down-left", () => {
+          expect(
+            whitePawn.canMove(
+              new Movement(
+                fromAdvancedPosition,
+                addDeltaToCoordinates({ x: -1, y: -1 }, fromAdvancedPosition),
+                true,
+              ),
+            ),
+          ).toBe(false);
+        });
       });
+    });
+  });
+
+  describe("getCollisionCoordinates", () => {
+    it("returns the destination for a one-step forward move", () => {
+      expect(
+        whitePawn.getCollisionCoordinates(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
+          ),
+        ),
+      ).toEqual([
+        addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
+      ]);
+    });
+
+    it("returns the in-between square and destination for a two-step forward move", () => {
+      expect(
+        whitePawn.getCollisionCoordinates(
+          new Movement(
+            startingPosition,
+            addDeltaToCoordinates({ x: 0, y: 2 }, startingPosition),
+          ),
+        ),
+      ).toEqual([
+        addDeltaToCoordinates({ x: 0, y: 1 }, startingPosition),
+        addDeltaToCoordinates({ x: 0, y: 2 }, startingPosition),
+      ]);
+    });
+
+    it("returns no collision coordinates when capturing up-right", () => {
+      expect(
+        whitePawn.getCollisionCoordinates(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 1, y: 1 }, fromAdvancedPosition),
+            true,
+          ),
+        ),
+      ).toEqual([]);
+    });
+
+    it("returns no collision coordinates when capturing up-left", () => {
+      expect(
+        whitePawn.getCollisionCoordinates(
+          new Movement(
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: -1, y: 1 }, fromAdvancedPosition),
+            true,
+          ),
+        ),
+      ).toEqual([]);
+    });
+
+    it("throws FigureInvalidMove when the forward move is larger than two steps", () => {
+      expect(() =>
+        whitePawn.getCollisionCoordinates(
+          new Movement(
+            startingPosition,
+            addDeltaToCoordinates({ x: 0, y: 3 }, startingPosition),
+          ),
+        ),
+      ).toThrow(FigureInvalidMove);
     });
   });
 });

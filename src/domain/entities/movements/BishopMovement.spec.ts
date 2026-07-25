@@ -1,6 +1,6 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
-import { FigureCannotMove } from "@/domain/exceptions/FigureCannotMove";
+import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
 import { BishopMovement } from "./BishopMovement";
 
 describe("BishopMovement", () => {
@@ -59,7 +59,7 @@ describe("BishopMovement", () => {
     });
   });
 
-  describe("getDiagonalPath", () => {
+  describe("getCollisionCoordinates", () => {
     it("returns intermediate squares on a diagonal path", () => {
       expect(
         bishop.getCollisionCoordinates(new Movement(from, new Coordinates(27, 27))),
@@ -82,12 +82,6 @@ describe("BishopMovement", () => {
       expect(
         bishop.getCollisionCoordinates(new Movement(from, new Coordinates(21, 21))),
       ).toEqual([new Coordinates(23, 23), new Coordinates(22, 22)]);
-    });
-
-    it("throws when the move is not allowed", () => {
-      expect(() =>
-        bishop.getCollisionCoordinates(new Movement(from, new Coordinates(27, 26))),
-      ).toThrow(FigureCannotMove);
     });
   });
 });

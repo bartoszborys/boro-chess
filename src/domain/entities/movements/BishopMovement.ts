@@ -1,7 +1,7 @@
 import { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import { FigureCannotMove } from "@/domain/exceptions/FigureCannotMove";
+import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
 
 export class BishopMovement implements MovementValidator {
   public canMove(movement: Movement): boolean {
@@ -11,12 +11,6 @@ export class BishopMovement implements MovementValidator {
   }
 
   public getCollisionCoordinates(movement: Movement): Coordinates[] {
-    if (!this.canMove(movement)) {
-      throw new FigureCannotMove(
-        `Figure cannot move from ${movement.from} to ${movement.to}`,
-      );
-    }
-
     const movementDelta = movement.calculateDelta();
     const stepsCount = Math.abs(movementDelta.x);
     const stepXDeltaSign = Math.sign(movementDelta.x)

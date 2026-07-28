@@ -91,15 +91,15 @@ describe("QueenMovement", () => {
     });
   });
 
-  describe("getCollisionCoordinates", () => {
+  describe("getThroughCoordinates", () => {
     it("returns the bishop collision path when bishop can move, not the tower path", () => {
       const movement = new Movement(from, new Coordinates(27, 27));
 
-      expect(queen.getCollisionCoordinates(movement)).toStrictEqual(
-        bishop.getCollisionCoordinates(movement),
+      expect(queen.getThroughCoordinates(movement)).toStrictEqual(
+        bishop.getThroughCoordinates(movement),
       );
-      expect(queen.getCollisionCoordinates(movement)).not.toStrictEqual(
-        tower.getCollisionCoordinates(movement),
+      expect(queen.getThroughCoordinates(movement)).not.toStrictEqual(
+        tower.getThroughCoordinates(movement),
       );
     });
 
@@ -107,14 +107,14 @@ describe("QueenMovement", () => {
       const movement = new Movement(from, new Coordinates(27, 24));
 
       expect(bishop.canMove(movement)).toBe(false);
-      expect(queen.getCollisionCoordinates(movement)).toEqual(
-        tower.getCollisionCoordinates(movement),
+      expect(queen.getThroughCoordinates(movement)).toEqual(
+        tower.getThroughCoordinates(movement),
       );
     });
 
     it("throws FigureInvalidMove when neither bishop nor tower can move", () => {
       expect(() =>
-        queen.getCollisionCoordinates(
+        queen.getThroughCoordinates(
           new Movement(from, new Coordinates(26, 25)),
         ),
       ).toThrow(FigureInvalidMove);

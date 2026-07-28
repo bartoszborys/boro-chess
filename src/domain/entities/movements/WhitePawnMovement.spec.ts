@@ -171,10 +171,10 @@ describe("WhitePawnMovement", () => {
     });
   });
 
-  describe("getCollisionCoordinates", () => {
+  describe("getThroughCoordinates", () => {
     it("returns the destination for a one-step forward move", () => {
       expect(
-        whitePawn.getCollisionCoordinates(
+        whitePawn.getThroughCoordinates(
           new Movement(
             fromAdvancedPosition,
             addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition),
@@ -187,7 +187,7 @@ describe("WhitePawnMovement", () => {
 
     it("returns the in-between square and destination for a two-step forward move", () => {
       expect(
-        whitePawn.getCollisionCoordinates(
+        whitePawn.getThroughCoordinates(
           new Movement(
             startingPosition,
             addDeltaToCoordinates({ x: 0, y: 2 }, startingPosition),
@@ -201,7 +201,7 @@ describe("WhitePawnMovement", () => {
 
     it("returns no collision coordinates when capturing up-right", () => {
       expect(
-        whitePawn.getCollisionCoordinates(
+        whitePawn.getThroughCoordinates(
           new Movement(
             fromAdvancedPosition,
             addDeltaToCoordinates({ x: 1, y: 1 }, fromAdvancedPosition),
@@ -213,7 +213,7 @@ describe("WhitePawnMovement", () => {
 
     it("returns no collision coordinates when capturing up-left", () => {
       expect(
-        whitePawn.getCollisionCoordinates(
+        whitePawn.getThroughCoordinates(
           new Movement(
             fromAdvancedPosition,
             addDeltaToCoordinates({ x: -1, y: 1 }, fromAdvancedPosition),
@@ -225,7 +225,7 @@ describe("WhitePawnMovement", () => {
 
     it("throws FigureInvalidMove when the forward move is larger than two steps", () => {
       expect(() =>
-        whitePawn.getCollisionCoordinates(
+        whitePawn.getThroughCoordinates(
           new Movement(
             startingPosition,
             addDeltaToCoordinates({ x: 0, y: 3 }, startingPosition),

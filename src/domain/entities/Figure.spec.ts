@@ -8,13 +8,13 @@ import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
   getDirections: () => DirectionsBuilder.create().build(),
-  getCollisionCoordinates: () => [],
+  getThroughCoordinates: () => [],
 };
 
 describe("Figure", () => {
   describe("coordinates", () => {
     it("exposes initial X and Y passed to the constructor", () => {
-      const figure = new Figure(3, 5, alwaysAllowed);
+      const figure = new Figure(new Coordinates(3, 5), alwaysAllowed);
 
       expect(figure.getCoordinates()).toEqual(new Coordinates(3, 5));
     });
@@ -22,14 +22,14 @@ describe("Figure", () => {
 
   describe("moveTo", () => {
     it("updates current coordinates when the move is allowed", () => {
-      const figure = new Figure(0, 0, alwaysAllowed);
+      const figure = new Figure(new Coordinates(0, 0), alwaysAllowed);
 
       expect(figure.moveTo(new Coordinates(4, 7))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(4, 7));
     });
 
     it("updates current coordinates to an abstract position 80, 24", () => {
-      const figure = new Figure(0, 0, alwaysAllowed);
+      const figure = new Figure(new Coordinates(0, 0), alwaysAllowed);
 
       expect(figure.moveTo(new Coordinates(80, 24))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(80, 24));
@@ -40,9 +40,9 @@ describe("Figure", () => {
       const movementValidator: MovementValidator = {
         canMove,
         getDirections: () => DirectionsBuilder.create().build(),
-        getCollisionCoordinates: () => [],
+        getThroughCoordinates: () => [],
       };
-      const figure = new Figure(2, 3, movementValidator);
+      const figure = new Figure(new Coordinates(2, 3), movementValidator);
 
       const result = figure.moveTo(new Coordinates(5, 6));
 
@@ -59,9 +59,9 @@ describe("Figure", () => {
           movement.from.x === movement.to.x ||
           movement.from.y === movement.to.y,
         getDirections: () => DirectionsBuilder.create().build(),
-        getCollisionCoordinates: () => [],
+        getThroughCoordinates: () => [],
       };
-      const figure = new Figure(1, 1, movementValidator);
+      const figure = new Figure(new Coordinates(1, 1), movementValidator);
 
       expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(1, 5));
@@ -71,10 +71,10 @@ describe("Figure", () => {
 
     it("uses updated coordinates after a successful move when validating", () => {
       const canMove = jest.fn(() => true);
-      const figure = new Figure(0, 0, {
+      const figure = new Figure(new Coordinates(0, 0), {
         canMove,
         getDirections: () => DirectionsBuilder.create().build(),
-        getCollisionCoordinates: () => [],
+        getThroughCoordinates: () => [],
       });
 
       figure.moveTo(new Coordinates(3, 3));
@@ -88,10 +88,10 @@ describe("Figure", () => {
 
     it("passes capturing flag to the movement validator", () => {
       const canMove = jest.fn(() => true);
-      const figure = new Figure(2, 3, {
+      const figure = new Figure(new Coordinates(2, 3), {
         canMove,
         getDirections: () => DirectionsBuilder.create().build(),
-        getCollisionCoordinates: () => [],
+        getThroughCoordinates: () => [],
       });
 
       figure.moveTo(new Coordinates(5, 6), true);
@@ -102,16 +102,16 @@ describe("Figure", () => {
     });
   });
 
-  describe("getCollisionCoordinatess", () => {
+  describe("getThroughCoordinates", () => {
     it("throws FigureCannotMove when the movement validator rejects the move", () => {
-      const figure = new Figure(2, 3, {
+      const figure = new Figure(new Coordinates(2, 3), {
         canMove: () => false,
         getDirections: () => DirectionsBuilder.create().build(),
-        getCollisionCoordinates: () => [],
+        getThroughCoordinates: () => [],
       });
 
       expect(() =>
-        figure.getCollisionCoordinatess(new Coordinates(5, 6)),
+        figure.getThroughCoordinates(new Coordinates(5, 6)),
       ).toThrow(FigureInvalidMove);
     });
 
@@ -121,13 +121,13 @@ describe("Figure", () => {
         new Coordinates(4, 5),
         new Coordinates(5, 6),
       ];
-      const figure = new Figure(2, 3, {
+      const figure = new Figure(new Coordinates(2, 3), {
         canMove: () => true,
         getDirections: () => DirectionsBuilder.create().build(),
-        getCollisionCoordinates: () => collisionCoordinates,
+        getThroughCoordinates: () => collisionCoordinates,
       });
 
-      expect(figure.getCollisionCoordinatess(new Coordinates(5, 6))).toEqual(
+      expect(figure.getThroughCoordinates(new Coordinates(5, 6))).toEqual(
         collisionCoordinates,
       );
     });

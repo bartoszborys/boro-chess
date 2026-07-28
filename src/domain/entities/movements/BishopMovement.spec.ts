@@ -59,28 +59,28 @@ describe("BishopMovement", () => {
     });
   });
 
-  describe("getCollisionCoordinates", () => {
+  describe("getThroughCoordinates", () => {
     it("returns intermediate squares on a diagonal path", () => {
       expect(
-        bishop.getCollisionCoordinates(new Movement(from, new Coordinates(27, 27))),
+        bishop.getThroughCoordinates(new Movement(from, new Coordinates(27, 27))),
       ).toEqual([new Coordinates(25, 25), new Coordinates(26, 26)]);
     });
 
     it("returns an empty path for an adjacent diagonal move", () => {
       expect(
-        bishop.getCollisionCoordinates(new Movement(from, new Coordinates(25, 25))),
+        bishop.getThroughCoordinates(new Movement(from, new Coordinates(25, 25))),
       ).toEqual([]);
     });
 
     it("returns intermediate squares for each diagonal direction", () => {
       expect(
-        bishop.getCollisionCoordinates(new Movement(from, new Coordinates(21, 27))),
+        bishop.getThroughCoordinates(new Movement(from, new Coordinates(21, 27))),
       ).toEqual([new Coordinates(23, 25), new Coordinates(22, 26)]);
       expect(
-        bishop.getCollisionCoordinates(new Movement(from, new Coordinates(27, 21))),
+        bishop.getThroughCoordinates(new Movement(from, new Coordinates(27, 21))),
       ).toEqual([new Coordinates(25, 23), new Coordinates(26, 22)]);
       expect(
-        bishop.getCollisionCoordinates(new Movement(from, new Coordinates(21, 21))),
+        bishop.getThroughCoordinates(new Movement(from, new Coordinates(21, 21))),
       ).toEqual([new Coordinates(23, 23), new Coordinates(22, 22)]);
     });
   });

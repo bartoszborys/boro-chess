@@ -25,13 +25,13 @@ export class QueenMovement implements MovementValidator {
     ]
   }
 
-  getCollisionCoordinates(movement: Movement): Coordinates[] {
+  getThroughCoordinates(movement: Movement): Coordinates[] {
     if (this.bishopMovement.canMove(movement)) {
-      return this.bishopMovement.getCollisionCoordinates(movement);
+      return this.bishopMovement.getThroughCoordinates(movement);
     }
 
     if (this.towerMovement.canMove(movement)) {
-      return this.towerMovement.getCollisionCoordinates(movement);
+      return this.towerMovement.getThroughCoordinates(movement);
     }
 
     throw new FigureInvalidMove(`Figure cannot move from ${movement.from} to ${movement.to}`);

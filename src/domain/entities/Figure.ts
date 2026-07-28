@@ -7,8 +7,8 @@ export class Figure {
   private coordinates: Coordinates;
   private readonly movementValidator: MovementValidator;
 
-  constructor(x: number, y: number, movementValidator: MovementValidator) {
-    this.coordinates = new Coordinates(x, y);
+  constructor(coordinates: Coordinates, movementValidator: MovementValidator) {
+    this.coordinates = coordinates;
     this.movementValidator = movementValidator;
   }
 
@@ -29,13 +29,13 @@ export class Figure {
     return true;
   }
 
-  getCollisionCoordinatess(to: Coordinates, capturing: boolean = false): Coordinates[] {
+  getThroughCoordinates(to: Coordinates, capturing: boolean = false): Coordinates[] {
     const movement = new Movement(this.coordinates, to, capturing);
 
     if (!this.movementValidator.canMove(movement)) {
       throw new FigureInvalidMove(`Figure cannot move from ${this.coordinates} to ${to}`);
     }
 
-    return this.movementValidator.getCollisionCoordinates(movement);
+    return this.movementValidator.getThroughCoordinates(movement);
   }
 }

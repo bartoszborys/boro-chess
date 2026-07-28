@@ -87,10 +87,10 @@ describe("HorseMovement", () => {
     });
   });
 
-  describe("getCollisionCoordinates", () => {
+  describe("getThroughCoordinates", () => {
     it("always returns an empty array", () => {
       expect(
-        horse.getCollisionCoordinates(
+        horse.getThroughCoordinates(
           new Movement(from, new Coordinates(26, 25)),
         ),
       ).toEqual([]);

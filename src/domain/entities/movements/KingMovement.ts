@@ -28,7 +28,7 @@ export class KingMovement implements MovementValidator {
       .build();
   }
 
-  getCollisionCoordinates(_movement: Movement): Coordinates[] {
+  getThroughCoordinates(_movement: Movement): Coordinates[] {
     return [];
   }
 }

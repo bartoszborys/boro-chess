@@ -11,7 +11,7 @@ export class BishopMovement implements MovementValidator {
     return delta.x !== 0 && Math.abs(delta.x) === Math.abs(delta.y);
   }
 
-  public getCollisionCoordinates(movement: Movement): Coordinates[] {
+  public getThroughCoordinates(movement: Movement): Coordinates[] {
     const movementDelta = movement.calculateDelta();
     const stepsCount = Math.abs(movementDelta.x);
     const stepXDeltaSign = Math.sign(movementDelta.x);

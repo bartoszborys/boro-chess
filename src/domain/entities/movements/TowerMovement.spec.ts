@@ -62,10 +62,10 @@ describe("TowerMovement", () => {
     });
   });
 
-  describe("getCollisionCoordinates", () => {
+  describe("getThroughCoordinates", () => {
     it("returns intermediate squares when moving right, without destination", () => {
       expect(
-        tower.getCollisionCoordinates(
+        tower.getThroughCoordinates(
           new Movement(from, new Coordinates(27, 24)),
         ),
       ).toEqual([new Coordinates(25, 24), new Coordinates(26, 24)]);
@@ -73,7 +73,7 @@ describe("TowerMovement", () => {
 
     it("returns intermediate squares when moving left, without destination", () => {
       expect(
-        tower.getCollisionCoordinates(
+        tower.getThroughCoordinates(
           new Movement(from, new Coordinates(21, 24)),
         ),
       ).toEqual([new Coordinates(23, 24), new Coordinates(22, 24)]);
@@ -81,7 +81,7 @@ describe("TowerMovement", () => {
 
     it("returns intermediate squares when moving up, without destination", () => {
       expect(
-        tower.getCollisionCoordinates(
+        tower.getThroughCoordinates(
           new Movement(from, new Coordinates(24, 27)),
         ),
       ).toEqual([new Coordinates(24, 25), new Coordinates(24, 26)]);
@@ -89,7 +89,7 @@ describe("TowerMovement", () => {
 
     it("returns intermediate squares when moving down, without destination", () => {
       expect(
-        tower.getCollisionCoordinates(
+        tower.getThroughCoordinates(
           new Movement(from, new Coordinates(24, 21)),
         ),
       ).toEqual([new Coordinates(24, 23), new Coordinates(24, 22)]);

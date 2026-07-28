@@ -36,7 +36,7 @@ export abstract class PawnMovement implements MovementValidator {
 
   abstract getDirections(): Direction[];
 
-  getCollisionCoordinates(movement: Movement): Coordinates[] {
+  getThroughCoordinates(movement: Movement): Coordinates[] {
     if (movement.capturing) {
       return [];
     }

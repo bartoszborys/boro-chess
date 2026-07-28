@@ -1,5 +1,5 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { Board } from "../CheesBoard";
+import type { Board } from "../../domain/entities/CheesBoard";
 
 export class PlayerFigureMoveUseCase {
     constructor(

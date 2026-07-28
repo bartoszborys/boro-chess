@@ -87,10 +87,10 @@ describe("KingMovement", () => {
     });
   });
 
-  describe("getCollisionCoordinates", () => {
+  describe("getThroughCoordinates", () => {
     it("always returns an empty array", () => {
       expect(
-        king.getCollisionCoordinates(
+        king.getThroughCoordinates(
           new Movement(from, new Coordinates(25, 25)),
         ),
       ).toEqual([]);

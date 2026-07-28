@@ -29,7 +29,7 @@ export class HorseMovement implements MovementValidator {
       .build();
   }
 
-  getCollisionCoordinates(_movement: Movement): Coordinates[] {
+  getThroughCoordinates(_movement: Movement): Coordinates[] {
     return [];
   }
 }

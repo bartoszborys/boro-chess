@@ -20,7 +20,7 @@ export class TowerMovement implements MovementValidator {
       .build();
   }
 
-  getCollisionCoordinates(movement: Movement): Coordinates[] {
+  getThroughCoordinates(movement: Movement): Coordinates[] {
     const delta = movement.calculateDelta();
     const stepsCount = Math.abs(delta.x) + Math.abs(delta.y);
     const stepX = Math.sign(delta.x);

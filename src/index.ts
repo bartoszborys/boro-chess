@@ -3,10 +3,10 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { WhitePawnMovement } from "@/domain/entities/movements/WhitePawnMovement";
 import { DirectionsBuilder } from "./domain/DirectionsBuilder";
 
-const pawn = new Figure(0, 0, {
+const pawn = new Figure(new Coordinates(0, 0), {
     canMove: () => true,
     getDirections: () => DirectionsBuilder.create().build(),
-    getCollisionCoordinates: () => [],
+    getThroughCoordinates: () => [],
 });
 
 console.log(pawn.moveTo(new Coordinates(0, 1)));

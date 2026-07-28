@@ -1,6 +1,7 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { Direction } from "@/domain/value-objects/Direction";
 import { BishopMovement } from "./BishopMovement";
 import { TowerMovement } from "./TowerMovement";
 import { QueenMovement } from "./QueenMovement";
@@ -117,6 +118,26 @@ describe("QueenMovement", () => {
           new Movement(from, new Coordinates(26, 25)),
         ),
       ).toThrow(FigureInvalidMove);
+    });
+  });
+
+  describe("getDirections", () => {
+    it("returns all orthogonal and diagonal directions with capture enabled and infinite range", () => {
+      const directions = queen.getDirections();
+
+      expect(directions).toHaveLength(8);
+      expect(directions).toEqual(
+        expect.arrayContaining([
+          new Direction({ deltaX: 0, deltaY: -1, canCapture: true }),
+          new Direction({ deltaX: 0, deltaY: 1, canCapture: true }),
+          new Direction({ deltaX: 1, deltaY: 0, canCapture: true }),
+          new Direction({ deltaX: -1, deltaY: 0, canCapture: true }),
+          new Direction({ deltaX: 1, deltaY: -1, canCapture: true }),
+          new Direction({ deltaX: -1, deltaY: -1, canCapture: true }),
+          new Direction({ deltaX: 1, deltaY: 1, canCapture: true }),
+          new Direction({ deltaX: -1, deltaY: 1, canCapture: true }),
+        ]),
+      );
     });
   });
 });

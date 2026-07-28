@@ -2,13 +2,15 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { Direction } from "@/domain/value-objects/Direction";
+import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 
 export abstract class PawnMovement implements MovementValidator {
   constructor(
     private readonly startingPosition: Coordinates,
     private readonly oneStep: number,
     private readonly twoSteps: number,
-  ) {}
+  ) { }
 
   canMove(movement: Movement): boolean {
     const delta = movement.calculateDelta();
@@ -31,6 +33,8 @@ export abstract class PawnMovement implements MovementValidator {
 
     return false;
   }
+
+  abstract getDirections(): Direction[];
 
   getCollisionCoordinates(movement: Movement): Coordinates[] {
     if (movement.capturing) {

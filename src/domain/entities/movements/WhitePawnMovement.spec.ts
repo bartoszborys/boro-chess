@@ -1,6 +1,7 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { Direction } from "@/domain/value-objects/Direction";
 import { WhitePawnMovement } from "./WhitePawnMovement";
 
 interface Delta {
@@ -231,6 +232,47 @@ describe("WhitePawnMovement", () => {
           ),
         ),
       ).toThrow(FigureInvalidMove);
+    });
+  });
+
+  describe("getDirections", () => {
+    it("returns all possible directions including double-step from start", () => {
+      const directions = whitePawn.getDirections();
+
+      expect(directions).toHaveLength(4);
+      expect(directions).toEqual(
+        expect.arrayContaining([
+          new Direction({
+            deltaX: 0,
+            deltaY: 1,
+            canCapture: false,
+            whenEnemy: false,
+            maxRange: 1,
+          }),
+          new Direction({
+            deltaX: 0,
+            deltaY: 1,
+            canCapture: false,
+            whenEnemy: false,
+            maxRange: 2,
+            whenStartingPosition: true,
+          }),
+          new Direction({
+            deltaX: -1,
+            deltaY: 1,
+            canCapture: true,
+            whenEnemy: true,
+            maxRange: 1,
+          }),
+          new Direction({
+            deltaX: 1,
+            deltaY: 1,
+            canCapture: true,
+            whenEnemy: true,
+            maxRange: 1,
+          }),
+        ]),
+      );
     });
   });
 });

@@ -1,12 +1,23 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { Movement } from "@/domain/value-objects/Movement";
+import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 import type { MovementValidator } from "./MovementValidator";
+import { Direction } from "@/domain/value-objects/Direction";
 
 export class TowerMovement implements MovementValidator {
   canMove(movement: Movement): boolean {
     const delta = movement.calculateDelta();
 
     return (delta.x !== 0 && delta.y === 0) || (delta.y !== 0 && delta.x === 0);
+  }
+
+  getDirections(): Direction[] {
+    return DirectionsBuilder.create()
+      .addLeftDirection()
+      .addRightDirection()
+      .addTopDirection()
+      .addBottomDirection()
+      .build();
   }
 
   getCollisionCoordinates(movement: Movement): Coordinates[] {

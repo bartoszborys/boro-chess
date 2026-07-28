@@ -4,6 +4,8 @@ import type { MovementValidator } from "./MovementValidator";
 import { TowerMovement } from "./TowerMovement";
 import { BishopMovement } from "./BishopMovement";
 import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
+import { Direction } from "@/domain/value-objects/Direction";
 
 export class QueenMovement implements MovementValidator {
   private readonly bishopMovement = new BishopMovement();
@@ -14,6 +16,13 @@ export class QueenMovement implements MovementValidator {
       this.bishopMovement.canMove(movement) ||
       this.towerMovement.canMove(movement)
     );
+  }
+
+  getDirections(): Direction[] {
+    return [
+      ...this.towerMovement.getDirections(),
+      ...this.bishopMovement.getDirections(),
+    ]
   }
 
   getCollisionCoordinates(movement: Movement): Coordinates[] {

@@ -1,7 +1,8 @@
 import { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
+import { Direction } from "@/domain/value-objects/Direction";
 
 export class BishopMovement implements MovementValidator {
   public canMove(movement: Movement): boolean {
@@ -13,7 +14,7 @@ export class BishopMovement implements MovementValidator {
   public getCollisionCoordinates(movement: Movement): Coordinates[] {
     const movementDelta = movement.calculateDelta();
     const stepsCount = Math.abs(movementDelta.x);
-    const stepXDeltaSign = Math.sign(movementDelta.x)
+    const stepXDeltaSign = Math.sign(movementDelta.x);
     const stepYDeltaSign = Math.sign(movementDelta.y);
 
     const path: Coordinates[] = [];
@@ -25,5 +26,14 @@ export class BishopMovement implements MovementValidator {
     }
 
     return path;
+  }
+
+  public getDirections(): Direction[] {
+    return DirectionsBuilder.create()
+      .addTopRightDirection()
+      .addTopLeftDirection()
+      .addBottomRightDirection()
+      .addBottomLeftDirection()
+      .build();
   }
 }

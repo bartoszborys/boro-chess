@@ -3,9 +3,11 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import { MovementValidator } from "@/domain/entities/movements/MovementValidator";
 import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
+  getDirections: () => DirectionsBuilder.create().build(),
   getCollisionCoordinates: () => [],
 };
 
@@ -37,6 +39,7 @@ describe("Figure", () => {
       const canMove = jest.fn((_movement: Movement) => false);
       const movementValidator: MovementValidator = {
         canMove,
+        getDirections: () => DirectionsBuilder.create().build(),
         getCollisionCoordinates: () => [],
       };
       const figure = new Figure(2, 3, movementValidator);
@@ -55,6 +58,7 @@ describe("Figure", () => {
         canMove: (movement) =>
           movement.from.x === movement.to.x ||
           movement.from.y === movement.to.y,
+        getDirections: () => DirectionsBuilder.create().build(),
         getCollisionCoordinates: () => [],
       };
       const figure = new Figure(1, 1, movementValidator);
@@ -69,6 +73,7 @@ describe("Figure", () => {
       const canMove = jest.fn(() => true);
       const figure = new Figure(0, 0, {
         canMove,
+        getDirections: () => DirectionsBuilder.create().build(),
         getCollisionCoordinates: () => [],
       });
 
@@ -85,6 +90,7 @@ describe("Figure", () => {
       const canMove = jest.fn(() => true);
       const figure = new Figure(2, 3, {
         canMove,
+        getDirections: () => DirectionsBuilder.create().build(),
         getCollisionCoordinates: () => [],
       });
 
@@ -100,6 +106,7 @@ describe("Figure", () => {
     it("throws FigureCannotMove when the movement validator rejects the move", () => {
       const figure = new Figure(2, 3, {
         canMove: () => false,
+        getDirections: () => DirectionsBuilder.create().build(),
         getCollisionCoordinates: () => [],
       });
 
@@ -116,6 +123,7 @@ describe("Figure", () => {
       ];
       const figure = new Figure(2, 3, {
         canMove: () => true,
+        getDirections: () => DirectionsBuilder.create().build(),
         getCollisionCoordinates: () => collisionCoordinates,
       });
 

@@ -1,6 +1,6 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { Direction } from "@/domain/value-objects/Direction";
 import { BishopMovement } from "./BishopMovement";
 
 describe("BishopMovement", () => {
@@ -82,6 +82,21 @@ describe("BishopMovement", () => {
       expect(
         bishop.getCollisionCoordinates(new Movement(from, new Coordinates(21, 21))),
       ).toEqual([new Coordinates(23, 23), new Coordinates(22, 22)]);
+    });
+  });
+
+  describe("getDirections", () => {
+    it("returns diagonal directions with capture enabled and infinite range", () => {
+      const directions = bishop.getDirections();
+
+      expect(directions).toEqual(
+        expect.arrayContaining([
+          new Direction({ deltaX: 1, deltaY: -1, canCapture: true }),
+          new Direction({ deltaX: -1, deltaY: -1, canCapture: true }),
+          new Direction({ deltaX: 1, deltaY: 1, canCapture: true }),
+          new Direction({ deltaX: -1, deltaY: 1, canCapture: true }),
+        ]),
+      );
     });
   });
 });

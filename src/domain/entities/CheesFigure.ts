@@ -20,11 +20,11 @@ export class CheesFigure implements Figure {
     this.movementValidator = movementValidator;
   }
 
-  isOn(coordinates: Coordinates): boolean {
+  public isOn(coordinates: Coordinates): boolean {
     return this.coordinates.equals(coordinates);
   }
 
-  getDirectionTo(to: Coordinates, capturing: boolean = false): Direction | null {
+  public getDirectionTo(to: Coordinates, capturing: boolean = false): Direction | null {
     const directions = this.movementValidator.getDirections();
 
     if (directions.length === 0) {
@@ -36,10 +36,8 @@ export class CheesFigure implements Figure {
     return directions.find(direction => direction.matchesMovement(movement)) ?? null;
   }
 
-  moveTo(to: Coordinates, capturing: boolean = false): boolean {
-    const direction = this.getDirectionTo(to, capturing);
-
-    if (!direction) {
+  public moveTo(to: Coordinates, capturing: boolean = false): boolean {
+    if (!this.canMove(to, capturing)) {
       return false;
     }
 
@@ -47,13 +45,17 @@ export class CheesFigure implements Figure {
     return true;
   }
 
-  getThroughCoordinates(to: Coordinates, capturing: boolean = false): Coordinates[] {
+  public getThroughCoordinates(to: Coordinates, capturing: boolean = false): Coordinates[] {
     const movement = new Movement(this.coordinates, to, capturing);
 
-    if (!this.movementValidator.canMove(movement)) {
+    if (!this.canMove(to, capturing)) {
       throw new FigureInvalidMove(`Figure cannot move from ${this.coordinates} to ${to}`);
     }
 
     return this.movementValidator.getThroughCoordinates(movement);
+  }
+
+  private canMove(to: Coordinates, capturing: boolean = false): boolean {
+    return !!this.getDirectionTo(to, capturing);
   }
 }

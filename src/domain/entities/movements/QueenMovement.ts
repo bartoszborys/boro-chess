@@ -10,29 +10,32 @@ export class QueenMovement implements MovementValidator {
   private readonly bishopMovement = new BishopMovement();
   private readonly towerMovement = new TowerMovement();
 
-  canMove(movement: Movement): boolean {
-    return (
-      this.bishopMovement.canMove(movement) ||
-      this.towerMovement.canMove(movement)
-    );
-  }
-
   getDirections(): Direction[] {
     return [
       ...this.towerMovement.getDirections(),
       ...this.bishopMovement.getDirections(),
-    ]
+    ];
   }
 
   getThroughCoordinates(movement: Movement): Coordinates[] {
-    if (this.bishopMovement.canMove(movement)) {
+    const matchesBishop = this.bishopMovement
+      .getDirections()
+      .some((direction) => direction.matchesMovement(movement));
+
+    if (matchesBishop) {
       return this.bishopMovement.getThroughCoordinates(movement);
     }
 
-    if (this.towerMovement.canMove(movement)) {
+    const matchesTower = this.towerMovement
+      .getDirections()
+      .some((direction) => direction.matchesMovement(movement));
+
+    if (matchesTower) {
       return this.towerMovement.getThroughCoordinates(movement);
     }
 
-    throw new FigureInvalidMove(`Figure cannot move from ${movement.from} to ${movement.to}`);
+    throw new FigureInvalidMove(
+      `Figure cannot move from ${movement.from} to ${movement.to}`,
+    );
   }
 }

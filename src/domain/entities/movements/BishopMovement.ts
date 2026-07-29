@@ -1,16 +1,10 @@
-import { Movement } from "@/domain/value-objects/Movement";
+import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export class BishopMovement implements MovementValidator {
-  public canMove(movement: Movement): boolean {
-    const delta = movement.calculateDelta();
-
-    return delta.x !== 0 && Math.abs(delta.x) === Math.abs(delta.y);
-  }
-
   public getThroughCoordinates(movement: Movement): Coordinates[] {
     const movementDelta = movement.calculateDelta();
     const stepsCount = Math.abs(movementDelta.x);

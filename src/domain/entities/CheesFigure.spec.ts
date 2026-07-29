@@ -5,14 +5,12 @@ import { MovementValidator } from "@/domain/entities/movements/MovementValidator
 import { FigureInvalidMove } from "@/domain/exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
 const alwaysAllowed: MovementValidator = {
-  canMove: () => true,
   getDirections: () => [],
   getThroughCoordinates: () => [],
 };
 
-function createValidator(canMove: boolean = true, directions: Direction[] = [], throughCoordinates: Coordinates[] = []): MovementValidator {
+function createValidator(directions: Direction[] = [], throughCoordinates: Coordinates[] = []): MovementValidator {
   return {
-    canMove: () => canMove,
     getDirections: () => directions,
     getThroughCoordinates: () => throughCoordinates,
   };
@@ -34,7 +32,7 @@ describe("Figure", () => {
     ])("updates current coordinates when the move to ($x, $y) is allowed", ({ x, y }) => {
       const figure = new CheesFigure(
         new Coordinates(0, 0),
-        createValidator(true, [new Direction({ deltaX: x, deltaY: y })], []),
+        createValidator([new Direction({ deltaX: x, deltaY: y })]),
       );
 
       expect(figure.moveTo(new Coordinates(x, y))).toBe(true);
@@ -44,7 +42,7 @@ describe("Figure", () => {
     it("returns false when the direction does not match the destination", () => {
       const figure = new CheesFigure(
         new Coordinates(2, 3),
-        createValidator(true, [new Direction({ deltaX: 1, deltaY: 0 })]),
+        createValidator([new Direction({ deltaX: 1, deltaY: 0 })]),
       );
 
       expect(figure.moveTo(new Coordinates(5, 6))).toBe(false);
@@ -54,7 +52,7 @@ describe("Figure", () => {
     it("returns true when the movement validator allows the move", () => {
       const figure = new CheesFigure(
         new Coordinates(1, 1),
-        createValidator(true, [new Direction({ deltaX: 0, deltaY: 4 })]),
+        createValidator([new Direction({ deltaX: 0, deltaY: 4 })]),
       );
 
       expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
@@ -65,7 +63,7 @@ describe("Figure", () => {
 
       const figure = new CheesFigure(
         new Coordinates(0, 0),
-        createValidator(true, [new Direction({ deltaX: 2, deltaY: 2 })])
+        createValidator([new Direction({ deltaX: 2, deltaY: 2 })])
       );
 
       expect(figure.moveTo(new Coordinates(2, 2))).toBe(true);
@@ -78,7 +76,7 @@ describe("Figure", () => {
     it("returns false when capturing but the direction cannot capture", () => {
       const figure = new CheesFigure(
         new Coordinates(2, 3),
-        createValidator(true, [
+        createValidator([
           new Direction({ deltaX: 3, deltaY: 3, canCapture: false }),
         ]),
       );
@@ -90,7 +88,7 @@ describe("Figure", () => {
     it("returns false when there is no direction to move to", () => {
       const figure = new CheesFigure(
         new Coordinates(2, 3),
-        createValidator(false, []),
+        createValidator([]),
       );
 
       expect(figure.moveTo(new Coordinates(5, 6))).toBe(false);
@@ -101,7 +99,6 @@ describe("Figure", () => {
   describe("getThroughCoordinates", () => {
     it("throws FigureCannotMove when the movement validator rejects the move", () => {
       const figure = new CheesFigure(new Coordinates(2, 3), {
-        canMove: () => false,
         getDirections: () => [],
         getThroughCoordinates: () => [],
       });
@@ -117,11 +114,11 @@ describe("Figure", () => {
         new Coordinates(4, 5),
         new Coordinates(5, 6),
       ];
-      const figure = new CheesFigure(new Coordinates(2, 3), {
-        canMove: () => true,
-        getDirections: () => [],
-        getThroughCoordinates: () => collisionCoordinates,
-      });
+      const figure = new CheesFigure(
+        new Coordinates(2, 3),
+        createValidator([], collisionCoordinates),
+      );
+      jest.spyOn(figure as any, "canMove").mockReturnValue(true);
 
       expect(figure.getThroughCoordinates(new Coordinates(5, 6))).toEqual(
         collisionCoordinates,
@@ -135,7 +132,6 @@ describe("Figure", () => {
     const downDirection = new Direction({ deltaX: 0, deltaY: -1 });
 
     const figure = new CheesFigure(new Coordinates(20, 20), {
-      canMove: () => true,
       getDirections: () => [upDirection, rightDirection, downDirection],
       getThroughCoordinates: () => [],
     });
@@ -155,7 +151,6 @@ describe("Figure", () => {
         canCapture: true,
       });
       const capturingFigure = new CheesFigure(new Coordinates(20, 20), {
-        canMove: () => true,
         getDirections: () => [capturingUp],
         getThroughCoordinates: () => [],
       });
@@ -172,7 +167,6 @@ describe("Figure", () => {
         canCapture: false,
       });
       const capturingFigure = new CheesFigure(new Coordinates(20, 20), {
-        canMove: () => true,
         getDirections: () => [nonCapturingUp],
         getThroughCoordinates: () => [],
       });

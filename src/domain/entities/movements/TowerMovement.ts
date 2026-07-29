@@ -5,12 +5,6 @@ import type { MovementValidator } from "./MovementValidator";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export class TowerMovement implements MovementValidator {
-  canMove(movement: Movement): boolean {
-    const delta = movement.calculateDelta();
-
-    return (delta.x !== 0 && delta.y === 0) || (delta.y !== 0 && delta.x === 0);
-  }
-
   getDirections(): Direction[] {
     return DirectionsBuilder.create()
       .addLeftDirection()

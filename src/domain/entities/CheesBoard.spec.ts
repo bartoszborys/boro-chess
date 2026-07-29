@@ -8,8 +8,8 @@ function createFigure(
 ): Figure {
   return {
     isOn: (other) => coordinates.equals(other),
+    moveTo: () => undefined,
     getDirectionTo: () => null,
-    moveTo: () => true,
     getThroughCoordinates: () => throughCoordinates,
   };
 }
@@ -87,6 +87,41 @@ describe("ChessBoard", () => {
       expect(
         board.hasFigureMoveCollision(movingFigure, destinationCoordinates),
       ).toBe(false);
+    });
+
+    it("passes capturing true to getThroughCoordinates when a figure stands on the destination", () => {
+      const destination = new Coordinates(25, 30);
+      const movingFigureCoordinates = new Coordinates(25, 25);
+      const getThroughCoordinates = jest.fn(() => []);
+
+      const targetFigure = createFigure(destination);
+      const movingFigure: Figure = {
+        ...createFigure(movingFigureCoordinates),
+        getThroughCoordinates,
+      };
+
+      const board = new CheesBoard([movingFigure, targetFigure]);
+
+      board.hasFigureMoveCollision(movingFigure, destination);
+
+      expect(getThroughCoordinates).toHaveBeenCalledWith(destination, true);
+    });
+
+    it("passes capturing false to getThroughCoordinates when the destination is empty", () => {
+      const destination = new Coordinates(25, 30);
+      const movingFigureCoordinates = new Coordinates(25, 25);
+      const getThroughCoordinates = jest.fn(() => []);
+
+      const movingFigure: Figure = {
+        ...createFigure(movingFigureCoordinates),
+        getThroughCoordinates,
+      };
+
+      const board = new CheesBoard([movingFigure]);
+
+      board.hasFigureMoveCollision(movingFigure, destination);
+
+      expect(getThroughCoordinates).toHaveBeenCalledWith(destination, false);
     });
   });
 });

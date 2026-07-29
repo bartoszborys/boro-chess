@@ -1,6 +1,6 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { Board } from "../../domain/entities/CheesBoard";
-import { FigureInvalidMove, FigureMoveCollision, FigureNotFound } from "@/domain/exceptions";
+import { FigureMoveCollision, FigureNotFound } from "@/domain/exceptions";
 
 export class PlayerFigureMoveUseCase {
     constructor(
@@ -18,10 +18,6 @@ export class PlayerFigureMoveUseCase {
             throw new FigureMoveCollision();
         }
 
-        const hasMoved = figure.moveTo(to);
-
-        if (!hasMoved) {
-            throw new FigureInvalidMove();
-        }
+        figure.moveTo(to);
     }
 }

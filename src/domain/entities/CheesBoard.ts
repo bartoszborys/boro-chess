@@ -14,7 +14,9 @@ export class CheesBoard implements Board {
     }
 
     public hasFigureMoveCollision(figure: Figure, to: Coordinates): boolean {
-        for (const coordinate of figure.getThroughCoordinates(to)) {
+        const capturing = !!this.getFigureByCoordinates(to);
+
+        for (const coordinate of figure.getThroughCoordinates(to, capturing)) {
             const figure = this.getFigureByCoordinates(coordinate);
 
             if (figure !== undefined) {

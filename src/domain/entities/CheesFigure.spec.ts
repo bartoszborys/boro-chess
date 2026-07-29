@@ -27,72 +27,22 @@ describe("Figure", () => {
     it.each([
       { x: 4, y: 7 },
       { x: 80, y: 24 },
-    ])(
-      "updates current coordinates when the move to ($x, $y) is allowed",
-      ({ x, y }) => {
-        const figure = new CheesFigure(
-          new Coordinates(0, 0),
-          createValidator([new Direction({ deltaX: x, deltaY: y })]),
-        );
+    ])("updates current coordinates to ($x, $y)", ({ x, y }) => {
+      const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
 
-        expect(figure.moveTo(new Coordinates(x, y))).toBe(true);
-        expect(figure.isOn(new Coordinates(x, y))).toBe(true);
-      },
-    );
+      figure.moveTo(new Coordinates(x, y));
 
-    it("returns false when the direction does not match the destination", () => {
-      const figure = new CheesFigure(
-        new Coordinates(2, 3),
-        createValidator([new Direction({ deltaX: 1, deltaY: 0 })]),
-      );
-
-      expect(figure.moveTo(new Coordinates(5, 6))).toBe(false);
-      expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
-    });
-
-    it("returns true when the movement validator allows the move", () => {
-      const figure = new CheesFigure(
-        new Coordinates(1, 1),
-        createValidator([new Direction({ deltaX: 0, deltaY: 4 })]),
-      );
-
-      expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
-      expect(figure.isOn(new Coordinates(1, 5))).toBe(true);
+      expect(figure.isOn(new Coordinates(x, y))).toBe(true);
     });
 
     it("uses updated coordinates after a successful two-step move", () => {
-      const figure = new CheesFigure(
-        new Coordinates(0, 0),
-        createValidator([new Direction({ deltaX: 2, deltaY: 2 })]),
-      );
+      const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
 
-      expect(figure.moveTo(new Coordinates(2, 2))).toBe(true);
+      figure.moveTo(new Coordinates(2, 2));
       expect(figure.isOn(new Coordinates(2, 2))).toBe(true);
 
-      expect(figure.moveTo(new Coordinates(4, 4))).toBe(true);
+      figure.moveTo(new Coordinates(4, 4));
       expect(figure.isOn(new Coordinates(4, 4))).toBe(true);
-    });
-
-    it("returns false when capturing but the direction cannot capture", () => {
-      const figure = new CheesFigure(
-        new Coordinates(2, 3),
-        createValidator([
-          new Direction({ deltaX: 3, deltaY: 3, canCapture: false }),
-        ]),
-      );
-
-      expect(figure.moveTo(new Coordinates(5, 6), true)).toBe(false);
-      expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
-    });
-
-    it("returns false when there is no direction to move to", () => {
-      const figure = new CheesFigure(
-        new Coordinates(2, 3),
-        createValidator([]),
-      );
-
-      expect(figure.moveTo(new Coordinates(5, 6))).toBe(false);
-      expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
     });
   });
 
@@ -201,13 +151,13 @@ describe("Figure", () => {
     });
 
     it("returns the matching direction when moving straight up", () => {
-      expect(figure.getDirectionTo(new Coordinates(20, 25))).toEqual(
+      expect(figure.getDirectionTo(new Coordinates(20, 25), false)).toEqual(
         upDirection,
       );
     });
 
     it("returns null when the target coordinate does not match any direction", () => {
-      expect(figure.getDirectionTo(new Coordinates(21, 25))).toBeNull();
+      expect(figure.getDirectionTo(new Coordinates(21, 25), false)).toBeNull();
     });
 
     it("does select a capturing direction when capturing is false", () => {

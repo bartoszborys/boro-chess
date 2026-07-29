@@ -7,7 +7,7 @@ import { Direction } from "@/domain/value-objects/Direction";
 export interface Figure {
   isOn(coordinates: Coordinates): boolean;
   getDirectionTo(to: Coordinates): Direction | null;
-  moveTo(to: Coordinates, capturing?: boolean): boolean;
+  moveTo(to: Coordinates): void;
   getThroughCoordinates(to: Coordinates, capturing?: boolean): Coordinates[];
 }
 
@@ -36,13 +36,8 @@ export class CheesFigure implements Figure {
     return directions.find(direction => direction.matchesMovement(movement)) ?? null;
   }
 
-  public moveTo(to: Coordinates, capturing: boolean = false): boolean {
-    if (!this.canMove(to, capturing)) {
-      return false;
-    }
-
+  public moveTo(to: Coordinates): void {
     this.coordinates = to;
-    return true;
   }
 
   public getThroughCoordinates(
@@ -58,21 +53,6 @@ export class CheesFigure implements Figure {
     }
 
     const movement = new Movement(this.coordinates, to, capturing);
-    const steps = movement.calculateStepsFor(direction);
-
-    const path: Coordinates[] = [];
-
-    for (let step = 1; step < steps; step++) {
-      const stepX = this.coordinates.x + direction.deltaX * step;
-      const stepY = this.coordinates.y + direction.deltaY * step;
-
-      path.push(new Coordinates(stepX, stepY));
-    }
-
-    return path;
-  }
-
-  private canMove(to: Coordinates, capturing: boolean = false): boolean {
-    return !!this.getDirectionTo(to, capturing);
+    return movement.calculateThroughCoordinates(direction);
   }
 }

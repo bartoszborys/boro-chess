@@ -1,3 +1,5 @@
+import { Movement } from "./Movement";
+
 type DirectionConstructorOptions = DirectionMoveVector & DirectionOptions;
 
 type DirectionMoveVector = {
@@ -34,5 +36,9 @@ export class Direction {
         this.canCapture = canCapture ?? true;
         this.maxRange = maxRange ?? Infinity;
         this.whenStartingPosition = whenStartingPosition ?? false;
+    }
+
+    public equals(direction: Direction): boolean {
+        return this.deltaX === direction.deltaX && this.deltaY === direction.deltaY;
     }
 }

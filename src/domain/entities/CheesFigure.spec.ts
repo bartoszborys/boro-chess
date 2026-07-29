@@ -3,6 +3,7 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import { MovementValidator } from "@/domain/entities/movements/MovementValidator";
 import { FigureInvalidMove } from "@/domain/exceptions";
+import { Direction } from "@/domain/value-objects/Direction";
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
   getDirections: () => [],
@@ -128,6 +129,26 @@ describe("Figure", () => {
       expect(figure.getThroughCoordinates(new Coordinates(5, 6))).toEqual(
         collisionCoordinates,
       );
+    });
+  });
+
+  describe("getDirectionTo", () => {
+    const upDirection = new Direction({ deltaX: 0, deltaY: 1 });
+    const rightDirection = new Direction({ deltaX: 1, deltaY: 0 });
+    const downDirection = new Direction({ deltaX: 0, deltaY: -1 });
+
+    const figure = new CheesFigure(new Coordinates(20, 20), {
+      canMove: () => true,
+      getDirections: () => [upDirection, rightDirection, downDirection],
+      getThroughCoordinates: () => [],
+    });
+
+    it("returns the matching direction when moving straight up", () => {
+      expect(figure.getDirectionTo(new Coordinates(20, 25))).toEqual(upDirection);
+    });
+
+    it("returns null when the target coordinate does not match any direction", () => {
+      expect(figure.getDirectionTo(new Coordinates(21, 25))).toBeNull();
     });
   });
 });

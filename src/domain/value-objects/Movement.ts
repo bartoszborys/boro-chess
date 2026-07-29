@@ -10,12 +10,4 @@ export class Movement {
   calculateDelta(): Coordinates {
     return new Coordinates(this.to.x - this.from.x, this.to.y - this.from.y);
   }
-
-  sameX(): boolean {
-    return this.from.x === this.to.x;
-  }
-
-  sameY(): boolean {
-    return this.from.y === this.to.y;
-  }
 }

@@ -37,11 +37,9 @@ export class CheesFigure implements Figure {
   }
 
   moveTo(to: Coordinates, capturing: boolean = false): boolean {
-    const canMove = this.movementValidator.canMove(
-      new Movement(this.coordinates, to, capturing),
-    );
+    const direction = this.getDirectionTo(to, capturing);
 
-    if (!canMove) {
+    if (!direction) {
       return false;
     }
 

@@ -43,20 +43,28 @@ export class Direction {
             return false;
         }
 
-        let xStepPassed = movement.sameX();
-        let yStepPassed = movement.sameY();
+        const delta = movement.calculateDelta();
 
+        if (this.deltaX !== 0) {
+            const k = delta.x / this.deltaX;
 
-        const movementDelta = movement.calculateDelta();
+            if (!Number.isInteger(k) || k <= 0) {
+                return false;
+            }
 
-        if (!xStepPassed && this.deltaX !== 0) {
-            xStepPassed = movementDelta.x % Math.abs(this.deltaX) === 0;
+            return delta.y === k * this.deltaY;
         }
 
-        if (!yStepPassed && this.deltaY !== 0) {
-            yStepPassed = movementDelta.y % Math.abs(this.deltaY) === 0;
+        if (this.deltaY !== 0) {
+            const k = delta.y / this.deltaY;
+
+            if (!Number.isInteger(k) || k <= 0) {
+                return false;
+            }
+
+            return delta.x === k * this.deltaX;
         }
 
-        return xStepPassed && yStepPassed;
+        return false;
     }
 }

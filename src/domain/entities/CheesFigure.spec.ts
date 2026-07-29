@@ -10,6 +10,14 @@ const alwaysAllowed: MovementValidator = {
   getThroughCoordinates: () => [],
 };
 
+function createValidator(canMove: boolean = true, directions: Direction[] = [], throughCoordinates: Coordinates[] = []): MovementValidator {
+  return {
+    canMove: () => canMove,
+    getDirections: () => directions,
+    getThroughCoordinates: () => throughCoordinates,
+  };
+}
+
 describe("Figure", () => {
   describe("isOn", () => {
     it("returns true when the figure is on the coordinates", () => {
@@ -20,84 +28,73 @@ describe("Figure", () => {
   });
 
   describe("moveTo", () => {
-    it("updates current coordinates when the move is allowed", () => {
-      const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
-
-      expect(figure.moveTo(new Coordinates(4, 7))).toBe(true);
-      expect(figure.isOn(new Coordinates(4, 7))).toBe(true);
-    });
-
-    it("updates current coordinates to an abstract position 80, 24", () => {
-      const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
-
-      expect(figure.moveTo(new Coordinates(80, 24))).toBe(true);
-      expect(figure.isOn(new Coordinates(80, 24))).toBe(true);
-    });
-
-    it("asks the movement validator with current position and destination", () => {
-      const canMove = jest.fn((_movement: Movement) => false);
-      const movementValidator: MovementValidator = {
-        canMove,
-        getDirections: () => [],
-        getThroughCoordinates: () => [],
-      };
-      const figure = new CheesFigure(new Coordinates(2, 3), movementValidator);
-
-      const result = figure.moveTo(new Coordinates(5, 6));
-
-      expect(canMove).toHaveBeenCalledWith(
-        new Movement(new Coordinates(2, 3), new Coordinates(5, 6)),
+    it.each([
+      { x: 4, y: 7 },
+      { x: 80, y: 24 },
+    ])("updates current coordinates when the move to ($x, $y) is allowed", ({ x, y }) => {
+      const figure = new CheesFigure(
+        new Coordinates(0, 0),
+        createValidator(true, [new Direction({ deltaX: x, deltaY: y })], []),
       );
-      expect(result).toBe(false);
+
+      expect(figure.moveTo(new Coordinates(x, y))).toBe(true);
+      expect(figure.isOn(new Coordinates(x, y))).toBe(true);
+    });
+
+    it("returns false when the direction does not match the destination", () => {
+      const figure = new CheesFigure(
+        new Coordinates(2, 3),
+        createValidator(true, [new Direction({ deltaX: 1, deltaY: 0 })]),
+      );
+
+      expect(figure.moveTo(new Coordinates(5, 6))).toBe(false);
       expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
     });
 
     it("returns true when the movement validator allows the move", () => {
-      const movementValidator: MovementValidator = {
-        canMove: (movement) =>
-          movement.from.x === movement.to.x ||
-          movement.from.y === movement.to.y,
-        getDirections: () => [],
-        getThroughCoordinates: () => [],
-      };
-      const figure = new CheesFigure(new Coordinates(1, 1), movementValidator);
+      const figure = new CheesFigure(
+        new Coordinates(1, 1),
+        createValidator(true, [new Direction({ deltaX: 0, deltaY: 4 })]),
+      );
 
       expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
       expect(figure.isOn(new Coordinates(1, 5))).toBe(true);
-      expect(figure.moveTo(new Coordinates(4, 4))).toBe(false);
-      expect(figure.isOn(new Coordinates(1, 5))).toBe(true);
     });
 
-    it("uses updated coordinates after a successful move when validating", () => {
-      const canMove = jest.fn(() => true);
-      const figure = new CheesFigure(new Coordinates(0, 0), {
-        canMove,
-        getDirections: () => [],
-        getThroughCoordinates: () => [],
-      });
+    it("uses updated coordinates after a successful two-step move", () => {
 
-      figure.moveTo(new Coordinates(3, 3));
-      figure.moveTo(new Coordinates(4, 4));
-
-      expect(canMove).toHaveBeenNthCalledWith(
-        2,
-        new Movement(new Coordinates(3, 3), new Coordinates(4, 4)),
+      const figure = new CheesFigure(
+        new Coordinates(0, 0),
+        createValidator(true, [new Direction({ deltaX: 2, deltaY: 2 })])
       );
+
+      expect(figure.moveTo(new Coordinates(2, 2))).toBe(true);
+      expect(figure.isOn(new Coordinates(2, 2))).toBe(true);
+
+      expect(figure.moveTo(new Coordinates(4, 4))).toBe(true);
+      expect(figure.isOn(new Coordinates(4, 4))).toBe(true);
     });
 
-    it("passes capturing flag to the movement validator", () => {
-      const canMove = jest.fn(() => true);
-      const figure = new CheesFigure(new Coordinates(2, 3), {
-        canMove,
-        getDirections: () => [],
-        getThroughCoordinates: () => [],
-      });
-
-      figure.moveTo(new Coordinates(5, 6), true);
-
-      expect(canMove).toHaveBeenCalledWith(
-        new Movement(new Coordinates(2, 3), new Coordinates(5, 6), true),
+    it("returns false when capturing but the direction cannot capture", () => {
+      const figure = new CheesFigure(
+        new Coordinates(2, 3),
+        createValidator(true, [
+          new Direction({ deltaX: 3, deltaY: 3, canCapture: false }),
+        ]),
       );
+
+      expect(figure.moveTo(new Coordinates(5, 6), true)).toBe(false);
+      expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
+    });
+
+    it("returns false when there is no direction to move to", () => {
+      const figure = new CheesFigure(
+        new Coordinates(2, 3),
+        createValidator(false, []),
+      );
+
+      expect(figure.moveTo(new Coordinates(5, 6))).toBe(false);
+      expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
     });
   });
 

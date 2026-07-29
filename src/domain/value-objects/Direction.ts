@@ -39,14 +39,24 @@ export class Direction {
     }
 
     public matchesMovement(movement: Movement): boolean {
-        const delta = movement.calculateDelta();
-        const stepX = delta.x / Math.abs(delta.x) || 0;
-        const stepY = delta.y / Math.abs(delta.y) || 0;
-
         if (movement.capturing && !this.canCapture) {
             return false;
         }
 
-        return this.deltaX === stepX && this.deltaY === stepY;
+        let xStepPassed = movement.sameX();
+        let yStepPassed = movement.sameY();
+
+
+        const movementDelta = movement.calculateDelta();
+
+        if (!xStepPassed && this.deltaX !== 0) {
+            xStepPassed = movementDelta.x % Math.abs(this.deltaX) === 0;
+        }
+
+        if (!yStepPassed && this.deltaY !== 0) {
+            yStepPassed = movementDelta.y % Math.abs(this.deltaY) === 0;
+        }
+
+        return xStepPassed && yStepPassed;
     }
 }

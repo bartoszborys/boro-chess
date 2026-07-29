@@ -17,8 +17,7 @@ function addDeltaToCoordinates(
 }
 
 describe("WhitePawnMovement", () => {
-  const startingPosition = new Coordinates(24, 22);
-  const whitePawn = new WhitePawnMovement(startingPosition);
+  const whitePawn = new WhitePawnMovement();
   const fromAdvancedPosition = new Coordinates(24, 25);
 
   describe("getThroughCoordinates", () => {
@@ -33,15 +32,15 @@ describe("WhitePawnMovement", () => {
       ).toEqual([]);
     });
 
-    it("returns the in-between square and destination for a two-step forward move", () => {
+    it("returns the in-between square for a two-step forward move", () => {
       expect(
         whitePawn.getThroughCoordinates(
           new Movement(
-            startingPosition,
-            addDeltaToCoordinates({ x: 0, y: 2 }, startingPosition),
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 0, y: 2 }, fromAdvancedPosition),
           ),
         ),
-      ).toEqual([addDeltaToCoordinates({ x: 0, y: 1 }, startingPosition)]);
+      ).toEqual([addDeltaToCoordinates({ x: 0, y: 1 }, fromAdvancedPosition)]);
     });
 
     it("returns no collision coordinates when capturing up-right", () => {
@@ -72,8 +71,8 @@ describe("WhitePawnMovement", () => {
       expect(() =>
         whitePawn.getThroughCoordinates(
           new Movement(
-            startingPosition,
-            addDeltaToCoordinates({ x: 0, y: 3 }, startingPosition),
+            fromAdvancedPosition,
+            addDeltaToCoordinates({ x: 0, y: 3 }, fromAdvancedPosition),
           ),
         ),
       ).toThrow(FigureInvalidMove);

@@ -6,7 +6,6 @@ import { Direction } from "@/domain/value-objects/Direction";
 
 export abstract class PawnMovement implements MovementValidator {
   constructor(
-    _startingPosition: Coordinates,
     private readonly oneStep: number,
     private readonly twoSteps: number,
   ) { }

@@ -1,13 +1,12 @@
-import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { PawnMovement } from "./PawnMovement";
 import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export class WhitePawnMovement extends PawnMovement {
-  constructor(startingPosition: Coordinates) {
+  constructor() {
     const oneStep = 1;
     const twoSteps = 2;
-    super(startingPosition, oneStep, twoSteps);
+    super(oneStep, twoSteps);
   }
 
   getDirections(): Direction[] {

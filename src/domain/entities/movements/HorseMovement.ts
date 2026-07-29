@@ -1,5 +1,3 @@
-import type { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { Movement } from "@/domain/value-objects/Movement";
 import { Direction } from "@/domain/value-objects/Direction";
 import type { MovementValidator } from "./MovementValidator";
 import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
@@ -16,9 +14,5 @@ export class HorseMovement implements MovementValidator {
       .addCustomDirection(-1, 2, { maxRange: 1 })
       .addCustomDirection(-1, -2, { maxRange: 1 })
       .build();
-  }
-
-  getThroughCoordinates(_movement: Movement): Coordinates[] {
-    return [];
   }
 }

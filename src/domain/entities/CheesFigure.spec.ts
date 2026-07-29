@@ -1,18 +1,16 @@
 import { CheesFigure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import { Movement } from "@/domain/value-objects/Movement";
 import { MovementValidator } from "@/domain/entities/movements/MovementValidator";
 import { FigureInvalidMove } from "@/domain/exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
+
 const alwaysAllowed: MovementValidator = {
   getDirections: () => [],
-  getThroughCoordinates: () => [],
 };
 
-function createValidator(directions: Direction[] = [], throughCoordinates: Coordinates[] = []): MovementValidator {
+function createValidator(directions: Direction[] = []): MovementValidator {
   return {
     getDirections: () => directions,
-    getThroughCoordinates: () => throughCoordinates,
   };
 }
 
@@ -29,15 +27,18 @@ describe("Figure", () => {
     it.each([
       { x: 4, y: 7 },
       { x: 80, y: 24 },
-    ])("updates current coordinates when the move to ($x, $y) is allowed", ({ x, y }) => {
-      const figure = new CheesFigure(
-        new Coordinates(0, 0),
-        createValidator([new Direction({ deltaX: x, deltaY: y })]),
-      );
+    ])(
+      "updates current coordinates when the move to ($x, $y) is allowed",
+      ({ x, y }) => {
+        const figure = new CheesFigure(
+          new Coordinates(0, 0),
+          createValidator([new Direction({ deltaX: x, deltaY: y })]),
+        );
 
-      expect(figure.moveTo(new Coordinates(x, y))).toBe(true);
-      expect(figure.isOn(new Coordinates(x, y))).toBe(true);
-    });
+        expect(figure.moveTo(new Coordinates(x, y))).toBe(true);
+        expect(figure.isOn(new Coordinates(x, y))).toBe(true);
+      },
+    );
 
     it("returns false when the direction does not match the destination", () => {
       const figure = new CheesFigure(
@@ -60,10 +61,9 @@ describe("Figure", () => {
     });
 
     it("uses updated coordinates after a successful two-step move", () => {
-
       const figure = new CheesFigure(
         new Coordinates(0, 0),
-        createValidator([new Direction({ deltaX: 2, deltaY: 2 })])
+        createValidator([new Direction({ deltaX: 2, deltaY: 2 })]),
       );
 
       expect(figure.moveTo(new Coordinates(2, 2))).toBe(true);
@@ -97,32 +97,97 @@ describe("Figure", () => {
   });
 
   describe("getThroughCoordinates", () => {
-    it("throws FigureCannotMove when the movement validator rejects the move", () => {
-      const figure = new CheesFigure(new Coordinates(2, 3), {
-        getDirections: () => [],
-        getThroughCoordinates: () => [],
-      });
-
-      expect(() =>
-        figure.getThroughCoordinates(new Coordinates(5, 6)),
-      ).toThrow(FigureInvalidMove);
-    });
-
-    it("returns collision coordinates from the movement validator when the move is allowed", () => {
-      const collisionCoordinates = [
-        new Coordinates(3, 4),
-        new Coordinates(4, 5),
-        new Coordinates(5, 6),
-      ];
+    it("throws FigureInvalidMove when there is no matching direction", () => {
       const figure = new CheesFigure(
         new Coordinates(2, 3),
-        createValidator([], collisionCoordinates),
+        createValidator([]),
       );
-      jest.spyOn(figure as any, "canMove").mockReturnValue(true);
 
-      expect(figure.getThroughCoordinates(new Coordinates(5, 6))).toEqual(
-        collisionCoordinates,
+      expect(() => figure.getThroughCoordinates(new Coordinates(5, 6))).toThrow(
+        FigureInvalidMove,
       );
+    });
+
+    it.each([
+      {
+        name: "top-left",
+        deltaX: -1,
+        deltaY: 1,
+        to: new Coordinates(5, 15),
+        through: [
+          new Coordinates(9, 11),
+          new Coordinates(8, 12),
+          new Coordinates(7, 13),
+          new Coordinates(6, 14),
+        ],
+      },
+      {
+        name: "bottom-right",
+        deltaX: 1,
+        deltaY: -1,
+        to: new Coordinates(15, 5),
+        through: [
+          new Coordinates(11, 9),
+          new Coordinates(12, 8),
+          new Coordinates(13, 7),
+          new Coordinates(14, 6),
+        ],
+      },
+      {
+        name: "left",
+        deltaX: -1,
+        deltaY: 0,
+        to: new Coordinates(5, 10),
+        through: [
+          new Coordinates(9, 10),
+          new Coordinates(8, 10),
+          new Coordinates(7, 10),
+          new Coordinates(6, 10),
+        ],
+      },
+      {
+        name: "right",
+        deltaX: 1,
+        deltaY: 0,
+        to: new Coordinates(15, 10),
+        through: [
+          new Coordinates(11, 10),
+          new Coordinates(12, 10),
+          new Coordinates(13, 10),
+          new Coordinates(14, 10),
+        ],
+      },
+    ])(
+      "returns intermediate coordinates when moving 5 steps $name",
+      ({ deltaX, deltaY, to, through }) => {
+        const figure = new CheesFigure(
+          new Coordinates(10, 10),
+          createValidator([new Direction({ deltaX, deltaY })]),
+        );
+
+        expect(figure.getThroughCoordinates(to)).toEqual(through);
+      },
+    );
+
+    it("returns no intermediate coordinates for a horse-like custom vector", () => {
+      const figure = new CheesFigure(
+        new Coordinates(10, 10),
+        createValidator([new Direction({ deltaX: 2, deltaY: 1, maxRange: 1 })]),
+      );
+
+      expect(figure.getThroughCoordinates(new Coordinates(12, 11))).toEqual([]);
+    });
+
+    it("returns intermediate coordinates for a custom vector", () => {
+      const figure = new CheesFigure(
+        new Coordinates(10, 10),
+        createValidator([new Direction({ deltaX: 13, deltaY: 7, maxRange: 3 })]),
+      );
+
+      expect(figure.getThroughCoordinates(new Coordinates(49, 31))).toEqual([
+        new Coordinates(23, 17),
+        new Coordinates(36, 24),
+      ]);
     });
   });
 
@@ -133,11 +198,12 @@ describe("Figure", () => {
 
     const figure = new CheesFigure(new Coordinates(20, 20), {
       getDirections: () => [upDirection, rightDirection, downDirection],
-      getThroughCoordinates: () => [],
     });
 
     it("returns the matching direction when moving straight up", () => {
-      expect(figure.getDirectionTo(new Coordinates(20, 25))).toEqual(upDirection);
+      expect(figure.getDirectionTo(new Coordinates(20, 25))).toEqual(
+        upDirection,
+      );
     });
 
     it("returns null when the target coordinate does not match any direction", () => {
@@ -152,7 +218,6 @@ describe("Figure", () => {
       });
       const capturingFigure = new CheesFigure(new Coordinates(20, 20), {
         getDirections: () => [capturingUp],
-        getThroughCoordinates: () => [],
       });
 
       expect(
@@ -168,7 +233,6 @@ describe("Figure", () => {
       });
       const capturingFigure = new CheesFigure(new Coordinates(20, 20), {
         getDirections: () => [nonCapturingUp],
-        getThroughCoordinates: () => [],
       });
 
       expect(

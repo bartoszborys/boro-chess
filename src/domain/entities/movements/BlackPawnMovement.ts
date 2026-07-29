@@ -1,14 +1,8 @@
-import { PawnMovement } from "./PawnMovement";
 import { Direction } from "@/domain/value-objects/Direction";
 import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
+import type { MovementValidator } from "./MovementValidator";
 
-export class BlackPawnMovement extends PawnMovement {
-  constructor() {
-    const oneStep = -1;
-    const twoSteps = -2;
-    super(oneStep, twoSteps);
-  }
-
+export class BlackPawnMovement implements MovementValidator {
   getDirections(): Direction[] {
     return DirectionsBuilder.create()
       .addBottomDirection({

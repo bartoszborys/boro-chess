@@ -1,5 +1,3 @@
-import type { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { Movement } from "@/domain/value-objects/Movement";
 import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 import type { Direction } from "@/domain/value-objects/Direction";
 import type { MovementValidator } from "./MovementValidator";
@@ -16,9 +14,5 @@ export class KingMovement implements MovementValidator {
       .addLeftDirection({ maxRange: 1 })
       .addRightDirection({ maxRange: 1 })
       .build();
-  }
-
-  getThroughCoordinates(_movement: Movement): Coordinates[] {
-    return [];
   }
 }

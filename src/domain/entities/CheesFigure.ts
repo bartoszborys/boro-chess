@@ -45,14 +45,31 @@ export class CheesFigure implements Figure {
     return true;
   }
 
-  public getThroughCoordinates(to: Coordinates, capturing: boolean = false): Coordinates[] {
-    const movement = new Movement(this.coordinates, to, capturing);
+  public getThroughCoordinates(
+    to: Coordinates,
+    capturing: boolean = false,
+  ): Coordinates[] {
+    const direction = this.getDirectionTo(to, capturing);
 
-    if (!this.canMove(to, capturing)) {
-      throw new FigureInvalidMove(`Figure cannot move from ${this.coordinates} to ${to}`);
+    if (!direction) {
+      throw new FigureInvalidMove(
+        `Figure cannot move from ${this.coordinates} to ${to}`,
+      );
     }
 
-    return this.movementValidator.getThroughCoordinates(movement);
+    const movement = new Movement(this.coordinates, to, capturing);
+    const steps = movement.calculateStepsFor(direction);
+
+    const path: Coordinates[] = [];
+
+    for (let step = 1; step < steps; step++) {
+      const stepX = this.coordinates.x + direction.deltaX * step;
+      const stepY = this.coordinates.y + direction.deltaY * step;
+
+      path.push(new Coordinates(stepX, stepY));
+    }
+
+    return path;
   }
 
   private canMove(to: Coordinates, capturing: boolean = false): boolean {

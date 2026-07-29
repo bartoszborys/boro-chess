@@ -5,7 +5,7 @@ import { FigureInvalidMove } from "../exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export interface Figure {
-  getCoordinates(): Coordinates;
+  isOn(coordinates: Coordinates): boolean;
   getDirectionTo(to: Coordinates): Direction | null;
   moveTo(to: Coordinates, capturing?: boolean): boolean;
   getThroughCoordinates(to: Coordinates, capturing?: boolean): Coordinates[];
@@ -20,21 +20,20 @@ export class CheesFigure implements Figure {
     this.movementValidator = movementValidator;
   }
 
-  getCoordinates(): Coordinates {
-    return new Coordinates(this.coordinates.x, this.coordinates.y);
+  isOn(coordinates: Coordinates): boolean {
+    return this.coordinates.equals(coordinates);
   }
 
-  getDirectionTo(to: Coordinates): Direction | null {
+  getDirectionTo(to: Coordinates, capturing: boolean = false): Direction | null {
     const directions = this.movementValidator.getDirections();
 
     if (directions.length === 0) {
       return null;
     }
 
-    const movement = new Movement(this.coordinates, to);
-    const movementDirection = movement.calculateDirection();
+    const movement = new Movement(this.coordinates, to, capturing);
 
-    return directions.find(direction => direction.equals(movementDirection)) ?? null;
+    return directions.find(direction => direction.matchesMovement(movement)) ?? null;
   }
 
   moveTo(to: Coordinates, capturing: boolean = false): boolean {

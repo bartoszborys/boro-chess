@@ -38,7 +38,11 @@ export class Direction {
         this.whenStartingPosition = whenStartingPosition ?? false;
     }
 
-    public equals(direction: Direction): boolean {
-        return this.deltaX === direction.deltaX && this.deltaY === direction.deltaY;
+    public matchesMovement(movement: Movement): boolean {
+        const delta = movement.calculateDelta();
+        const stepX = delta.x / Math.abs(delta.x) || 0;
+        const stepY = delta.y / Math.abs(delta.y) || 0;
+
+        return this.deltaX === stepX && this.deltaY === stepY;
     }
 }

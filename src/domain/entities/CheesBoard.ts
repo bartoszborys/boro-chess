@@ -10,7 +10,7 @@ export class CheesBoard implements Board {
     constructor(private readonly figures: Figure[]) { }
 
     public getFigureByCoordinates(coordinates: Coordinates): Figure | undefined {
-        return this.figures.find(figure => figure.getCoordinates().equals(coordinates));
+        return this.figures.find(figure => figure.isOn(coordinates));
     }
 
     public hasFigureMoveCollision(figure: Figure, to: Coordinates): boolean {

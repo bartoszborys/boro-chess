@@ -11,11 +11,11 @@ const alwaysAllowed: MovementValidator = {
 };
 
 describe("Figure", () => {
-  describe("coordinates", () => {
-    it("exposes initial X and Y passed to the constructor", () => {
+  describe("isOn", () => {
+    it("returns true when the figure is on the coordinates", () => {
       const figure = new CheesFigure(new Coordinates(3, 5), alwaysAllowed);
 
-      expect(figure.getCoordinates()).toEqual(new Coordinates(3, 5));
+      expect(figure.isOn(new Coordinates(3, 5))).toBe(true);
     });
   });
 
@@ -24,14 +24,14 @@ describe("Figure", () => {
       const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
 
       expect(figure.moveTo(new Coordinates(4, 7))).toBe(true);
-      expect(figure.getCoordinates()).toEqual(new Coordinates(4, 7));
+      expect(figure.isOn(new Coordinates(4, 7))).toBe(true);
     });
 
     it("updates current coordinates to an abstract position 80, 24", () => {
       const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
 
       expect(figure.moveTo(new Coordinates(80, 24))).toBe(true);
-      expect(figure.getCoordinates()).toEqual(new Coordinates(80, 24));
+      expect(figure.isOn(new Coordinates(80, 24))).toBe(true);
     });
 
     it("asks the movement validator with current position and destination", () => {
@@ -49,7 +49,7 @@ describe("Figure", () => {
         new Movement(new Coordinates(2, 3), new Coordinates(5, 6)),
       );
       expect(result).toBe(false);
-      expect(figure.getCoordinates()).toEqual(new Coordinates(2, 3));
+      expect(figure.isOn(new Coordinates(2, 3))).toBe(true);
     });
 
     it("returns true when the movement validator allows the move", () => {
@@ -63,9 +63,9 @@ describe("Figure", () => {
       const figure = new CheesFigure(new Coordinates(1, 1), movementValidator);
 
       expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
-      expect(figure.getCoordinates()).toEqual(new Coordinates(1, 5));
+      expect(figure.isOn(new Coordinates(1, 5))).toBe(true);
       expect(figure.moveTo(new Coordinates(4, 4))).toBe(false);
-      expect(figure.getCoordinates()).toEqual(new Coordinates(1, 5));
+      expect(figure.isOn(new Coordinates(1, 5))).toBe(true);
     });
 
     it("uses updated coordinates after a successful move when validating", () => {
@@ -149,6 +149,40 @@ describe("Figure", () => {
 
     it("returns null when the target coordinate does not match any direction", () => {
       expect(figure.getDirectionTo(new Coordinates(21, 25))).toBeNull();
+    });
+
+    it("does select a capturing direction when capturing is false", () => {
+      const capturingUp = new Direction({
+        deltaX: 0,
+        deltaY: 1,
+        canCapture: true,
+      });
+      const capturingFigure = new CheesFigure(new Coordinates(20, 20), {
+        canMove: () => true,
+        getDirections: () => [capturingUp],
+        getThroughCoordinates: () => [],
+      });
+
+      expect(
+        capturingFigure.getDirectionTo(new Coordinates(20, 25), false),
+      ).toEqual(capturingUp);
+    });
+
+    it("does not select a non-capturing direction when capturing is true", () => {
+      const nonCapturingUp = new Direction({
+        deltaX: 0,
+        deltaY: 1,
+        canCapture: false,
+      });
+      const capturingFigure = new CheesFigure(new Coordinates(20, 20), {
+        canMove: () => true,
+        getDirections: () => [nonCapturingUp],
+        getThroughCoordinates: () => [],
+      });
+
+      expect(
+        capturingFigure.getDirectionTo(new Coordinates(20, 25), true),
+      ).toEqual(null);
     });
   });
 });

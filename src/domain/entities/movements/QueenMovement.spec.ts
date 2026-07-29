@@ -1,14 +1,10 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { FigureInvalidMove } from "@/domain/exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
-import { BishopMovement } from "./BishopMovement";
-import { TowerMovement } from "./TowerMovement";
 import { QueenMovement } from "./QueenMovement";
 
 describe("QueenMovement", () => {
-  const bishop = new BishopMovement();
-  const tower = new TowerMovement();
   const queen = new QueenMovement();
   const from = new Coordinates(24, 24);
 
@@ -95,21 +91,23 @@ describe("QueenMovement", () => {
     it("returns the bishop collision path when bishop can move, not the tower path", () => {
       const movement = new Movement(from, new Coordinates(27, 27));
 
-      expect(queen.getThroughCoordinates(movement)).toStrictEqual(
-        bishop.getThroughCoordinates(movement),
-      );
-      expect(queen.getThroughCoordinates(movement)).not.toStrictEqual(
-        tower.getThroughCoordinates(movement),
-      );
+      expect(queen.getThroughCoordinates(movement)).toEqual([
+        new Coordinates(25, 25),
+        new Coordinates(26, 26),
+      ]);
+      expect(queen.getThroughCoordinates(movement)).not.toEqual([
+        new Coordinates(25, 24),
+        new Coordinates(26, 24),
+      ]);
     });
 
     it("returns the tower collision path when tower can move and bishop cannot", () => {
       const movement = new Movement(from, new Coordinates(27, 24));
 
-      expect(bishop.canMove(movement)).toBe(false);
-      expect(queen.getThroughCoordinates(movement)).toEqual(
-        tower.getThroughCoordinates(movement),
-      );
+      expect(queen.getThroughCoordinates(movement)).toEqual([
+        new Coordinates(25, 24),
+        new Coordinates(26, 24),
+      ]);
     });
 
     it("throws FigureInvalidMove when neither bishop nor tower can move", () => {

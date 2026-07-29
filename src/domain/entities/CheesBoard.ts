@@ -1,4 +1,4 @@
-import { Figure } from "@/domain/entities/Figure";
+import { Figure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export interface Board {
@@ -6,7 +6,7 @@ export interface Board {
     hasFigureMoveCollision(figure: Figure, to: Coordinates): boolean;
 }
 
-export class ChessBoard implements Board {
+export class CheesBoard implements Board {
     constructor(private readonly figures: Figure[]) { }
 
     public getFigureByCoordinates(coordinates: Coordinates): Figure | undefined {
@@ -14,9 +14,7 @@ export class ChessBoard implements Board {
     }
 
     public hasFigureMoveCollision(figure: Figure, to: Coordinates): boolean {
-        const throughCoordinates = figure.getThroughCoordinates(to);
-
-        for (const coordinate of throughCoordinates) {
+        for (const coordinate of figure.getThroughCoordinates(to)) {
             const figure = this.getFigureByCoordinates(coordinate);
 
             if (figure !== undefined) {

@@ -1,7 +1,7 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { FigureInvalidMove } from "@/domain/exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
 import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
 
@@ -37,10 +37,6 @@ export abstract class PawnMovement implements MovementValidator {
   abstract getDirections(): Direction[];
 
   getThroughCoordinates(movement: Movement): Coordinates[] {
-    if (movement.capturing) {
-      return [];
-    }
-
     const delta = movement.calculateDelta();
 
     if (Math.abs(delta.y) > Math.abs(this.twoSteps)) {
@@ -50,12 +46,9 @@ export abstract class PawnMovement implements MovementValidator {
     if (delta.y === this.twoSteps) {
       return [
         new Coordinates(movement.from.x, movement.from.y + this.oneStep),
-        new Coordinates(movement.from.x, movement.from.y + this.twoSteps),
       ];
     }
 
-    return [
-      new Coordinates(movement.from.x, movement.from.y + this.oneStep),
-    ];
+    return [];
   }
 }

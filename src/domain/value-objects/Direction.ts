@@ -1,7 +1,9 @@
-type DirectionConstructorOptions = {
+type DirectionConstructorOptions = DirectionMoveVector & DirectionOptions;
+
+type DirectionMoveVector = {
     deltaX: number;
     deltaY: number;
-} & DirectionOptions;
+}
 
 export type DirectionOptions = {
     whenEnemy?: boolean;

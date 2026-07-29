@@ -1,6 +1,6 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
+import { FigureInvalidMove } from "@/domain/exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
 import { BlackPawnMovement } from "./BlackPawnMovement";
 
@@ -180,9 +180,7 @@ describe("BlackPawnMovement", () => {
             addDeltaToCoordinates({ x: 0, y: -1 }, fromAdvancedPosition),
           ),
         ),
-      ).toEqual([
-        addDeltaToCoordinates({ x: 0, y: -1 }, fromAdvancedPosition),
-      ]);
+      ).toEqual([]);
     });
 
     it("returns the in-between square and destination for a two-step forward move", () => {
@@ -195,7 +193,6 @@ describe("BlackPawnMovement", () => {
         ),
       ).toEqual([
         addDeltaToCoordinates({ x: 0, y: -1 }, startingPosition),
-        addDeltaToCoordinates({ x: 0, y: -2 }, startingPosition),
       ]);
     });
 

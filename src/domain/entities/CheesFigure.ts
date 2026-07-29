@@ -1,9 +1,15 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "@/domain/entities/movements/MovementValidator";
-import { FigureInvalidMove } from "../exceptions/FigureCannotMove";
+import { FigureInvalidMove } from "../exceptions";
 
-export class Figure {
+export interface Figure {
+  getCoordinates(): Coordinates;
+  moveTo(to: Coordinates, capturing?: boolean): boolean;
+  getThroughCoordinates(to: Coordinates, capturing?: boolean): Coordinates[];
+}
+
+export class CheesFigure implements Figure {
   private coordinates: Coordinates;
   private readonly movementValidator: MovementValidator;
 

@@ -3,8 +3,7 @@ import type { Movement } from "@/domain/value-objects/Movement";
 import type { MovementValidator } from "./MovementValidator";
 import { TowerMovement } from "./TowerMovement";
 import { BishopMovement } from "./BishopMovement";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
-import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
+import { FigureInvalidMove } from "@/domain/exceptions";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export class QueenMovement implements MovementValidator {

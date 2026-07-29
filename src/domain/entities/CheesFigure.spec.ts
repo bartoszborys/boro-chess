@@ -1,20 +1,18 @@
-import { Figure } from "@/domain/entities/Figure";
+import { CheesFigure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import { MovementValidator } from "@/domain/entities/movements/MovementValidator";
-import { FigureInvalidMove } from "@/domain/exceptions/FigureCannotMove";
-import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
-
+import { FigureInvalidMove } from "@/domain/exceptions";
 const alwaysAllowed: MovementValidator = {
   canMove: () => true,
-  getDirections: () => DirectionsBuilder.create().build(),
+  getDirections: () => [],
   getThroughCoordinates: () => [],
 };
 
 describe("Figure", () => {
   describe("coordinates", () => {
     it("exposes initial X and Y passed to the constructor", () => {
-      const figure = new Figure(new Coordinates(3, 5), alwaysAllowed);
+      const figure = new CheesFigure(new Coordinates(3, 5), alwaysAllowed);
 
       expect(figure.getCoordinates()).toEqual(new Coordinates(3, 5));
     });
@@ -22,14 +20,14 @@ describe("Figure", () => {
 
   describe("moveTo", () => {
     it("updates current coordinates when the move is allowed", () => {
-      const figure = new Figure(new Coordinates(0, 0), alwaysAllowed);
+      const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
 
       expect(figure.moveTo(new Coordinates(4, 7))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(4, 7));
     });
 
     it("updates current coordinates to an abstract position 80, 24", () => {
-      const figure = new Figure(new Coordinates(0, 0), alwaysAllowed);
+      const figure = new CheesFigure(new Coordinates(0, 0), alwaysAllowed);
 
       expect(figure.moveTo(new Coordinates(80, 24))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(80, 24));
@@ -39,10 +37,10 @@ describe("Figure", () => {
       const canMove = jest.fn((_movement: Movement) => false);
       const movementValidator: MovementValidator = {
         canMove,
-        getDirections: () => DirectionsBuilder.create().build(),
+        getDirections: () => [],
         getThroughCoordinates: () => [],
       };
-      const figure = new Figure(new Coordinates(2, 3), movementValidator);
+      const figure = new CheesFigure(new Coordinates(2, 3), movementValidator);
 
       const result = figure.moveTo(new Coordinates(5, 6));
 
@@ -58,10 +56,10 @@ describe("Figure", () => {
         canMove: (movement) =>
           movement.from.x === movement.to.x ||
           movement.from.y === movement.to.y,
-        getDirections: () => DirectionsBuilder.create().build(),
+        getDirections: () => [],
         getThroughCoordinates: () => [],
       };
-      const figure = new Figure(new Coordinates(1, 1), movementValidator);
+      const figure = new CheesFigure(new Coordinates(1, 1), movementValidator);
 
       expect(figure.moveTo(new Coordinates(1, 5))).toBe(true);
       expect(figure.getCoordinates()).toEqual(new Coordinates(1, 5));
@@ -71,9 +69,9 @@ describe("Figure", () => {
 
     it("uses updated coordinates after a successful move when validating", () => {
       const canMove = jest.fn(() => true);
-      const figure = new Figure(new Coordinates(0, 0), {
+      const figure = new CheesFigure(new Coordinates(0, 0), {
         canMove,
-        getDirections: () => DirectionsBuilder.create().build(),
+        getDirections: () => [],
         getThroughCoordinates: () => [],
       });
 
@@ -88,9 +86,9 @@ describe("Figure", () => {
 
     it("passes capturing flag to the movement validator", () => {
       const canMove = jest.fn(() => true);
-      const figure = new Figure(new Coordinates(2, 3), {
+      const figure = new CheesFigure(new Coordinates(2, 3), {
         canMove,
-        getDirections: () => DirectionsBuilder.create().build(),
+        getDirections: () => [],
         getThroughCoordinates: () => [],
       });
 
@@ -104,9 +102,9 @@ describe("Figure", () => {
 
   describe("getThroughCoordinates", () => {
     it("throws FigureCannotMove when the movement validator rejects the move", () => {
-      const figure = new Figure(new Coordinates(2, 3), {
+      const figure = new CheesFigure(new Coordinates(2, 3), {
         canMove: () => false,
-        getDirections: () => DirectionsBuilder.create().build(),
+        getDirections: () => [],
         getThroughCoordinates: () => [],
       });
 
@@ -121,9 +119,9 @@ describe("Figure", () => {
         new Coordinates(4, 5),
         new Coordinates(5, 6),
       ];
-      const figure = new Figure(new Coordinates(2, 3), {
+      const figure = new CheesFigure(new Coordinates(2, 3), {
         canMove: () => true,
-        getDirections: () => DirectionsBuilder.create().build(),
+        getDirections: () => [],
         getThroughCoordinates: () => collisionCoordinates,
       });
 

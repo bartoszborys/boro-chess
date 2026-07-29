@@ -1,6 +1,6 @@
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import { ChessBoard } from "@/domain/entities/CheesBoard";
-import { Figure } from "@/domain/entities/Figure";
+import { CheesBoard } from "@/domain/entities/CheesBoard";
+import { CheesFigure } from "@/domain/entities/CheesFigure";
 import type { MovementValidator } from "@/domain/entities/movements/MovementValidator";
 
 const anyMovement: MovementValidator = {
@@ -13,11 +13,11 @@ describe("ChessBoard", () => {
   describe("getFigureByCoordinates", () => {
     it("finds each figure by its coordinates after all figures are added", () => {
       const figures = [
-        new Figure(new Coordinates(0, 0), anyMovement),
-        new Figure(new Coordinates(1, 0), anyMovement),
-        new Figure(new Coordinates(2, 0), anyMovement),
+        new CheesFigure(new Coordinates(0, 0), anyMovement),
+        new CheesFigure(new Coordinates(1, 0), anyMovement),
+        new CheesFigure(new Coordinates(2, 0), anyMovement),
       ];
-      const board = new ChessBoard(figures);
+      const board = new CheesBoard(figures);
 
       expect(board.getFigureByCoordinates(new Coordinates(0, 0))).toBe(
         figures[0],
@@ -31,8 +31,8 @@ describe("ChessBoard", () => {
     });
 
     it("returns undefined when no figure is at the coordinates", () => {
-      const board = new ChessBoard([
-        new Figure(new Coordinates(0, 0), anyMovement),
+      const board = new CheesBoard([
+        new CheesFigure(new Coordinates(0, 0), anyMovement),
       ]);
 
       expect(
@@ -48,14 +48,14 @@ describe("ChessBoard", () => {
       const currentFigureCoordinates = new Coordinates(25, 28);
       const throughCoordinates = [blockingFigureCoordinates, destinationCoordinates];
 
-      const blockingFigure = new Figure(blockingFigureCoordinates, anyMovement);
-      const movingFigure = new Figure(currentFigureCoordinates, {
+      const blockingFigure = new CheesFigure(blockingFigureCoordinates, anyMovement);
+      const movingFigure = new CheesFigure(currentFigureCoordinates, {
         canMove: () => true,
         getDirections: () => [],
         getThroughCoordinates: () => throughCoordinates,
       });
 
-      const board = new ChessBoard([movingFigure, blockingFigure]);
+      const board = new CheesBoard([movingFigure, blockingFigure]);
 
       expect(
         board.hasFigureMoveCollision(movingFigure, destinationCoordinates),
@@ -68,14 +68,14 @@ describe("ChessBoard", () => {
       const currentFigureCoordinates = new Coordinates(25, 28);
       const throughCoordinates = [new Coordinates(25, 29), destinationCoordinates];
 
-      const figureOnTheRight = new Figure(blockingFigureCoordinates, anyMovement);
-      const movingFigure = new Figure(currentFigureCoordinates, {
+      const figureOnTheRight = new CheesFigure(blockingFigureCoordinates, anyMovement);
+      const movingFigure = new CheesFigure(currentFigureCoordinates, {
         canMove: () => true,
         getDirections: () => [],
         getThroughCoordinates: () => throughCoordinates,
       });
 
-      const board = new ChessBoard([movingFigure, figureOnTheRight]);
+      const board = new CheesBoard([movingFigure, figureOnTheRight]);
 
       expect(
         board.hasFigureMoveCollision(movingFigure, destinationCoordinates),

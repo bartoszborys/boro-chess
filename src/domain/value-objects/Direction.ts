@@ -43,6 +43,10 @@ export class Direction {
         const stepX = delta.x / Math.abs(delta.x) || 0;
         const stepY = delta.y / Math.abs(delta.y) || 0;
 
+        if (movement.capturing && !this.canCapture) {
+            return false;
+        }
+
         return this.deltaX === stepX && this.deltaY === stepY;
     }
 }

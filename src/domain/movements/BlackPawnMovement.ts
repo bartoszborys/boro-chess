@@ -1,6 +1,6 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
-import type { MovementValidator } from "./MovementValidator";
+import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
+import type { MovementValidator } from "@/domain/movements/MovementValidator";
 
 export class BlackPawnMovement implements MovementValidator {
   getDirections(): Direction[] {

@@ -1,5 +1,5 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { BishopMovement } from "./BishopMovement";
+import { BishopMovement } from "@/domain/movements/BishopMovement";
 
 describe("BishopMovement", () => {
   const bishop = new BishopMovement();

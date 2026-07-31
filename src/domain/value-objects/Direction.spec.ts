@@ -3,7 +3,7 @@ import { Direction } from "@/domain/value-objects/Direction";
 import { Movement } from "@/domain/value-objects/Movement";
 
 describe("Direction", () => {
-  describe("matchesMovement", () => {
+  describe("matches", () => {
     it.each([
       {
         name: "the movement delta equals the direction vector",
@@ -40,7 +40,7 @@ describe("Direction", () => {
         new Coordinates(toX, toY),
       );
 
-      expect(direction.matchesMovement(movement)).toBe(true);
+      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(true);
     });
 
     it.each([
@@ -114,7 +114,7 @@ describe("Direction", () => {
         new Coordinates(toX, toY),
       );
 
-      expect(direction.matchesMovement(movement)).toBe(false);
+      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(false);
     });
 
     it.each([
@@ -135,7 +135,7 @@ describe("Direction", () => {
           new Coordinates(unitDirection.deltaX * 5, unitDirection.deltaY * 5),
         );
 
-        expect(direction.matchesMovement(movement)).toBe(true);
+        expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(true);
       },
     );
   });

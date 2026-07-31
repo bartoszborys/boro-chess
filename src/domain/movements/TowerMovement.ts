@@ -1,5 +1,5 @@
-import { DirectionsBuilder } from "@/domain/DirectionsBuilder";
-import type { MovementValidator } from "./MovementValidator";
+import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
+import type { MovementValidator } from "@/domain/movements/MovementValidator";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export class TowerMovement implements MovementValidator {

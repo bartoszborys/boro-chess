@@ -1,5 +1,5 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { WhitePawnMovement } from "./WhitePawnMovement";
+import { WhitePawnMovement } from "@/domain/movements/WhitePawnMovement";
 
 describe("WhitePawnMovement", () => {
   const whitePawn = new WhitePawnMovement();

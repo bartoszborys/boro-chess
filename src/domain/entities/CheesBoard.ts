@@ -1,9 +1,9 @@
-import { Figure } from "@/domain/entities/CheesFigure";
+import type { Figure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export interface Board {
     getFigureByCoordinates(coordinates: Coordinates): Figure | undefined;
-    hasFigureMoveCollision(figure: Figure, to: Coordinates): boolean;
+    anyFigureOnCoordinates(path: Coordinates[]): boolean;
 }
 
 export class CheesBoard implements Board {
@@ -13,13 +13,11 @@ export class CheesBoard implements Board {
         return this.figures.find(figure => figure.isOn(coordinates));
     }
 
-    public hasFigureMoveCollision(figure: Figure, to: Coordinates): boolean {
-        const capturing = !!this.getFigureByCoordinates(to);
+    public anyFigureOnCoordinates(coordinates: Coordinates[]): boolean {
+        for (const coordinate of coordinates) {
+            const blockingFigure = this.getFigureByCoordinates(coordinate);
 
-        for (const coordinate of figure.getThroughCoordinates(to, capturing)) {
-            const figure = this.getFigureByCoordinates(coordinate);
-
-            if (figure !== undefined) {
+            if (blockingFigure !== undefined) {
                 return true;
             }
         }

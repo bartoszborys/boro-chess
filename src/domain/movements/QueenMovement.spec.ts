@@ -1,5 +1,5 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { QueenMovement } from "./QueenMovement";
+import { QueenMovement } from "@/domain/movements/QueenMovement";
 
 describe("QueenMovement", () => {
   const queen = new QueenMovement();

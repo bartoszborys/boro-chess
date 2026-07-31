@@ -1,5 +1,5 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { DirectionsBuilder } from "./DirectionsBuilder";
+import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
 
 describe("DirectionsBuilder", () => {
   describe("default deltas", () => {

@@ -1,61 +1,61 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { HorseMovement } from "./HorseMovement";
+import { KingMovement } from "@/domain/movements/KingMovement";
 
-describe("HorseMovement", () => {
-  const horse = new HorseMovement();
+describe("KingMovement", () => {
+  const king = new KingMovement();
 
   describe("getDirections", () => {
-    it("returns all L-shaped directions with capture enabled and range 1", () => {
-      const directions = horse.getDirections();
+    it("returns all directions with capture enabled and range 1", () => {
+      const directions = king.getDirections();
 
       expect(directions).toHaveLength(8);
       expect(directions).toEqual(
         expect.arrayContaining([
           new Direction({
-            deltaX: 2,
-            deltaY: 1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: 2,
+            deltaX: 0,
             deltaY: -1,
             canCapture: true,
             maxRange: 1,
           }),
           new Direction({
-            deltaX: -2,
+            deltaX: 0,
             deltaY: 1,
             canCapture: true,
             maxRange: 1,
           }),
           new Direction({
-            deltaX: -2,
+            deltaX: 1,
+            deltaY: 0,
+            canCapture: true,
+            maxRange: 1,
+          }),
+          new Direction({
+            deltaX: -1,
+            deltaY: 0,
+            canCapture: true,
+            maxRange: 1,
+          }),
+          new Direction({
+            deltaX: 1,
+            deltaY: -1,
+            canCapture: true,
+            maxRange: 1,
+          }),
+          new Direction({
+            deltaX: -1,
             deltaY: -1,
             canCapture: true,
             maxRange: 1,
           }),
           new Direction({
             deltaX: 1,
-            deltaY: 2,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: 1,
-            deltaY: -2,
+            deltaY: 1,
             canCapture: true,
             maxRange: 1,
           }),
           new Direction({
             deltaX: -1,
-            deltaY: 2,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: -1,
-            deltaY: -2,
+            deltaY: 1,
             canCapture: true,
             maxRange: 1,
           }),

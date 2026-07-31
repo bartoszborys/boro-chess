@@ -1,6 +1,6 @@
-import type { MovementValidator } from "./MovementValidator";
-import { TowerMovement } from "./TowerMovement";
-import { BishopMovement } from "./BishopMovement";
+import type { MovementValidator } from "@/domain/movements/MovementValidator";
+import { TowerMovement } from "@/domain/movements/TowerMovement";
+import { BishopMovement } from "@/domain/movements/BishopMovement";
 import { Direction } from "@/domain/value-objects/Direction";
 
 export class QueenMovement implements MovementValidator {

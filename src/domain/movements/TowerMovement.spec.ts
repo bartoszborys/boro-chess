@@ -1,5 +1,5 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { TowerMovement } from "./TowerMovement";
+import { TowerMovement } from "@/domain/movements/TowerMovement";
 
 describe("TowerMovement", () => {
   const tower = new TowerMovement();

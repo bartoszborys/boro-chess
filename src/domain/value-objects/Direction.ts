@@ -1,8 +1,8 @@
-import { Movement } from "./Movement";
+import { Movement } from "@/domain/value-objects/Movement";
 
 type DirectionConstructorOptions = DirectionMoveVector & DirectionOptions;
 
-type DirectionMoveVector = {
+export type DirectionMoveVector = {
     deltaX: number;
     deltaY: number;
 }
@@ -12,6 +12,11 @@ export type DirectionOptions = {
     canCapture?: boolean;
     maxRange?: number;
     whenStartingPosition?: boolean;
+}
+
+export type DirectionMatchingConditions = {
+    capturing?: boolean;
+    hasMoved?: boolean;
 }
 
 export class Direction {
@@ -38,33 +43,46 @@ export class Direction {
         this.whenStartingPosition = whenStartingPosition ?? false;
     }
 
-    public matchesMovement(movement: Movement): boolean {
-        if (movement.capturing && !this.canCapture) {
-            return false;
-        }
+    public matches(movement: Movement, conditions: DirectionMatchingConditions): boolean {
+        return this.matchesMovement(movement) && this.matchesConditions(conditions);
+    }
 
-        const delta = movement.calculateDelta();
+    private matchesMovement(movement: Movement): boolean {
+        const moveX = movement.to.x - movement.from.x;
+        const moveY = movement.to.y - movement.from.y;
 
         if (this.deltaX !== 0) {
-            const k = delta.x / this.deltaX;
+            const k = moveX / this.deltaX;
 
             if (!Number.isInteger(k) || k <= 0) {
                 return false;
             }
 
-            return delta.y === k * this.deltaY;
+            return moveY === k * this.deltaY;
         }
 
         if (this.deltaY !== 0) {
-            const k = delta.y / this.deltaY;
+            const k = moveY / this.deltaY;
 
             if (!Number.isInteger(k) || k <= 0) {
                 return false;
             }
 
-            return delta.x === k * this.deltaX;
+            return moveX === k * this.deltaX;
         }
 
         return false;
+    }
+
+    private matchesConditions(conditions: DirectionMatchingConditions): boolean {
+        if (conditions.capturing && !this.canCapture) {
+            return false;
+        }
+
+        if (this.whenStartingPosition && !conditions.hasMoved) {
+            return false;
+        }
+
+        return true;
     }
 }

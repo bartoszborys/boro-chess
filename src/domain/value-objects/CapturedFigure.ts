@@ -1,6 +1,6 @@
 import { FigureColor, FigureName } from "@/domain/enums";
 
-export type CapturedFigure = Readonly<{
+export type FigureDetails = Readonly<{
     name: FigureName;
     color: FigureColor;
 }>;

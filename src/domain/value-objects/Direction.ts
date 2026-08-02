@@ -66,6 +66,11 @@ export class Direction {
                 return false;
             }
 
+
+            if (k > this.maxRange || k < this.minRange) {
+                return false;
+            }
+
             return moveY === k * this.deltaY;
         }
 
@@ -73,6 +78,10 @@ export class Direction {
             const k = moveY / this.deltaY;
 
             if (!Number.isInteger(k) || k <= 0) {
+                return false;
+            }
+
+            if (k > this.maxRange || k < this.minRange) {
                 return false;
             }
 
@@ -87,7 +96,7 @@ export class Direction {
             return false;
         }
 
-        if (this.whenStartingPosition && !conditions.hasMoved) {
+        if (this.whenStartingPosition && conditions.hasMoved) {
             return false;
         }
 

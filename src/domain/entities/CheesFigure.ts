@@ -1,17 +1,18 @@
 import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Direction } from "@/domain/value-objects/Direction";
-import { CapturedFigure } from "@/domain/value-objects/CapturedFigure";
+import { FigureDetails } from "@/domain/value-objects/CapturedFigure";
 import { FigureColor, FigureName } from "@/domain/enums";
 import { FigureInvalidMove } from "../exceptions";
 
 export interface Figure {
+  getCoordinates(): Coordinates;
   canCastle(figure: Figure): void;
   isOn(coordinates: Coordinates): boolean;
   getDirections(): Direction[];
   hasMoved(): boolean;
   moveTo(to: Coordinates): void;
-  capturedDetails(): CapturedFigure;
+  figureDetails(): FigureDetails;
   getColor(): FigureColor;
   isFriendly(figure?: Figure): boolean;
 }
@@ -28,6 +29,10 @@ export class CheesFigure implements Figure {
     this.figureBehavior = figureBehavior;
   }
 
+  public getCoordinates(): Coordinates {
+    return this.coordinates;
+  }
+
   public canCastle(figure: Figure): void {
     if (this.figureBehavior.getName() !== FigureName.TOWER) {
       throw new FigureInvalidMove(
@@ -41,7 +46,7 @@ export class CheesFigure implements Figure {
       );
     }
 
-    if (figure.hasMoved()) {
+    if (this.hasMoved()) {
       throw new FigureInvalidMove(
         `Cannot be castled by a figure that has already moved`,
       );
@@ -65,7 +70,7 @@ export class CheesFigure implements Figure {
     return this._hasMoved;
   }
 
-  public capturedDetails(): CapturedFigure {
+  public figureDetails(): FigureDetails {
     return {
       name: this.figureBehavior.getName(),
       color: this.color,

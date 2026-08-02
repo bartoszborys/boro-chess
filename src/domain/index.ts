@@ -5,4 +5,14 @@ export type { PathGenerator, PathGenerationOptions } from "./services/PathGenera
 export type { MoveAnalyzer } from "./services/MoveAnalyzer";
 export type { FigureBehavior } from "./entities/behaviors/FigureBehavior";
 
+export {
+     BishopBehavior,
+     HorseBehavior,
+     TowerBehavior,
+     QueenBehavior,
+     KingBehavior,
+     WhitePawnBehavior,
+     BlackPawnBehavior,
+} from "./entities/behaviors";
+
 export { Movement } from "./value-objects/Movement";

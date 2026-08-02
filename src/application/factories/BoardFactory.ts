@@ -1,5 +1,6 @@
-import type { Board } from "@/domain";
+import { Board, BoardState } from "@/domain/entities/CheesBoard";
 
 export interface BoardFactory {
-    get(): Board;
+    getBoard(): Board;
+    getBoardState(): BoardState;
 }

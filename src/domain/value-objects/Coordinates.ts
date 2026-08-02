@@ -6,6 +6,10 @@ export class Coordinates {
     readonly y: number,
   ) { }
 
+  public add(x: number = 0, y: number = 0): Coordinates {
+    return new Coordinates(this.x + x, this.y + y);
+  }
+
   public addVector(vector: DirectionMoveVector): Coordinates {
     return new Coordinates(
       this.x + vector.deltaX,

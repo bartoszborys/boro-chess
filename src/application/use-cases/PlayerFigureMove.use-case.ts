@@ -9,7 +9,7 @@ export class PlayerFigureMoveUseCase {
     ) { }
 
     public execute(movement: Movement): void {
-        const board = this.boardFactory.create();
+        const board = this.boardFactory.get();
         const context = this.moveAnalyzer.createValidatedMoveContext(board, movement);
         this.game.playerMove(board, context);
     }

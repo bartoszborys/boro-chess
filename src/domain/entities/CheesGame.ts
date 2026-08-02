@@ -6,7 +6,17 @@ export interface Game {
 }
 
 export class CheesGame implements Game {
-  public playerMove(_board: Board, _context: ValidatedMoveContext): void {
-    throw new Error("Not implemented");
+  public playerMove(board: Board, context: ValidatedMoveContext): void {
+    const { movement, capturing, castlingMovement } = context;
+
+    if (capturing) {
+      board.captureFigureByCoordinates(movement.to);
+    }
+
+    board.moveFigure(movement);
+
+    if (castlingMovement) {
+      board.moveFigure(castlingMovement);
+    }
   }
 }

@@ -1,9 +1,14 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import type { MovementValidator } from "@/domain/movements/MovementValidator";
+import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
+import { FigureName } from "@/domain/enums";
 
-export class HorseMovement implements MovementValidator {
-  getDirections(): Direction[] {
+export class HorseBehavior implements FigureBehavior {
+  public getName(): FigureName {
+    return FigureName.HORSE;
+  }
+
+  public getDirections(): Direction[] {
     return DirectionsBuilder.create()
       .addCustomDirection(2, 1, { maxRange: 1 })
       .addCustomDirection(2, -1, { maxRange: 1 })

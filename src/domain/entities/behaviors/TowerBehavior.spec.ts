@@ -1,8 +1,8 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { TowerMovement } from "@/domain/movements/TowerMovement";
+import { TowerBehavior } from "@/domain/entities/behaviors/TowerBehavior";
 
-describe("TowerMovement", () => {
-  const tower = new TowerMovement();
+describe("TowerBehavior", () => {
+  const tower = new TowerBehavior();
 
   describe("getDirections", () => {
     it("returns orthogonal directions with capture enabled and infinite range", () => {

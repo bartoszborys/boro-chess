@@ -11,7 +11,9 @@ export type DirectionOptions = {
     whenEnemy?: boolean;
     canCapture?: boolean;
     maxRange?: number;
+    minRange?: number;
     whenStartingPosition?: boolean;
+    castling?: boolean;
 }
 
 export type DirectionMatchingConditions = {
@@ -25,7 +27,9 @@ export class Direction {
     public readonly whenEnemy: boolean;
     public readonly canCapture: boolean;
     public readonly maxRange: number;
+    public readonly minRange: number;
     public readonly whenStartingPosition: boolean;
+    public readonly castling: boolean;
 
     public constructor({
         deltaX,
@@ -33,14 +37,18 @@ export class Direction {
         whenEnemy,
         canCapture,
         maxRange,
-        whenStartingPosition
+        minRange,
+        whenStartingPosition,
+        castling,
     }: DirectionConstructorOptions) {
         this.deltaX = deltaX;
         this.deltaY = deltaY;
         this.whenEnemy = whenEnemy ?? false;
         this.canCapture = canCapture ?? true;
         this.maxRange = maxRange ?? Infinity;
+        this.minRange = minRange ?? 1;
         this.whenStartingPosition = whenStartingPosition ?? false;
+        this.castling = castling ?? false;
     }
 
     public matches(movement: Movement, conditions: DirectionMatchingConditions): boolean {

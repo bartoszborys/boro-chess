@@ -1,9 +1,14 @@
 import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
-import type { MovementValidator } from "@/domain/movements/MovementValidator";
+import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import { Direction } from "@/domain/value-objects/Direction";
+import { FigureName } from "@/domain/enums";
 
-export class TowerMovement implements MovementValidator {
-  getDirections(): Direction[] {
+export class TowerBehavior implements FigureBehavior {
+  public getName(): FigureName {
+    return FigureName.TOWER;
+  }
+
+  public getDirections(): Direction[] {
     return DirectionsBuilder.create()
       .addLeftDirection()
       .addRightDirection()

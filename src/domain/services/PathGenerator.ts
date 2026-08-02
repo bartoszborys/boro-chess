@@ -4,24 +4,24 @@ import type { Movement } from "@/domain/value-objects/Movement";
 
 export type PathGenerationOptions = {
   movement: Movement;
-  vector: DirectionMoveVector;
+  stepVector: DirectionMoveVector;
 };
 
 export interface PathGenerator {
-  fromConcretePath(options: PathGenerationOptions): Coordinates[];
+  forConcreteMovement(options: PathGenerationOptions): Coordinates[];
 }
 
 export class CheesPathGenerator implements PathGenerator {
-  public fromConcretePath({ movement, vector }: PathGenerationOptions): Coordinates[] {
+  public forConcreteMovement({ movement, stepVector }: PathGenerationOptions): Coordinates[] {
     const { from, to } = movement;
-    const steps = this.calculateStepsFor(from, to, vector);
+    const steps = this.calculateStepsFor(from, to, stepVector);
     const path: Coordinates[] = [];
 
     for (let step = 1; step < steps; step++) {
       path.push(
         new Coordinates(
-          from.x + vector.deltaX * step,
-          from.y + vector.deltaY * step,
+          from.x + stepVector.deltaX * step,
+          from.y + stepVector.deltaY * step,
         ),
       );
     }
@@ -32,13 +32,13 @@ export class CheesPathGenerator implements PathGenerator {
   private calculateStepsFor(
     from: Coordinates,
     to: Coordinates,
-    vector: DirectionMoveVector,
+    stepVector: DirectionMoveVector,
   ): number {
     const deltaX = to.x - from.x;
     const deltaY = to.y - from.y;
 
     return deltaX !== 0
-      ? deltaX / vector.deltaX
-      : deltaY / vector.deltaY;
+      ? deltaX / stepVector.deltaX
+      : deltaY / stepVector.deltaY;
   }
 }

@@ -3,6 +3,6 @@ export type { Figure } from "./entities/CheesFigure";
 export type { Game } from "./entities/CheesGame";
 export type { PathGenerator, PathGenerationOptions } from "./services/PathGenerator";
 export type { MoveAnalyzer } from "./services/MoveAnalyzer";
-export type { MovementValidator } from "./movements/MovementValidator";
+export type { FigureBehavior } from "./entities/behaviors/FigureBehavior";
 
 export { Movement } from "./value-objects/Movement";

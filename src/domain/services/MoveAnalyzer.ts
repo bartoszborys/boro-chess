@@ -5,8 +5,8 @@ import { Movement } from "@/domain/value-objects/Movement";
 import {
   FigureInvalidMove,
   FigureMoveCollision,
-  FigureNotFound,
 } from "@/domain/exceptions";
+import { Coordinates } from "../value-objects/Coordinates";
 
 export interface MoveAnalyzer {
   createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext;
@@ -19,14 +19,18 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
 
   public createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext {
     const { from, to } = movement;
-    const movingFigure = board.getFigureByCoordinates(from);
+
+    const movingFigure = board.getFigureByCoordinatesOrThrow(from);
     const targetFigure = board.getFigureByCoordinates(to);
+
+    if (movingFigure.isFriendly(targetFigure)) {
+      throw new FigureInvalidMove(
+        `Figure cannot capture friendly figure`,
+      );
+    }
+
     const allDirections = movingFigure?.getDirections() ?? [];
     const capturing = !!targetFigure;
-
-    if (!movingFigure) {
-      throw new FigureNotFound();
-    }
 
     const directionConditions = {
       capturing,
@@ -41,18 +45,37 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
       );
     }
 
-    const path = this.pathGenerator.fromConcretePath({
+    if (direction.castling && capturing) {
+      throw new FigureInvalidMove(
+        `Cannot castle and capture at the same time`,
+      );
+    }
+
+    const path = this.pathGenerator.forConcreteMovement({
       movement,
-      vector: direction,
+      stepVector: direction,
     });
 
     if (board.anyFigureOnCoordinates(path)) {
       throw new FigureMoveCollision();
     }
 
+    if (direction.castling) {
+      const expectedCastlingable = to.addVector(direction);
+      const castlingableFigure = board.getFigureByCoordinatesOrThrow(expectedCastlingable);
+      castlingableFigure.canCastle(movingFigure);
+      const castlingMovement = new Movement(expectedCastlingable, to.subtractVector(direction));
+
+      return {
+        movement,
+        capturing,
+        castlingMovement,
+      };
+    }
+
     return {
+      movement,
       capturing,
-      castling: false,
     };
   }
 }

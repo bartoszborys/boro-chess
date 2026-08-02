@@ -1,4 +1,7 @@
+import { Movement } from "./Movement";
+
 export type ValidatedMoveContext = {
+  movement: Movement;
   capturing: boolean;
-  castling: boolean;
+  castlingMovement?: Movement;
 };

@@ -1,8 +1,8 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { QueenMovement } from "@/domain/movements/QueenMovement";
+import { QueenBehavior } from "@/domain/entities/behaviors/QueenBehavior";
 
-describe("QueenMovement", () => {
-  const queen = new QueenMovement();
+describe("QueenBehavior", () => {
+  const queen = new QueenBehavior();
 
   describe("getDirections", () => {
     it("returns all orthogonal and diagonal directions with capture enabled and infinite range", () => {

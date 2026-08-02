@@ -1,8 +1,8 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { BishopMovement } from "@/domain/movements/BishopMovement";
+import { BishopBehavior } from "@/domain/entities/behaviors/BishopBehavior";
 
-describe("BishopMovement", () => {
-  const bishop = new BishopMovement();
+describe("BishopBehavior", () => {
+  const bishop = new BishopBehavior();
 
   describe("getDirections", () => {
     it("returns diagonal directions with capture enabled and infinite range", () => {

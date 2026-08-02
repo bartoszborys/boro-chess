@@ -1,8 +1,8 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { HorseMovement } from "@/domain/movements/HorseMovement";
+import { HorseBehavior } from "@/domain/entities/behaviors/HorseBehavior";
 
-describe("HorseMovement", () => {
-  const horse = new HorseMovement();
+describe("HorseBehavior", () => {
+  const horse = new HorseBehavior();
 
   describe("getDirections", () => {
     it("returns all L-shaped directions with capture enabled and range 1", () => {

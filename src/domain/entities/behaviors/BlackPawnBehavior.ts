@@ -1,9 +1,14 @@
 import { Direction } from "@/domain/value-objects/Direction";
 import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
-import type { MovementValidator } from "@/domain/movements/MovementValidator";
+import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
+import { FigureName } from "@/domain/enums";
 
-export class BlackPawnMovement implements MovementValidator {
-  getDirections(): Direction[] {
+export class BlackPawnBehavior implements FigureBehavior {
+  public getName(): FigureName {
+    return FigureName.PAWN;
+  }
+
+  public getDirections(): Direction[] {
     return DirectionsBuilder.create()
       .addBottomDirection({
         canCapture: false,

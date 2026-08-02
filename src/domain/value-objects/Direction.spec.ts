@@ -118,6 +118,70 @@ describe("Direction", () => {
     });
 
     it.each([
+      {
+        name: "k is below minRange",
+        steps: 1,
+        minRange: 2,
+        maxRange: 4,
+        expected: false,
+      },
+      {
+        name: "k equals minRange",
+        steps: 2,
+        minRange: 2,
+        maxRange: 4,
+        expected: true,
+      },
+      {
+        name: "k equals maxRange",
+        steps: 4,
+        minRange: 2,
+        maxRange: 4,
+        expected: true,
+      },
+      {
+        name: "k is above maxRange",
+        steps: 5,
+        minRange: 2,
+        maxRange: 4,
+        expected: false,
+      },
+    ])(
+      "range check: $name → $expected",
+      ({ steps, minRange, maxRange, expected }) => {
+        const directionX = new Direction({
+          deltaX: 1,
+          deltaY: 0,
+          minRange,
+          maxRange,
+        });
+        const movementX = new Movement(
+          new Coordinates(0, 0),
+          new Coordinates(steps, 0),
+        );
+
+        expect(directionX.matches(movementX, { capturing: false, hasMoved: false })).toBe(
+          expected,
+        );
+
+        const directionY = new Direction({
+          deltaX: 1,
+          deltaY: 0,
+          minRange,
+          maxRange,
+        });
+        const movementY = new Movement(
+          new Coordinates(0, 0),
+          new Coordinates(steps, 0),
+        );
+
+        expect(directionY.matches(movementY, { capturing: false, hasMoved: false })).toBe(
+          expected,
+        );
+      },
+    );
+
+    it.each([
       { deltaX: 0, deltaY: 1 },
       { deltaX: 0, deltaY: -1 },
       { deltaX: 1, deltaY: 0 },

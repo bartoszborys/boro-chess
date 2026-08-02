@@ -5,78 +5,109 @@ describe("KingBehavior", () => {
   const king = new KingBehavior();
 
   describe("getDirections", () => {
-    it("returns all directions with capture enabled and range 1", () => {
-      const directions = king.getDirections();
+    it("returns 10 directions", () => {
+      expect(king.getDirections()).toHaveLength(10);
+    });
 
-      expect(directions).toHaveLength(8);
-      expect(directions).toEqual(
-        expect.arrayContaining([
-          new Direction({
-            deltaX: -3,
-            deltaY: 0,
-            canCapture: false,
-            maxRange: 1,
-            whenStartingPosition: true,
-            castling: true,
-          }),
-          new Direction({
-            deltaX: 2,
-            deltaY: 0,
-            canCapture: false,
-            maxRange: 1,
-            whenStartingPosition: true,
-            castling: true,
-          }),
-          new Direction({
-            deltaX: 0,
-            deltaY: -1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: 0,
-            deltaY: 1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: 1,
-            deltaY: 0,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: -1,
-            deltaY: 0,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: 1,
-            deltaY: -1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: -1,
-            deltaY: -1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: 1,
-            deltaY: 1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-          new Direction({
-            deltaX: -1,
-            deltaY: 1,
-            canCapture: true,
-            maxRange: 1,
-          }),
-        ]),
-      );
+    it.each([
+      {
+        name: "top",
+        direction: new Direction({
+          deltaX: 0,
+          deltaY: 1,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "top-right",
+        direction: new Direction({
+          deltaX: 1,
+          deltaY: 1,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "top-left",
+        direction: new Direction({
+          deltaX: -1,
+          deltaY: 1,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "bottom",
+        direction: new Direction({
+          deltaX: 0,
+          deltaY: -1,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "bottom-right",
+        direction: new Direction({
+          deltaX: 1,
+          deltaY: -1,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "bottom-left",
+        direction: new Direction({
+          deltaX: -1,
+          deltaY: -1,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "left",
+        direction: new Direction({
+          deltaX: -1,
+          deltaY: 0,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "right",
+        direction: new Direction({
+          deltaX: 1,
+          deltaY: 0,
+          canCapture: true,
+          maxRange: 1,
+        }),
+      },
+      {
+        name: "queenside castling",
+        direction: new Direction({
+          deltaX: -1,
+          deltaY: 0,
+          canCapture: true,
+          maxRange: 3,
+          minRange: 3,
+          whenStartingPosition: true,
+          castling: true,
+        }),
+      },
+      {
+        name: "kingside castling",
+        direction: new Direction({
+          deltaX: 1,
+          deltaY: 0,
+          canCapture: true,
+          maxRange: 2,
+          minRange: 2,
+          whenStartingPosition: true,
+          castling: true,
+        }),
+      },
+    ])("includes $name direction", ({ direction }) => {
+      expect(king.getDirections()).toEqual(expect.arrayContaining([direction]));
     });
   });
 });

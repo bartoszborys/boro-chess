@@ -1,7 +1,7 @@
 import { BoardFactory } from "@/application/factories/BoardFactory";
-import { CheesFigure, type Figure } from "@/domain/entities/CheesFigure";
+import type { Board } from "@/domain/entities/CheesBoard";
+import { CheesFigure } from "@/domain/entities/CheesFigure";
 import { FigureColor } from "@/domain/enums";
-import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
 import { BlackPawnBehavior } from "@/domain/entities/behaviors/BlackPawnBehavior";
 import { KingBehavior } from "@/domain/entities/behaviors/KingBehavior";
@@ -9,23 +9,32 @@ import { QueenBehavior } from "@/domain/entities/behaviors/QueenBehavior";
 import { BishopBehavior } from "@/domain/entities/behaviors/BishopBehavior";
 import { HorseBehavior } from "@/domain/entities/behaviors/HorseBehavior";
 import { TowerBehavior } from "@/domain/entities/behaviors/TowerBehavior";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
 
-export class NewGameUseCase {
+export class NewCheesGameUseCase {
+    private readonly BOARD_SIZE = 8;
     public constructor(
         private readonly boardFactory: BoardFactory,
     ) { }
 
     public execute(): void {
         const board = this.boardFactory.getBoard();
-        const figures = this.createInitialFigures(board.getBaseCoordinates());
-        board.reset(figures);
+        this.initializeBoardWithFigures(board);
     }
 
-    private createInitialFigures(baseCoordinates: Coordinates): Figure[] {
-        const whitePawns = new Array(8).fill(0).map((_, index) => new CheesFigure(
-            baseCoordinates.add(index, 1), FigureColor.WHITE, new WhitePawnBehavior()));
-        const blackPawns = new Array(8).fill(0).map((_, index) => new CheesFigure(
-            baseCoordinates.add(index, 6), FigureColor.BLACK, new BlackPawnBehavior()));
+    private initializeBoardWithFigures(board: Board): void {
+        const baseCoordinates = new Coordinates(1, 1);
+
+        for (let index = 0; index < this.BOARD_SIZE; index++) {
+            board.addFigure(
+                new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()),
+                baseCoordinates.add(index, 1),
+            );
+            board.addFigure(
+                new CheesFigure(FigureColor.BLACK, new BlackPawnBehavior()),
+                baseCoordinates.add(index, 6),
+            );
+        }
 
         const players = [{
             yCoordinatesOffset: 0,
@@ -46,21 +55,13 @@ export class NewGameUseCase {
             new TowerBehavior(),
         ];
 
-        const figures = [
-            ...whitePawns,
-            ...blackPawns,
-        ];
-
         for (const player of players) {
             for (const [index, behavior] of behaviorsInOrder.entries()) {
-                figures.push(new CheesFigure(
+                board.addFigure(
+                    new CheesFigure(player.color, behavior),
                     baseCoordinates.add(index, player.yCoordinatesOffset),
-                    player.color,
-                    behavior,
-                ));
+                );
             }
         }
-
-        return figures;
     }
 }

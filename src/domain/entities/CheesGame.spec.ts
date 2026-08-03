@@ -13,13 +13,12 @@ describe("CheesGame", () => {
 
   beforeEach(() => {
     board = {
-      getBaseCoordinates: jest.fn(),
       getFigureByCoordinates: jest.fn(),
       getFigureByCoordinatesOrThrow: jest.fn(),
       anyFigureOnCoordinates: jest.fn(),
       captureFigureByCoordinates: jest.fn(),
       moveFigure: jest.fn(),
-      reset: jest.fn(),
+      addFigure: jest.fn(),
     };
   });
 

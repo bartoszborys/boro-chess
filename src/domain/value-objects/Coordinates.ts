@@ -1,10 +1,16 @@
 import { DirectionMoveVector } from "./Direction";
 
+export type CoordinatesKey = `${number}-${number}`;
+
 export class Coordinates {
   constructor(
     readonly x: number,
     readonly y: number,
   ) { }
+
+  public toKey(): CoordinatesKey {
+    return `${this.x}-${this.y}`;
+  }
 
   public add(x: number = 0, y: number = 0): Coordinates {
     return new Coordinates(this.x + x, this.y + y);

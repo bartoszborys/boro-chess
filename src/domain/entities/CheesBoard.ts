@@ -1,40 +1,39 @@
 import type { Figure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { FigureDetails } from "@/domain/value-objects/CapturedFigure";
-import { FigureInvalidMove, FigureNotFound } from "../exceptions";
+import { BoardFieldNotFound, FigureNotFound } from "@/domain/exceptions";
 import { Movement } from "../value-objects/Movement";
 import { BoardStateFigure } from "../value-objects/BoardStateFigure";
+import { BoardField } from "../value-objects/BoardField";
 
 export interface BoardState {
     getState(): BoardStateFigure[];
 }
 
 export interface Board {
-    getBaseCoordinates(): Coordinates;
     moveFigure(movement: Movement): void;
-    getFigureByCoordinates(coordinates: Coordinates): Figure | undefined;
+    getFigureByCoordinates(coordinates: Coordinates): Figure | null;
     getFigureByCoordinatesOrThrow(coordinates: Coordinates): Figure;
     anyFigureOnCoordinates(path: Coordinates[]): boolean;
     captureFigureByCoordinates(coordinates: Coordinates): void;
-    reset(figures: Figure[], capturedFigures?: FigureDetails[]): void;
+    addFigure(figure: Figure, coordinates: Coordinates): void;
 }
 
-export class CheesBoard implements Board, BoardState {
-    private readonly boardSize: number = 8;
+export class FieldsBoard implements Board, BoardState {
+    private capturedFigures: FigureDetails[] = [];
 
     constructor(
-        private figures: Figure[],
-        private capturedFigures: FigureDetails[],
+        private fields: Record<string, BoardField> = {},
     ) { }
 
-    public getBaseCoordinates(): Coordinates {
-        return new Coordinates(1, 1);
-    }
-
     public getState(): BoardStateFigure[] {
-        return this.figures.map(figure => ({
+        const occupiedFields = Object.values(this.fields).filter(
+            (field): field is BoardField & { figure: Figure } => field.figure !== null,
+        );
+
+        return occupiedFields.map(({ figure, coordinates }) => ({
             ...figure.figureDetails(),
-            coordinates: figure.getCoordinates(),
+            coordinates,
             isCaptured: this.capturedFigures.find(
                 item => item.name === figure.figureDetails().name && item.color === figure.figureDetails().color,
             ) !== undefined,
@@ -43,23 +42,26 @@ export class CheesBoard implements Board, BoardState {
 
     public moveFigure(movement: Movement): void {
         const figure = this.getFigureByCoordinatesOrThrow(movement.from);
-        if (movement.to.x < 1) {
-            throw new FigureInvalidMove("Movement is out of board");
-        }
-        if (movement.to.x > this.boardSize) {
-            throw new FigureInvalidMove("Movement is out of board");
-        }
-        if (movement.to.y < 1) {
-            throw new FigureInvalidMove("Movement is out of board");
-        }
-        if (movement.to.y > this.boardSize) {
-            throw new FigureInvalidMove("Movement is out of board");
-        }
-        figure.moveTo(movement.to);
+        this.getFieldUnderCoordinatesOrThrow(movement.from).figure = null;
+        this.addFigure(figure, movement.to);
+        figure.markAsMoved();
     }
 
-    public getFigureByCoordinates(coordinates: Coordinates): Figure | undefined {
-        return this.figures.find(figure => figure.isOn(coordinates));
+    public addFigure(figure: Figure, coordinates: Coordinates): void {
+        const field = this.getFieldUnderCoordinatesOrThrow(coordinates);
+        field.figure = figure;
+    }
+
+    public getFigureByCoordinates(coordinates: Coordinates): Figure | null {
+        return this.fields[coordinates.toKey()]?.figure;
+    }
+
+    private getFieldUnderCoordinatesOrThrow(coordinates: Coordinates): BoardField {
+        const field = this.fields[coordinates.toKey()];
+        if (!field) {
+            throw new BoardFieldNotFound();
+        }
+        return field;
     }
 
     public getFigureByCoordinatesOrThrow(coordinates: Coordinates): Figure {
@@ -74,7 +76,7 @@ export class CheesBoard implements Board, BoardState {
         for (const coordinate of coordinates) {
             const blockingFigure = this.getFigureByCoordinates(coordinate);
 
-            if (blockingFigure !== undefined) {
+            if (blockingFigure !== null) {
                 return true;
             }
         }
@@ -84,11 +86,6 @@ export class CheesBoard implements Board, BoardState {
     public captureFigureByCoordinates(coordinates: Coordinates): void {
         const figure = this.getFigureByCoordinatesOrThrow(coordinates);
         this.capturedFigures.push(figure.figureDetails());
-        this.figures.splice(this.figures.indexOf(figure), 1);
-    }
-
-    public reset(figures: Figure[], capturedFigures: FigureDetails[] = []): void {
-        this.figures = figures;
-        this.capturedFigures = capturedFigures;
+        this.getFieldUnderCoordinatesOrThrow(coordinates).figure = null;
     }
 }

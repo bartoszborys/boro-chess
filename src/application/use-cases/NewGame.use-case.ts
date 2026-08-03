@@ -12,7 +12,6 @@ import { TowerBehavior } from "@/domain/entities/behaviors/TowerBehavior";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class NewCheesGameUseCase {
-    private readonly BOARD_SIZE = 8;
     public constructor(
         private readonly boardFactory: BoardFactory,
     ) { }
@@ -24,8 +23,9 @@ export class NewCheesGameUseCase {
 
     private initializeBoardWithFigures(board: Board): void {
         const baseCoordinates = new Coordinates(1, 1);
+        const [xSize, _] = this.boardFactory.getBoardSize();
 
-        for (let index = 0; index < this.BOARD_SIZE; index++) {
+        for (let index = 0; index < xSize; index++) {
             board.addFigure(
                 new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()),
                 baseCoordinates.add(index, 1),

@@ -1,6 +1,7 @@
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { BoardState } from "@/domain/entities/CheesBoard";
+import { BoardFactory } from "@/application/factories/BoardFactory";
 
 const reset = "\x1b[0m";
 const dim = "\x1b[2m";
@@ -17,13 +18,22 @@ const rowLabelWidth = 3;
 
 export class RenderBoard {
     public constructor(
-        private readonly board: BoardState,
+        private readonly board: BoardFactory,
     ) { }
 
     public render(): void {
         console.clear();
-        const state = this.board.getState();
-        const allCoordinates = new Array(8).fill(0).map((_, indexY) => new Array(8).fill(0).map((_, indexX) => new Coordinates(indexX + 1, indexY + 1)));
+        const boardtate = this.board.getBoardState();
+        const state = boardtate.getState();
+        const [xSize, ySize] = this.board.getBoardSize();
+        const allCoordinates = new Array(ySize)
+            .fill(0)
+            .map(
+                (_, indexY) => new Array(xSize)
+                    .fill(0)
+                    .map((_, indexX) => new Coordinates(indexX + 1, indexY + 1)
+                    )
+            );
 
         console.log(this.renderColumnLabels());
 
@@ -47,7 +57,8 @@ export class RenderBoard {
 
     private renderColumnLabels(): string {
         const labels = [" ".repeat(rowLabelWidth)];
-        for (let x = 1; x <= 8; x++) {
+        const [xSize, _] = this.board.getBoardSize();
+        for (let x = 1; x <= xSize; x++) {
             labels.push(`${dim}${labelFg} ${x}  ${reset}`);
         }
         return labels.join("");

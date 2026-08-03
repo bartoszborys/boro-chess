@@ -43,7 +43,7 @@ async function main() {
             throw error;
         }
 
-        await sleep(100);
+        await sleep(1500);
 
         renderBoard.render();
     }

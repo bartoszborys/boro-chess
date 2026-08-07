@@ -4,5 +4,5 @@ export class Movement {
   constructor(
     readonly from: Coordinates,
     readonly to: Coordinates,
-  ) { }
+  ) {}
 }

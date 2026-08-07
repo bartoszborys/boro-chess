@@ -1,11 +1,20 @@
 import { CheesPathGenerator } from "@/domain/services/PathGenerator";
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
+import {
+  Coordinates,
+  CoordinatesKey,
+} from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 
 const board3x3: CoordinatesKey[] = [
-  "1-1", "2-1", "3-1",
-  "1-2", "2-2", "3-2",
-  "1-3", "2-3", "3-3",
+  "1-1",
+  "2-1",
+  "3-1",
+  "1-2",
+  "2-2",
+  "3-2",
+  "1-3",
+  "2-3",
+  "3-3",
 ];
 
 const directions = [
@@ -33,16 +42,18 @@ describe("CheesPathGenerator", () => {
         }),
       );
 
-      expect(paths).toEqual(expect.arrayContaining([
-        new Coordinates(2, 3),
-        new Coordinates(3, 3),
-        new Coordinates(3, 2),
-        new Coordinates(3, 1),
-        new Coordinates(2, 1),
-        new Coordinates(1, 1),
-        new Coordinates(1, 2),
-        new Coordinates(1, 3),
-      ]));
+      expect(paths).toEqual(
+        expect.arrayContaining([
+          new Coordinates(2, 3),
+          new Coordinates(3, 3),
+          new Coordinates(3, 2),
+          new Coordinates(3, 1),
+          new Coordinates(2, 1),
+          new Coordinates(1, 1),
+          new Coordinates(1, 2),
+          new Coordinates(1, 3),
+        ]),
+      );
       expect(paths).toHaveLength(8);
     });
 
@@ -58,14 +69,16 @@ describe("CheesPathGenerator", () => {
         }),
       );
 
-      expect(paths).toEqual(expect.arrayContaining([
-        new Coordinates(3, 3),
-        new Coordinates(3, 1),
-        new Coordinates(2, 1),
-        new Coordinates(2, 2),
-        new Coordinates(1, 2),
-        new Coordinates(2, 3),
-      ]));
+      expect(paths).toEqual(
+        expect.arrayContaining([
+          new Coordinates(3, 3),
+          new Coordinates(3, 1),
+          new Coordinates(2, 1),
+          new Coordinates(2, 2),
+          new Coordinates(1, 2),
+          new Coordinates(2, 3),
+        ]),
+      );
       expect(paths).toHaveLength(6);
     });
   });
@@ -74,7 +87,7 @@ describe("CheesPathGenerator", () => {
     it("should generate intermediate coordinates for a linear 1,1 move across several fields", () => {
       const pathGenerator = new CheesPathGenerator();
       const path = pathGenerator.forVectorMovementWithoutTarget({
-        movement: new Movement(new Coordinates(1, 1 ), new Coordinates(5, 5)),
+        movement: new Movement(new Coordinates(1, 1), new Coordinates(5, 5)),
         stepVector: { deltaX: 1, deltaY: 1 },
       });
 
@@ -102,7 +115,7 @@ describe("CheesPathGenerator", () => {
       ({ to, expectedPath }) => {
         const pathGenerator = new CheesPathGenerator();
         const path = pathGenerator.forVectorMovementWithoutTarget({
-          movement: new Movement(new Coordinates(1, 1 ), to),
+          movement: new Movement(new Coordinates(1, 1), to),
           stepVector: { deltaX: 8, deltaY: 8 },
         });
 

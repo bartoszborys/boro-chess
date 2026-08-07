@@ -22,9 +22,9 @@ describe("DirectionsBuilder", () => {
     });
 
     it("adds top-right as positive X and positive Y", () => {
-      expect(DirectionsBuilder.create().addTopRightDirection().build()).toEqual([
-        new Direction({ deltaX: 1, deltaY: 1 }),
-      ]);
+      expect(DirectionsBuilder.create().addTopRightDirection().build()).toEqual(
+        [new Direction({ deltaX: 1, deltaY: 1 })],
+      );
     });
 
     it("adds bottom-left as negative X and negative Y", () => {

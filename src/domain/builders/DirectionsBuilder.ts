@@ -3,7 +3,7 @@ import { Direction, DirectionOptions } from "@/domain/value-objects/Direction";
 export class DirectionsBuilder {
   public readonly directions: Direction[] = [];
 
-  private constructor() { }
+  private constructor() {}
 
   public static create(): DirectionsBuilder {
     return new DirectionsBuilder();
@@ -17,7 +17,11 @@ export class DirectionsBuilder {
     this.directions.push(direction);
   }
 
-  public addCustomDirection(deltaX: number, deltaY: number, options: DirectionOptions = {}): this {
+  public addCustomDirection(
+    deltaX: number,
+    deltaY: number,
+    options: DirectionOptions = {},
+  ): this {
     this.addDirection(new Direction({ deltaX, deltaY, ...options }));
     return this;
   }

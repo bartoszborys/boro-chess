@@ -1,4 +1,7 @@
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
+import {
+  Coordinates,
+  CoordinatesKey,
+} from "@/domain/value-objects/Coordinates";
 import type { DirectionMoveVector } from "@/domain/value-objects/Direction";
 import type { Movement } from "@/domain/value-objects/Movement";
 
@@ -15,11 +18,16 @@ export type PathGenerationOptionsOnExistingFields = {
 
 export interface PathGenerator {
   forVectorMovementWithoutTarget(options: PathGenerationOptions): Coordinates[];
-  forVectorMovementOnExistingFields(options: PathGenerationOptionsOnExistingFields): Coordinates[];
+  forVectorMovementOnExistingFields(
+    options: PathGenerationOptionsOnExistingFields,
+  ): Coordinates[];
 }
 
 export class CheesPathGenerator implements PathGenerator {
-  public forVectorMovementWithoutTarget({ movement, stepVector }: PathGenerationOptions): Coordinates[] {
+  public forVectorMovementWithoutTarget({
+    movement,
+    stepVector,
+  }: PathGenerationOptions): Coordinates[] {
     const steps = this.calculateStepsFor(movement, stepVector);
     const path: Coordinates[] = [];
 

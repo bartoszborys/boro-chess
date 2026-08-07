@@ -18,8 +18,18 @@ export class KingBehavior implements FigureBehavior {
       .addBottomLeftDirection({ maxRange: 1 })
       .addLeftDirection({ maxRange: 1 })
       .addRightDirection({ maxRange: 1 })
-      .addLeftDirection({ maxRange: 3, minRange: 3, whenStartingPosition: true, castling: true })
-      .addRightDirection({ maxRange: 2, minRange: 2, whenStartingPosition: true, castling: true })
+      .addLeftDirection({
+        maxRange: 3,
+        minRange: 3,
+        whenStartingPosition: true,
+        castling: true,
+      })
+      .addRightDirection({
+        maxRange: 2,
+        minRange: 2,
+        whenStartingPosition: true,
+        castling: true,
+      })
       .build();
   }
 }

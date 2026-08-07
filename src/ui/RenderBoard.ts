@@ -1,5 +1,8 @@
 import { FigureColor } from "@/domain/enums";
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
+import {
+  Coordinates,
+  CoordinatesKey,
+} from "@/domain/value-objects/Coordinates";
 import { BoardFactory } from "@/application/factories/BoardFactory";
 
 const reset = "\x1b[0m";
@@ -19,61 +22,66 @@ const cellWidth = 4;
 const rowLabelWidth = 3;
 
 export class RenderBoard {
-    public constructor(
-        private readonly board: BoardFactory,
-    ) { }
+  public constructor(private readonly board: BoardFactory) {}
 
-    public render(possibleMoves: CoordinatesKey[] = []): void {
-        console.clear();
-        const boardtate = this.board.getBoardState();
-        const state = boardtate.getFiguresState();
-        const [xSize, ySize] = this.board.getBoardSize();
-        const possibleMoveKeys = new Set(possibleMoves);
-        const allCoordinates = new Array(ySize)
-            .fill(0)
-            .map(
-                (_, indexY) => new Array(xSize)
-                    .fill(0)
-                    .map((_, indexX) => new Coordinates(indexX + 1, indexY + 1)
-                    )
-            );
+  public render(possibleMoves: CoordinatesKey[] = []): void {
+    console.clear();
+    const boardtate = this.board.getBoardState();
+    const state = boardtate.getFiguresState();
+    const [xSize, ySize] = this.board.getBoardSize();
+    const possibleMoveKeys = new Set(possibleMoves);
+    const allCoordinates = new Array(ySize)
+      .fill(0)
+      .map((_, indexY) =>
+        new Array(xSize)
+          .fill(0)
+          .map((_, indexX) => new Coordinates(indexX + 1, indexY + 1)),
+      );
 
-        console.log(this.renderColumnLabels());
+    console.log(this.renderColumnLabels());
 
-        for (const [rowIndex, coordinatesRow] of allCoordinates.entries()) {
-            const toRender = [this.renderRowLabel(rowIndex + 1)];
-            for (const [colIndex, coordinate] of coordinatesRow.entries()) {
-                const isPossibleMove = possibleMoveKeys.has(coordinate.toKey());
-                const isLightSquare = (rowIndex + colIndex) % 2 === 0;
-                const squareBg = isPossibleMove
-                    ? (isLightSquare ? lightPossibleMoveBg : darkPossibleMoveBg)
-                    : (isLightSquare ? lightSquareBg : darkSquareBg);
-                const figure = state.find(item => item.coordinates.equals(coordinate));
+    for (const [rowIndex, coordinatesRow] of allCoordinates.entries()) {
+      const toRender = [this.renderRowLabel(rowIndex + 1)];
+      for (const [colIndex, coordinate] of coordinatesRow.entries()) {
+        const isPossibleMove = possibleMoveKeys.has(coordinate.toKey());
+        const isLightSquare = (rowIndex + colIndex) % 2 === 0;
+        const squareBg = isPossibleMove
+          ? isLightSquare
+            ? lightPossibleMoveBg
+            : darkPossibleMoveBg
+          : isLightSquare
+            ? lightSquareBg
+            : darkSquareBg;
+        const figure = state.find((item) =>
+          item.coordinates.equals(coordinate),
+        );
 
-                if (figure) {
-                    const label = `${figure.color === FigureColor.WHITE ? "W" : "B"}${figure.name.charAt(0).toUpperCase()}`;
-                    const fg = figure.color === FigureColor.WHITE ? whiteFg : blackFg;
-                    toRender.push(`${squareBg}${bold}${fg} ${label} ${reset}`);
-                } else if (isPossibleMove) {
-                    toRender.push(`${squareBg}${dim}${possibleMoveMarkerFg}    ${reset}`);
-                } else {
-                    toRender.push(`${squareBg}${dim}${emptyFg}${" ".repeat(cellWidth)}${reset}`);
-                }
-            }
-            console.log(toRender.join(""));
+        if (figure) {
+          const label = `${figure.color === FigureColor.WHITE ? "W" : "B"}${figure.name.charAt(0).toUpperCase()}`;
+          const fg = figure.color === FigureColor.WHITE ? whiteFg : blackFg;
+          toRender.push(`${squareBg}${bold}${fg} ${label} ${reset}`);
+        } else if (isPossibleMove) {
+          toRender.push(`${squareBg}${dim}${possibleMoveMarkerFg}    ${reset}`);
+        } else {
+          toRender.push(
+            `${squareBg}${dim}${emptyFg}${" ".repeat(cellWidth)}${reset}`,
+          );
         }
+      }
+      console.log(toRender.join(""));
     }
+  }
 
-    private renderColumnLabels(): string {
-        const labels = [" ".repeat(rowLabelWidth)];
-        const [xSize, _] = this.board.getBoardSize();
-        for (let x = 1; x <= xSize; x++) {
-            labels.push(`${dim}${labelFg} ${x}  ${reset}`);
-        }
-        return labels.join("");
+  private renderColumnLabels(): string {
+    const labels = [" ".repeat(rowLabelWidth)];
+    const [xSize, _] = this.board.getBoardSize();
+    for (let x = 1; x <= xSize; x++) {
+      labels.push(`${dim}${labelFg} ${x}  ${reset}`);
     }
+    return labels.join("");
+  }
 
-    private renderRowLabel(y: number): string {
-        return `${dim}${labelFg}${String(y).padStart(2, " ")} ${reset}`;
-    }
+  private renderRowLabel(y: number): string {
+    return `${dim}${labelFg}${String(y).padStart(2, " ")} ${reset}`;
+  }
 }

@@ -12,7 +12,7 @@ import { InAppMemoryCheesBoardFactory } from "./infrastructure/InAppMemoryCheesB
 export const pathGenerator: PathGenerator = new CheesPathGenerator();
 export const game = new CheesGame();
 
-export const boardFactory: BoardFactory = new InAppMemoryCheesBoardFactory(pathGenerator);
+export const boardFactory: BoardFactory = new InAppMemoryCheesBoardFactory();
 export const moveAnalyzer: MoveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
 export const newGameUseCase = new NewCheesGameUseCase(boardFactory);
 export const playerFigureMoveUseCase = new PlayerFigureMoveUseCase(moveAnalyzer, boardFactory, game);

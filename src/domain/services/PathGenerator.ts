@@ -1,4 +1,4 @@
-import { Coordinates } from "@/domain/value-objects/Coordinates";
+import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import type { DirectionMoveVector } from "@/domain/value-objects/Direction";
 import type { Movement } from "@/domain/value-objects/Movement";
 
@@ -7,21 +7,27 @@ export type PathGenerationOptions = {
   stepVector: DirectionMoveVector;
 };
 
+export type PathGenerationOptionsOnExistingFields = {
+  from: Coordinates;
+  direction: DirectionMoveVector & { maxRange: number };
+  existingFields: CoordinatesKey[];
+};
+
 export interface PathGenerator {
-  forConcreteMovement(options: PathGenerationOptions): Coordinates[];
+  forVectorMovementWithoutTarget(options: PathGenerationOptions): Coordinates[];
+  forVectorMovementOnExistingFields(options: PathGenerationOptionsOnExistingFields): Coordinates[];
 }
 
 export class CheesPathGenerator implements PathGenerator {
-  public forConcreteMovement({ movement, stepVector }: PathGenerationOptions): Coordinates[] {
-    const { from, to } = movement;
-    const steps = this.calculateStepsFor(from, to, stepVector);
+  public forVectorMovementWithoutTarget({ movement, stepVector }: PathGenerationOptions): Coordinates[] {
+    const steps = this.calculateStepsFor(movement, stepVector);
     const path: Coordinates[] = [];
 
     for (let step = 1; step < steps; step++) {
       path.push(
         new Coordinates(
-          from.x + stepVector.deltaX * step,
-          from.y + stepVector.deltaY * step,
+          movement.from.x + stepVector.deltaX * step,
+          movement.from.y + stepVector.deltaY * step,
         ),
       );
     }
@@ -29,13 +35,36 @@ export class CheesPathGenerator implements PathGenerator {
     return path;
   }
 
+  public forVectorMovementOnExistingFields({
+    from,
+    direction,
+    existingFields,
+  }: PathGenerationOptionsOnExistingFields): Coordinates[] {
+    const existingFieldsSet = new Set(existingFields);
+    const path: Coordinates[] = [];
+
+    for (let step = 1; step <= direction.maxRange; step++) {
+      const coordinate = new Coordinates(
+        from.x + direction.deltaX * step,
+        from.y + direction.deltaY * step,
+      );
+
+      if (!existingFieldsSet.has(coordinate.toKey())) {
+        break;
+      }
+
+      path.push(coordinate);
+    }
+
+    return path;
+  }
+
   private calculateStepsFor(
-    from: Coordinates,
-    to: Coordinates,
+    movement: Movement,
     stepVector: DirectionMoveVector,
   ): number {
-    const deltaX = to.x - from.x;
-    const deltaY = to.y - from.y;
+    const deltaX = movement.to.x - movement.from.x;
+    const deltaY = movement.to.y - movement.from.y;
 
     return deltaX !== 0
       ? deltaX / stepVector.deltaX

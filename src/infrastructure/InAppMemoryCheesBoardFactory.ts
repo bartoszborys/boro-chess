@@ -1,17 +1,10 @@
 import { BoardFactory } from "@/application/factories/BoardFactory";
 import { Board, BoardState, FieldsBoard } from "@/domain/entities/CheesBoard";
-import { PathGenerator } from "@/domain/services/PathGenerator";
 import { BoardField } from "@/domain/value-objects/BoardField";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class InAppMemoryCheesBoardFactory implements BoardFactory {
     private board: FieldsBoard | null = null;
-
-    public constructor(
-        private pathGenerator: PathGenerator,
-    ) {
-
-    }
 
     public getBoard(): Board {
         return this.getOrCreateBoard();
@@ -27,7 +20,7 @@ export class InAppMemoryCheesBoardFactory implements BoardFactory {
 
     private getOrCreateBoard(): FieldsBoard {
         if (this.board === null) {
-            this.board = new FieldsBoard(this.pathGenerator, this.getBoardFields());
+            this.board = new FieldsBoard(this.getBoardFields());
         }
         return this.board;
     }

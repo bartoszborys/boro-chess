@@ -12,6 +12,7 @@ export interface Figure {
   figureDetails(): FigureDetails;
   getColor(): FigureColor;
   isFriendly(figure: Figure | null): boolean;
+  canBeCaptured(): boolean;
 }
 
 export class CheesFigure implements Figure {
@@ -57,5 +58,9 @@ export class CheesFigure implements Figure {
 
   public getColor(): FigureColor {
     return this.color;
+  }
+
+  public canBeCaptured(): boolean {
+    return this.figureBehavior.getName() !== FigureName.KING;
   }
 }

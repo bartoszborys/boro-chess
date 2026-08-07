@@ -3,15 +3,18 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { FigureDetails } from "@/domain/value-objects/CapturedFigure";
 import { BoardFieldNotFound, FigureNotFound } from "@/domain/exceptions";
 import { Movement } from "../value-objects/Movement";
-import { BoardStateFigure } from "../value-objects/BoardStateFigure";
+import { BoardFigureState } from "../value-objects/BoardFigureState";
+import { BoardFieldState } from "../value-objects/BoardFieldState";
 import { BoardField } from "../value-objects/BoardField";
+import { FigureColor } from "@/domain/enums";
 
 export interface BoardState {
-    getState(): BoardStateFigure[];
+    getFiguresState(): BoardFigureState[];
 }
 
 export interface Board {
     moveFigure(movement: Movement): void;
+    getFieldsState(playerColor: FigureColor): BoardFieldState[];
     getFigureByCoordinates(coordinates: Coordinates): Figure | null;
     getFigureByCoordinatesOrThrow(coordinates: Coordinates): Figure;
     anyFigureOnCoordinates(path: Coordinates[]): boolean;
@@ -26,7 +29,7 @@ export class FieldsBoard implements Board, BoardState {
         private fields: Record<string, BoardField> = {},
     ) { }
 
-    public getState(): BoardStateFigure[] {
+    public getFiguresState(): BoardFigureState[] {
         const occupiedFields = Object.values(this.fields).filter(
             (field): field is BoardField & { figure: Figure } => field.figure !== null,
         );
@@ -35,8 +38,18 @@ export class FieldsBoard implements Board, BoardState {
             ...figure.figureDetails(),
             coordinates,
             isCaptured: this.capturedFigures.find(
-                item => item.name === figure.figureDetails().name && item.color === figure.figureDetails().color,
+                item => item.name === figure.figureDetails().name
+                    && item.color === figure.figureDetails().color,
             ) !== undefined,
+        }));
+    }
+
+    public getFieldsState(playerColor: FigureColor): BoardFieldState[] {
+        const fieldValues = Object.values(this.fields);
+        return fieldValues.map((field) => ({
+            coordinatesKey: field.coordinates.toKey(),
+            occupied: field.figure !== null,
+            canCapture: Boolean(field.figure?.canBeCaptured() && field.figure?.getColor() !== playerColor),
         }));
     }
 

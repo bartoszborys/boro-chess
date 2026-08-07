@@ -2,16 +2,17 @@ import { Movement } from "@/domain/value-objects/Movement";
 
 type DirectionConstructorOptions = DirectionMoveVector & DirectionOptions;
 
+//@TODO Add method asVector
 export type DirectionMoveVector = {
     deltaX: number;
     deltaY: number;
+    maxRange?: number;
+    minRange?: number;
 }
 
 export type DirectionOptions = {
     whenEnemy?: boolean;
     canCapture?: boolean;
-    maxRange?: number;
-    minRange?: number;
     whenStartingPosition?: boolean;
     castling?: boolean;
 }
@@ -91,6 +92,7 @@ export class Direction {
         return false;
     }
 
+    // @TODO To be moved to the MoveAnalyzer
     private matchesConditions(conditions: DirectionMatchingConditions): boolean {
         if (conditions.capturing && !this.canCapture) {
             return false;

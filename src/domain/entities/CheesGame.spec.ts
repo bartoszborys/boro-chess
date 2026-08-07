@@ -6,8 +6,8 @@ import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveC
 
 describe("CheesGame", () => {
   const game = new CheesGame();
-  const movement = new Movement(new Coordinates(1, 2), new Coordinates(1, 3));
-  const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
+  const movement = new Movement(new Coordinates(1, 2 ), new Coordinates(1, 3));
+  const castlingMovement = new Movement(new Coordinates(1, 1 ), new Coordinates(1, 2));
 
   let board: Board;
 
@@ -19,6 +19,7 @@ describe("CheesGame", () => {
       captureFigureByCoordinates: jest.fn(),
       moveFigure: jest.fn(),
       addFigure: jest.fn(),
+      getFieldsState: jest.fn(),
     };
   });
 

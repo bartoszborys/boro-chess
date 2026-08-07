@@ -30,6 +30,10 @@ export class Coordinates {
     );
   }
 
+  clone(): Coordinates {
+    return new Coordinates(this.x, this.y);
+  }
+
   equals(other: Coordinates): boolean {
     return this.x === other.x && this.y === other.y;
   }

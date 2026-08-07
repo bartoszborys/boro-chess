@@ -8,9 +8,13 @@ import {
   FigureMoveCollision,
 } from "@/domain/exceptions";
 import { FigureName } from "@/domain/enums";
+import { Coordinates, CoordinatesKey } from "../value-objects/Coordinates";
+import type { BoardFieldState } from "../value-objects/BoardFieldState";
+import type { Direction } from "../value-objects/Direction";
 
 export interface MoveAnalyzer {
   createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext;
+  createPossibleMoves(board: Board, from: Coordinates): CoordinatesKey[];
 }
 
 export class CheesMoveAnalyzer implements MoveAnalyzer {
@@ -52,7 +56,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
       );
     }
 
-    const path = this.pathGenerator.forConcreteMovement({
+    const path = this.pathGenerator.forVectorMovementWithoutTarget({
       movement,
       stepVector: direction,
     });
@@ -78,6 +82,63 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
       movement,
       capturing,
     };
+  }
+
+  public createPossibleMoves(board: Board, from: Coordinates): CoordinatesKey[] {
+    const figure = board.getFigureByCoordinatesOrThrow(from);
+    const boardFieldsState = board.getFieldsState(figure.getColor());
+    const fieldsByKey = this.mapFieldsByKey(boardFieldsState);
+    const existingFields = boardFieldsState.map((field) => field.coordinatesKey);
+
+    const availableFields: Coordinates[] = [];
+
+    for (const direction of figure.getDirections()) {
+      if (direction.whenStartingPosition && figure.hasMoved()) {
+        continue;
+      }
+
+      const trajectory = this.pathGenerator.forVectorMovementOnExistingFields({
+        from,
+        direction,
+        existingFields,
+      });
+
+      for (const coordinate of trajectory) {
+        const field = fieldsByKey[coordinate.toKey()];
+
+        if (!this.canEnterField(direction, field)) {
+          break;
+        }
+
+        availableFields.push(coordinate);
+
+        if (field.occupied && field.canCapture) {
+          break;
+        }
+      }
+    }
+
+    return availableFields.map((field) => field.toKey());
+  }
+
+  private canEnterField(direction: Direction, field: BoardFieldState): boolean {
+    if (direction.whenEnemy && !field.canCapture) {
+      return false;
+    }
+
+    if (field.occupied && (!field.canCapture || !direction.canCapture)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private mapFieldsByKey(boardFieldsState: BoardFieldState[]): Record<CoordinatesKey, BoardFieldState> {
+    const fieldsByKey: Record<CoordinatesKey, BoardFieldState> = {};
+    for (const field of boardFieldsState) {
+      fieldsByKey[field.coordinatesKey] = field;
+    }
+    return fieldsByKey;
   }
 
   private assertCanCastle(castlingableFigure: Figure, movingFigure: Figure): void {

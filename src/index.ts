@@ -66,12 +66,7 @@ async function main() {
   newGameUseCase.execute();
   renderBoard.render();
   for (const move of getExampleMoves()) {
-    try {
-      playerFigureMoveUseCase.execute(move);
-    } catch (error) {
-      throw error;
-    }
-
+    playerFigureMoveUseCase.execute(move);
     await sleep(20);
     renderBoard.render();
   }

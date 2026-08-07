@@ -21,7 +21,7 @@ export class NewCheesGameUseCase {
 
   private initializeBoardWithFigures(board: Board): void {
     const baseCoordinates = new Coordinates(1, 1);
-    const [xSize, _] = this.boardFactory.getBoardSize();
+    const [xSize] = this.boardFactory.getBoardSize();
 
     for (let index = 0; index < xSize; index++) {
       board.addFigure(

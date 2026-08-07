@@ -1,5 +1,4 @@
 import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
-import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Direction } from "@/domain/value-objects/Direction";
 import { FigureDetails } from "@/domain/value-objects/CapturedFigure";
 import { FigureColor, FigureName } from "@/domain/enums";

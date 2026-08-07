@@ -74,7 +74,7 @@ export class RenderBoard {
 
   private renderColumnLabels(): string {
     const labels = [" ".repeat(rowLabelWidth)];
-    const [xSize, _] = this.board.getBoardSize();
+    const [xSize] = this.board.getBoardSize();
     for (let x = 1; x <= xSize; x++) {
       labels.push(`${dim}${labelFg} ${x}  ${reset}`);
     }

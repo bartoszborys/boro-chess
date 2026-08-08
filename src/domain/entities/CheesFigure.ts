@@ -1,6 +1,5 @@
 import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import { Direction } from "@/domain/value-objects/Direction";
-import { FigureDetails } from "@/domain/value-objects/CapturedFigure";
 import { FigureColor, FigureName } from "@/domain/enums";
 
 export interface Figure {
@@ -8,7 +7,6 @@ export interface Figure {
   getDirections(): Direction[];
   hasMoved(): boolean;
   markAsMoved(): void;
-  figureDetails(): FigureDetails;
   getColor(): FigureColor;
   isFriendly(figure: Figure | null): boolean;
   canBeCaptured(): boolean;
@@ -38,13 +36,6 @@ export class CheesFigure implements Figure {
 
   public hasMoved(): boolean {
     return this._hasMoved;
-  }
-
-  public figureDetails(): FigureDetails {
-    return {
-      name: this.getName(),
-      color: this.color,
-    };
   }
 
   public isFriendly(figure: Figure | null): boolean {

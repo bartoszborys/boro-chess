@@ -6,24 +6,27 @@ import { Movement } from "../value-objects/Movement";
 import { BoardFigureState } from "../value-objects/BoardFigureState";
 import { BoardFieldState } from "../value-objects/BoardFieldState";
 import { BoardField } from "../value-objects/BoardField";
-import { FigureColor } from "@/domain/enums";
+import { FigureColor, FigureName } from "@/domain/enums";
+import type { MoveHistory } from "./move-history";
 
 export interface BoardState {
   getFiguresState(): BoardFigureState[];
 }
 
 export interface Board {
+  addMoveHistory(move: MoveHistory): void;
   moveFigure(movement: Movement): void;
   getFieldsState(playerColor: FigureColor): BoardFieldState[];
   getFigureByCoordinates(coordinates: Coordinates): Figure | null;
   getFigureByCoordinatesOrThrow(coordinates: Coordinates): Figure;
   anyFigureOnCoordinates(path: Coordinates[]): boolean;
-  captureFigureByCoordinates(coordinates: Coordinates): void;
+  captureFigureByCoordinates(coordinates: Coordinates): Figure;
   addFigure(figure: Figure, coordinates: Coordinates): void;
 }
 
 export class FieldsBoard implements Board, BoardState {
   private capturedFigures: FigureDetails[] = [];
+  private moveHistory: MoveHistory[] = [];
 
   constructor(private fields: Record<string, BoardField> = {}) {}
 
@@ -34,15 +37,32 @@ export class FieldsBoard implements Board, BoardState {
     );
 
     return occupiedFields.map(({ figure, coordinates }) => ({
-      ...figure.figureDetails(),
+      name: figure.getName(),
+      color: figure.getColor(),
       coordinates,
       isCaptured:
         this.capturedFigures.find(
           (item) =>
-            item.name === figure.figureDetails().name &&
-            item.color === figure.figureDetails().color,
+            item.name === figure.getName() &&
+            item.color === figure.getColor(),
         ) !== undefined,
     }));
+  }
+
+  public getKingPositionOrThrow(playerColor: FigureColor): Coordinates {
+    for (const { figure, coordinates } of Object.values(this.fields)) {
+      if (!figure) {
+        continue;
+      }
+
+      if (
+        figure.getName() === FigureName.KING &&
+        figure.getColor() === playerColor
+      ) {
+        return coordinates;
+      }
+    }
+    throw new FigureNotFound(`King of ${playerColor} color not found`);
   }
 
   public getFieldsState(playerColor: FigureColor): BoardFieldState[] {
@@ -52,7 +72,7 @@ export class FieldsBoard implements Board, BoardState {
       occupied: field.figure !== null,
       canCapture: Boolean(
         field.figure?.canBeCaptured() &&
-        field.figure?.getColor() !== playerColor,
+          field.figure?.getColor() !== playerColor,
       ),
     }));
   }
@@ -102,9 +122,17 @@ export class FieldsBoard implements Board, BoardState {
     return false;
   }
 
-  public captureFigureByCoordinates(coordinates: Coordinates): void {
+  public captureFigureByCoordinates(coordinates: Coordinates): Figure {
     const figure = this.getFigureByCoordinatesOrThrow(coordinates);
-    this.capturedFigures.push(figure.figureDetails());
+    this.capturedFigures.push({
+      name: figure.getName(),
+      color: figure.getColor(),
+    });
     this.getFieldUnderCoordinatesOrThrow(coordinates).figure = null;
+    return figure;
+  }
+
+  public addMoveHistory(move: MoveHistory): void {
+    this.moveHistory.push(move);
   }
 }

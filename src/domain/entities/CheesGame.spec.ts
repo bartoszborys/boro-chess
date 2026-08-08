@@ -1,5 +1,6 @@
 import type { Board } from "@/domain/entities/CheesBoard";
 import { CheesGame } from "@/domain/entities/CheesGame";
+import { CompositeMoveHistory } from "@/domain/entities/move-history";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
@@ -23,6 +24,7 @@ describe("CheesGame", () => {
       moveFigure: jest.fn(),
       addFigure: jest.fn(),
       getFieldsState: jest.fn(),
+      addMoveHistory: jest.fn(),
     };
   });
 
@@ -37,6 +39,9 @@ describe("CheesGame", () => {
     expect(board.moveFigure).toHaveBeenCalledTimes(1);
     expect(board.moveFigure).toHaveBeenCalledWith(movement);
     expect(board.captureFigureByCoordinates).not.toHaveBeenCalled();
+    expect(board.addMoveHistory).toHaveBeenCalledWith(
+      expect.any(CompositeMoveHistory),
+    );
   });
 
   it("captures on the destination when capturing is true", () => {
@@ -49,6 +54,9 @@ describe("CheesGame", () => {
 
     expect(board.captureFigureByCoordinates).toHaveBeenCalledWith(movement.to);
     expect(board.moveFigure).toHaveBeenCalledWith(movement);
+    expect(board.addMoveHistory).toHaveBeenCalledWith(
+      expect.any(CompositeMoveHistory),
+    );
   });
 
   it("moves the castling partner when castlingMovement is set", () => {
@@ -64,5 +72,8 @@ describe("CheesGame", () => {
     expect(board.moveFigure).toHaveBeenCalledWith(movement);
     expect(board.moveFigure).toHaveBeenCalledWith(castlingMovement);
     expect(board.captureFigureByCoordinates).not.toHaveBeenCalled();
+    expect(board.addMoveHistory).toHaveBeenCalledWith(
+      expect.any(CompositeMoveHistory),
+    );
   });
 });

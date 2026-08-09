@@ -12,7 +12,7 @@ export class SelectFigureToMoveUseCase {
     private readonly moveAnalyzer: MoveAnalyzer,
     private readonly game: Game,
     private readonly gameRules: GameRulesValidator,
-  ) {}
+  ) { }
 
   public execute(from: Coordinates, playerColor: FigureColor): CoordinatesKey[] {
     const board = this.boardFactory.getBoard();

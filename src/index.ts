@@ -54,9 +54,8 @@ function getExampleMoves(): Movement[] {
 
     new Movement(new Coordinates(5, 8), new Coordinates(5, 7)),
     new Movement(new Coordinates(5, 7), new Coordinates(6, 6)),
-    new Movement(new Coordinates(7, 7), new Coordinates(7, 6)),
+    // new Movement(new Coordinates(7, 7), new Coordinates(7, 6)),
     new Movement(new Coordinates(8, 1), new Coordinates(8, 6)),
-    new Movement(new Coordinates(7, 8), new Coordinates(8, 6)),
   ];
 
   return exampleMoves;

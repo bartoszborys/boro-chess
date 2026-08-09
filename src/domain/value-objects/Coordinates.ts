@@ -8,6 +8,11 @@ export class Coordinates {
     readonly y: number,
   ) {}
 
+  public static fromKey(key: CoordinatesKey): Coordinates {
+    const [x, y] = key.split("-");
+    return new Coordinates(Number(x), Number(y));
+  }
+
   public toKey(): CoordinatesKey {
     return `${this.x}-${this.y}`;
   }

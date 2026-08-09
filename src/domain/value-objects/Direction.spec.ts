@@ -35,14 +35,9 @@ describe("Direction", () => {
       },
     ])("matches when $name", ({ deltaX, deltaY, toX, toY }) => {
       const direction = new Direction({ deltaX, deltaY });
-      const movement = new Movement(
-        new Coordinates(0, 0),
-        new Coordinates(toX, toY),
-      );
+      const movement = new Movement(new Coordinates(0, 0), new Coordinates(toX, toY));
 
-      expect(
-        direction.matches(movement, { capturing: false, hasMoved: false }),
-      ).toBe(true);
+      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(true);
     });
 
     it.each([
@@ -109,20 +104,12 @@ describe("Direction", () => {
         fromX: 0,
         fromY: 0,
       },
-    ])(
-      "does not match when $name",
-      ({ deltaX, deltaY, toX, toY, fromX, fromY }) => {
-        const direction = new Direction({ deltaX, deltaY });
-        const movement = new Movement(
-          new Coordinates(fromX, fromY),
-          new Coordinates(toX, toY),
-        );
+    ])("does not match when $name", ({ deltaX, deltaY, toX, toY, fromX, fromY }) => {
+      const direction = new Direction({ deltaX, deltaY });
+      const movement = new Movement(new Coordinates(fromX, fromY), new Coordinates(toX, toY));
 
-        expect(
-          direction.matches(movement, { capturing: false, hasMoved: false }),
-        ).toBe(false);
-      },
-    );
+      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(false);
+    });
 
     it.each([
       {
@@ -153,40 +140,27 @@ describe("Direction", () => {
         maxRange: 4,
         expected: false,
       },
-    ])(
-      "range check: $name → $expected",
-      ({ steps, minRange, maxRange, expected }) => {
-        const directionX = new Direction({
-          deltaX: 1,
-          deltaY: 0,
-          minRange,
-          maxRange,
-        });
-        const movementX = new Movement(
-          new Coordinates(0, 0),
-          new Coordinates(steps, 0),
-        );
+    ])("range check: $name → $expected", ({ steps, minRange, maxRange, expected }) => {
+      const directionX = new Direction({
+        deltaX: 1,
+        deltaY: 0,
+        minRange,
+        maxRange,
+      });
+      const movementX = new Movement(new Coordinates(0, 0), new Coordinates(steps, 0));
 
-        expect(
-          directionX.matches(movementX, { capturing: false, hasMoved: false }),
-        ).toBe(expected);
+      expect(directionX.matches(movementX, { capturing: false, hasMoved: false })).toBe(expected);
 
-        const directionY = new Direction({
-          deltaX: 1,
-          deltaY: 0,
-          minRange,
-          maxRange,
-        });
-        const movementY = new Movement(
-          new Coordinates(0, 0),
-          new Coordinates(steps, 0),
-        );
+      const directionY = new Direction({
+        deltaX: 1,
+        deltaY: 0,
+        minRange,
+        maxRange,
+      });
+      const movementY = new Movement(new Coordinates(0, 0), new Coordinates(steps, 0));
 
-        expect(
-          directionY.matches(movementY, { capturing: false, hasMoved: false }),
-        ).toBe(expected);
-      },
-    );
+      expect(directionY.matches(movementY, { capturing: false, hasMoved: false })).toBe(expected);
+    });
 
     it.each([
       { deltaX: 0, deltaY: 1 },
@@ -197,19 +171,14 @@ describe("Direction", () => {
       { deltaX: -1, deltaY: 1 },
       { deltaX: 1, deltaY: -1 },
       { deltaX: -1, deltaY: -1 },
-    ])(
-      "matches leaving from origin in unit direction ($deltaX, $deltaY)",
-      (unitDirection) => {
-        const direction = new Direction(unitDirection);
-        const movement = new Movement(
-          new Coordinates(0, 0),
-          new Coordinates(unitDirection.deltaX * 5, unitDirection.deltaY * 5),
-        );
+    ])("matches leaving from origin in unit direction ($deltaX, $deltaY)", (unitDirection) => {
+      const direction = new Direction(unitDirection);
+      const movement = new Movement(
+        new Coordinates(0, 0),
+        new Coordinates(unitDirection.deltaX * 5, unitDirection.deltaY * 5),
+      );
 
-        expect(
-          direction.matches(movement, { capturing: false, hasMoved: false }),
-        ).toBe(true);
-      },
-    );
+      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(true);
+    });
   });
 });

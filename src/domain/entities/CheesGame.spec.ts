@@ -8,10 +8,7 @@ import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveC
 describe("CheesGame", () => {
   const game = new CheesGame();
   const movement = new Movement(new Coordinates(1, 2), new Coordinates(1, 3));
-  const castlingMovement = new Movement(
-    new Coordinates(1, 1),
-    new Coordinates(1, 2),
-  );
+  const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
 
   let board: Board;
 
@@ -25,6 +22,8 @@ describe("CheesGame", () => {
       addFigure: jest.fn(),
       getFieldsState: jest.fn(),
       addMoveHistory: jest.fn(),
+      undoLastMove: jest.fn(),
+      getFiguresState: jest.fn(),
     };
   });
 
@@ -39,9 +38,7 @@ describe("CheesGame", () => {
     expect(board.moveFigure).toHaveBeenCalledTimes(1);
     expect(board.moveFigure).toHaveBeenCalledWith(movement);
     expect(board.captureFigureByCoordinates).not.toHaveBeenCalled();
-    expect(board.addMoveHistory).toHaveBeenCalledWith(
-      expect.any(CompositeMoveHistory),
-    );
+    expect(board.addMoveHistory).toHaveBeenCalledWith(expect.any(CompositeMoveHistory));
   });
 
   it("captures on the destination when capturing is true", () => {
@@ -54,9 +51,7 @@ describe("CheesGame", () => {
 
     expect(board.captureFigureByCoordinates).toHaveBeenCalledWith(movement.to);
     expect(board.moveFigure).toHaveBeenCalledWith(movement);
-    expect(board.addMoveHistory).toHaveBeenCalledWith(
-      expect.any(CompositeMoveHistory),
-    );
+    expect(board.addMoveHistory).toHaveBeenCalledWith(expect.any(CompositeMoveHistory));
   });
 
   it("moves the castling partner when castlingMovement is set", () => {
@@ -72,8 +67,6 @@ describe("CheesGame", () => {
     expect(board.moveFigure).toHaveBeenCalledWith(movement);
     expect(board.moveFigure).toHaveBeenCalledWith(castlingMovement);
     expect(board.captureFigureByCoordinates).not.toHaveBeenCalled();
-    expect(board.addMoveHistory).toHaveBeenCalledWith(
-      expect.any(CompositeMoveHistory),
-    );
+    expect(board.addMoveHistory).toHaveBeenCalledWith(expect.any(CompositeMoveHistory));
   });
 });

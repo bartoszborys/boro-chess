@@ -9,6 +9,7 @@ import {
 
 export interface Game {
   playerMove(board: Board, context: ValidatedMoveContext): void;
+  undoLastMove(board: Board): void;
 }
 
 export class CheesGame implements Game {
@@ -30,5 +31,9 @@ export class CheesGame implements Game {
     }
 
     board.addMoveHistory(new CompositeMoveHistory(steps));
+  }
+
+  public undoLastMove(board: Board): void {
+    board.undoLastMove();
   }
 }

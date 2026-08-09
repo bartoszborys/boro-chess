@@ -10,20 +10,14 @@ import type { BoardFieldState } from "../value-objects/BoardFieldState";
 import type { Direction } from "../value-objects/Direction";
 
 export interface MoveAnalyzer {
-  createValidatedMoveContext(
-    board: Board,
-    movement: Movement,
-  ): ValidatedMoveContext;
+  createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext;
   createPossibleMoves(board: Board, from: Coordinates): CoordinatesKey[];
 }
 
 export class CheesMoveAnalyzer implements MoveAnalyzer {
   constructor(private readonly pathGenerator: PathGenerator) {}
 
-  public createValidatedMoveContext(
-    board: Board,
-    movement: Movement,
-  ): ValidatedMoveContext {
+  public createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext {
     const { from, to } = movement;
 
     const movingFigure = board.getFigureByCoordinatesOrThrow(from);
@@ -41,9 +35,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
       hasMoved: movingFigure.hasMoved(),
     };
 
-    const direction = allDirections.find((direction) =>
-      direction.matches(movement, directionConditions),
-    );
+    const direction = allDirections.find((direction) => direction.matches(movement, directionConditions));
 
     if (!direction) {
       throw new FigureInvalidMove(`Figure cannot move from ${from} to ${to}`);
@@ -64,13 +56,9 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
 
     if (direction.castling) {
       const expectedCastlingable = to.addVector(direction);
-      const castlingableFigure =
-        board.getFigureByCoordinatesOrThrow(expectedCastlingable);
+      const castlingableFigure = board.getFigureByCoordinatesOrThrow(expectedCastlingable);
       this.assertCanCastle(castlingableFigure, movingFigure);
-      const castlingMovement = new Movement(
-        expectedCastlingable,
-        to.subtractVector(direction),
-      );
+      const castlingMovement = new Movement(expectedCastlingable, to.subtractVector(direction));
 
       return {
         movement,
@@ -85,16 +73,11 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
     };
   }
 
-  public createPossibleMoves(
-    board: Board,
-    from: Coordinates,
-  ): CoordinatesKey[] {
+  public createPossibleMoves(board: Board, from: Coordinates): CoordinatesKey[] {
     const figure = board.getFigureByCoordinatesOrThrow(from);
     const boardFieldsState = board.getFieldsState(figure.getColor());
     const fieldsByKey = this.mapFieldsByKey(boardFieldsState);
-    const existingFields = boardFieldsState.map(
-      (field) => field.coordinatesKey,
-    );
+    const existingFields = boardFieldsState.map((field) => field.coordinatesKey);
 
     const availableFields: Coordinates[] = [];
 
@@ -103,7 +86,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
         continue;
       }
 
-      const trajectory = this.pathGenerator.forVectorMovementOnExistingFields({
+      const trajectory = this.pathGenerator.forDirectionOnExistingFields({
         from,
         direction,
         existingFields,
@@ -139,9 +122,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
     return true;
   }
 
-  private mapFieldsByKey(
-    boardFieldsState: BoardFieldState[],
-  ): Record<CoordinatesKey, BoardFieldState> {
+  private mapFieldsByKey(boardFieldsState: BoardFieldState[]): Record<CoordinatesKey, BoardFieldState> {
     const fieldsByKey: Record<CoordinatesKey, BoardFieldState> = {};
     for (const field of boardFieldsState) {
       fieldsByKey[field.coordinatesKey] = field;
@@ -149,10 +130,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
     return fieldsByKey;
   }
 
-  private assertCanCastle(
-    castlingableFigure: Figure,
-    movingFigure: Figure,
-  ): void {
+  private assertCanCastle(castlingableFigure: Figure, movingFigure: Figure): void {
     if (castlingableFigure.getName() !== FigureName.TOWER) {
       throw new FigureInvalidMove(`Cannot be castled by not a tower`);
     }
@@ -162,9 +140,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
     }
 
     if (castlingableFigure.hasMoved()) {
-      throw new FigureInvalidMove(
-        `Cannot be castled by a figure that has already moved`,
-      );
+      throw new FigureInvalidMove(`Cannot be castled by a figure that has already moved`);
     }
   }
 }

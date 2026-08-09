@@ -2,7 +2,8 @@ import { Movement } from "@/domain/value-objects/Movement";
 
 type DirectionConstructorOptions = DirectionMoveVector & DirectionOptions;
 
-//@TODO Add method asVector
+export type DirectionOptions = Omit<DirectionMoveVector, "deltaX" | "deltaY"> & CheesDirectionOptions;
+
 export type DirectionMoveVector = {
   deltaX: number;
   deltaY: number;
@@ -10,7 +11,7 @@ export type DirectionMoveVector = {
   minRange?: number;
 };
 
-export type DirectionOptions = {
+type CheesDirectionOptions = {
   whenEnemy?: boolean;
   canCapture?: boolean;
   whenStartingPosition?: boolean;
@@ -52,10 +53,7 @@ export class Direction {
     this.castling = castling ?? false;
   }
 
-  public matches(
-    movement: Movement,
-    conditions: DirectionMatchingConditions,
-  ): boolean {
+  public matches(movement: Movement, conditions: DirectionMatchingConditions): boolean {
     return this.matchesMovement(movement) && this.matchesConditions(conditions);
   }
 

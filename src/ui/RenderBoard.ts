@@ -1,8 +1,5 @@
 import { FigureColor } from "@/domain/enums";
-import {
-  Coordinates,
-  CoordinatesKey,
-} from "@/domain/value-objects/Coordinates";
+import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import { BoardFactory } from "@/application/factories/BoardFactory";
 
 const reset = "\x1b[0m";
@@ -32,11 +29,7 @@ export class RenderBoard {
     const possibleMoveKeys = new Set(possibleMoves);
     const allCoordinates = new Array(ySize)
       .fill(0)
-      .map((_, indexY) =>
-        new Array(xSize)
-          .fill(0)
-          .map((_, indexX) => new Coordinates(indexX + 1, indexY + 1)),
-      );
+      .map((_, indexY) => new Array(xSize).fill(0).map((_, indexX) => new Coordinates(indexX + 1, indexY + 1)));
 
     console.log(this.renderColumnLabels());
 
@@ -52,9 +45,7 @@ export class RenderBoard {
           : isLightSquare
             ? lightSquareBg
             : darkSquareBg;
-        const figure = state.find((item) =>
-          item.coordinates.equals(coordinate),
-        );
+        const figure = state.find((item) => item.coordinates.equals(coordinate));
 
         if (figure) {
           const label = `${figure.color === FigureColor.WHITE ? "W" : "B"}${figure.name.charAt(0).toUpperCase()}`;
@@ -63,9 +54,7 @@ export class RenderBoard {
         } else if (isPossibleMove) {
           toRender.push(`${squareBg}${dim}${possibleMoveMarkerFg}    ${reset}`);
         } else {
-          toRender.push(
-            `${squareBg}${dim}${emptyFg}${" ".repeat(cellWidth)}${reset}`,
-          );
+          toRender.push(`${squareBg}${dim}${emptyFg}${" ".repeat(cellWidth)}${reset}`);
         }
       }
       console.log(toRender.join(""));

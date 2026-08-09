@@ -17,11 +17,7 @@ export class DirectionsBuilder {
     this.directions.push(direction);
   }
 
-  public addCustomDirection(
-    deltaX: number,
-    deltaY: number,
-    options: DirectionOptions = {},
-  ): this {
+  public addCustomDirection(deltaX: number, deltaY: number, options: DirectionOptions = {}): this {
     this.addDirection(new Direction({ deltaX, deltaY, ...options }));
     return this;
   }

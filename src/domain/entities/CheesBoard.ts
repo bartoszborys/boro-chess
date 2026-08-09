@@ -1,19 +1,20 @@
 import type { Figure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { FigureDetails } from "@/domain/value-objects/CapturedFigure";
-import { BoardFieldNotFound, FigureNotFound } from "@/domain/exceptions";
+import { BoardFieldNotFound, FigureNotFound, MoveHistoryNotFound } from "@/domain/exceptions";
 import { Movement } from "../value-objects/Movement";
 import { BoardFigureState } from "../value-objects/BoardFigureState";
 import { BoardFieldState } from "../value-objects/BoardFieldState";
 import { BoardField } from "../value-objects/BoardField";
-import { FigureColor, FigureName } from "@/domain/enums";
+import { FigureColor } from "@/domain/enums";
 import type { MoveHistory } from "./move-history";
 
-export interface BoardState {
+export type BoardState = {
   getFiguresState(): BoardFigureState[];
-}
+};
 
-export interface Board {
+export type Board = {
+  undoLastMove(): void;
   addMoveHistory(move: MoveHistory): void;
   moveFigure(movement: Movement): void;
   getFieldsState(playerColor: FigureColor): BoardFieldState[];
@@ -22,7 +23,7 @@ export interface Board {
   anyFigureOnCoordinates(path: Coordinates[]): boolean;
   captureFigureByCoordinates(coordinates: Coordinates): Figure;
   addFigure(figure: Figure, coordinates: Coordinates): void;
-}
+} & BoardState;
 
 export class FieldsBoard implements Board, BoardState {
   private capturedFigures: FigureDetails[] = [];
@@ -30,10 +31,17 @@ export class FieldsBoard implements Board, BoardState {
 
   constructor(private fields: Record<string, BoardField> = {}) {}
 
+  public undoLastMove(): void {
+    const lastMove = this.moveHistory.pop();
+    if (!lastMove) {
+      throw new MoveHistoryNotFound();
+    }
+    lastMove.undo(this);
+  }
+
   public getFiguresState(): BoardFigureState[] {
     const occupiedFields = Object.values(this.fields).filter(
-      (field): field is BoardField & { figure: Figure } =>
-        field.figure !== null,
+      (field): field is BoardField & { figure: Figure } => field.figure !== null,
     );
 
     return occupiedFields.map(({ figure, coordinates }) => ({
@@ -41,28 +49,9 @@ export class FieldsBoard implements Board, BoardState {
       color: figure.getColor(),
       coordinates,
       isCaptured:
-        this.capturedFigures.find(
-          (item) =>
-            item.name === figure.getName() &&
-            item.color === figure.getColor(),
-        ) !== undefined,
+        this.capturedFigures.find((item) => item.name === figure.getName() && item.color === figure.getColor()) !==
+        undefined,
     }));
-  }
-
-  public getKingPositionOrThrow(playerColor: FigureColor): Coordinates {
-    for (const { figure, coordinates } of Object.values(this.fields)) {
-      if (!figure) {
-        continue;
-      }
-
-      if (
-        figure.getName() === FigureName.KING &&
-        figure.getColor() === playerColor
-      ) {
-        return coordinates;
-      }
-    }
-    throw new FigureNotFound(`King of ${playerColor} color not found`);
   }
 
   public getFieldsState(playerColor: FigureColor): BoardFieldState[] {
@@ -70,10 +59,7 @@ export class FieldsBoard implements Board, BoardState {
     return fieldValues.map((field) => ({
       coordinatesKey: field.coordinates.toKey(),
       occupied: field.figure !== null,
-      canCapture: Boolean(
-        field.figure?.canBeCaptured() &&
-          field.figure?.getColor() !== playerColor,
-      ),
+      canCapture: Boolean(field.figure?.canBeCaptured() && field.figure?.getColor() !== playerColor),
     }));
   }
 
@@ -93,9 +79,7 @@ export class FieldsBoard implements Board, BoardState {
     return this.fields[coordinates.toKey()]?.figure;
   }
 
-  private getFieldUnderCoordinatesOrThrow(
-    coordinates: Coordinates,
-  ): BoardField {
+  private getFieldUnderCoordinatesOrThrow(coordinates: Coordinates): BoardField {
     const field = this.fields[coordinates.toKey()];
     if (!field) {
       throw new BoardFieldNotFound();

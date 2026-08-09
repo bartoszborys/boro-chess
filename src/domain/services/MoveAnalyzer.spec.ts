@@ -12,7 +12,7 @@ describe("CheesMoveAnalyzer", () => {
       const from = new Coordinates(1, 1);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields: jest
+        forDirectionOnExistingFields: jest
           .fn()
           .mockReturnValue([
             new Coordinates(1, 2),
@@ -25,9 +25,7 @@ describe("CheesMoveAnalyzer", () => {
 
       const figure = {
         getColor: () => FigureColor.WHITE,
-        getDirections: () => [
-          new Direction({ deltaX: 0, deltaY: 1, maxRange: 8 }),
-        ],
+        getDirections: () => [new Direction({ deltaX: 0, deltaY: 1, maxRange: 8 })],
       } as unknown as Figure;
 
       const board = {
@@ -52,20 +50,14 @@ describe("CheesMoveAnalyzer", () => {
       const from = new Coordinates(1, 1);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields: jest
+        forDirectionOnExistingFields: jest
           .fn()
-          .mockReturnValue([
-            new Coordinates(1, 2),
-            new Coordinates(1, 3),
-            new Coordinates(1, 4),
-          ]),
+          .mockReturnValue([new Coordinates(1, 2), new Coordinates(1, 3), new Coordinates(1, 4)]),
       };
 
       const figure = {
         getColor: () => FigureColor.WHITE,
-        getDirections: () => [
-          new Direction({ deltaX: 0, deltaY: 1, maxRange: 8 }),
-        ],
+        getDirections: () => [new Direction({ deltaX: 0, deltaY: 1, maxRange: 8 })],
       } as unknown as Figure;
 
       const board = {
@@ -91,23 +83,13 @@ describe("CheesMoveAnalyzer", () => {
 
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields: jest
-          .fn()
-          .mockImplementation(({ direction }) => {
-            if (vertical === direction) {
-              return [
-                new Coordinates(1, 2),
-                new Coordinates(1, 3),
-                new Coordinates(1, 4),
-              ];
-            }
+        forDirectionOnExistingFields: jest.fn().mockImplementation(({ direction }) => {
+          if (vertical === direction) {
+            return [new Coordinates(1, 2), new Coordinates(1, 3), new Coordinates(1, 4)];
+          }
 
-            return [
-              new Coordinates(2, 1),
-              new Coordinates(3, 1),
-              new Coordinates(4, 1),
-            ];
-          }),
+          return [new Coordinates(2, 1), new Coordinates(3, 1), new Coordinates(4, 1)];
+        }),
       };
 
       const figure = {
@@ -164,40 +146,35 @@ describe("CheesMoveAnalyzer", () => {
         ],
         expected: [],
       },
-    ])(
-      "should reach only the first capturable enemy when $name",
-      ({ trajectory, fieldsState, expected }) => {
-        const from = new Coordinates(1, 1);
-        const captureDirection = new Direction({
-          deltaX: 1,
-          deltaY: 1,
-          maxRange: 3,
-          whenEnemy: true,
-        });
-        const forVectorMovementOnExistingFields = jest
-          .fn()
-          .mockReturnValue(trajectory);
-        const pathGenerator: PathGenerator = {
-          forVectorMovementWithoutTarget: jest.fn(),
-          forVectorMovementOnExistingFields,
-        };
-        const figure = {
-          getColor: () => FigureColor.WHITE,
-          hasMoved: () => false,
-          getDirections: () => [captureDirection],
-        } as unknown as Figure;
-        const board = {
-          getFigureByCoordinatesOrThrow: jest.fn().mockReturnValue(figure),
-          getFieldsState: jest.fn().mockReturnValue(fieldsState),
-        } as unknown as Board;
+    ])("should reach only the first capturable enemy when $name", ({ trajectory, fieldsState, expected }) => {
+      const from = new Coordinates(1, 1);
+      const captureDirection = new Direction({
+        deltaX: 1,
+        deltaY: 1,
+        maxRange: 3,
+        whenEnemy: true,
+      });
+      const forVectorMovementOnExistingFields = jest.fn().mockReturnValue(trajectory);
+      const pathGenerator: PathGenerator = {
+        forVectorMovementWithoutTarget: jest.fn(),
+        forDirectionOnExistingFields: forVectorMovementOnExistingFields,
+      };
+      const figure = {
+        getColor: () => FigureColor.WHITE,
+        hasMoved: () => false,
+        getDirections: () => [captureDirection],
+      } as unknown as Figure;
+      const board = {
+        getFigureByCoordinatesOrThrow: jest.fn().mockReturnValue(figure),
+        getFieldsState: jest.fn().mockReturnValue(fieldsState),
+      } as unknown as Board;
 
-        const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
-        const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
+      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
-        expect(forVectorMovementOnExistingFields).toHaveBeenCalled();
-        expect(possibleMoves).toEqual(expected);
-      },
-    );
+      expect(forVectorMovementOnExistingFields).toHaveBeenCalled();
+      expect(possibleMoves).toEqual(expected);
+    });
 
     it("should stop whenEnemy trajectory when field is not capturable", () => {
       const from = new Coordinates(1, 1);
@@ -207,12 +184,10 @@ describe("CheesMoveAnalyzer", () => {
         maxRange: 1,
         whenEnemy: true,
       });
-      const forVectorMovementOnExistingFields = jest
-        .fn()
-        .mockReturnValue([new Coordinates(2, 2)]);
+      const forVectorMovementOnExistingFields = jest.fn().mockReturnValue([new Coordinates(2, 2)]);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields,
+        forDirectionOnExistingFields: forVectorMovementOnExistingFields,
       };
       const figure = {
         getColor: () => FigureColor.WHITE,
@@ -247,7 +222,7 @@ describe("CheesMoveAnalyzer", () => {
         .mockReturnValue([new Coordinates(1, 3), new Coordinates(1, 4)]);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields,
+        forDirectionOnExistingFields: forVectorMovementOnExistingFields,
       };
       const figure = {
         getColor: () => FigureColor.WHITE,
@@ -284,7 +259,7 @@ describe("CheesMoveAnalyzer", () => {
         .mockReturnValue([new Coordinates(1, 3), new Coordinates(1, 4)]);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields,
+        forDirectionOnExistingFields: forVectorMovementOnExistingFields,
       };
       const figure = {
         getColor: () => FigureColor.WHITE,
@@ -313,22 +288,16 @@ describe("CheesMoveAnalyzer", () => {
       const forVectorMovementOnExistingFields = jest.fn().mockReturnValue([]);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields,
+        forDirectionOnExistingFields: forVectorMovementOnExistingFields,
       };
       const figure = {
         getColor: () => FigureColor.WHITE,
         hasMoved: () => false,
-        getDirections: () => [
-          new Direction({ deltaX: 0, deltaY: 1, maxRange: 1 }),
-        ],
+        getDirections: () => [new Direction({ deltaX: 0, deltaY: 1, maxRange: 1 })],
       } as unknown as Figure;
       const board = {
         getFigureByCoordinatesOrThrow: jest.fn().mockReturnValue(figure),
-        getFieldsState: jest
-          .fn()
-          .mockReturnValue([
-            { coordinatesKey: "1-1", occupied: true, canCapture: false },
-          ]),
+        getFieldsState: jest.fn().mockReturnValue([{ coordinatesKey: "1-1", occupied: true, canCapture: false }]),
       } as unknown as Board;
 
       const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
@@ -346,12 +315,10 @@ describe("CheesMoveAnalyzer", () => {
         maxRange: 1,
         canCapture: false,
       });
-      const forVectorMovementOnExistingFields = jest
-        .fn()
-        .mockReturnValue([new Coordinates(1, 2)]);
+      const forVectorMovementOnExistingFields = jest.fn().mockReturnValue([new Coordinates(1, 2)]);
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
-        forVectorMovementOnExistingFields,
+        forDirectionOnExistingFields: forVectorMovementOnExistingFields,
       };
       const figure = {
         getColor: () => FigureColor.WHITE,

@@ -24,14 +24,8 @@ export class NewCheesGameUseCase {
     const [xSize] = this.boardFactory.getBoardSize();
 
     for (let index = 0; index < xSize; index++) {
-      board.addFigure(
-        new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()),
-        baseCoordinates.add(index, 1),
-      );
-      board.addFigure(
-        new CheesFigure(FigureColor.BLACK, new BlackPawnBehavior()),
-        baseCoordinates.add(index, 6),
-      );
+      board.addFigure(new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()), baseCoordinates.add(index, 1));
+      board.addFigure(new CheesFigure(FigureColor.BLACK, new BlackPawnBehavior()), baseCoordinates.add(index, 6));
     }
 
     const players = [
@@ -58,10 +52,7 @@ export class NewCheesGameUseCase {
 
     for (const player of players) {
       for (const [index, behavior] of behaviorsInOrder.entries()) {
-        board.addFigure(
-          new CheesFigure(player.color, behavior),
-          baseCoordinates.add(index, player.yCoordinatesOffset),
-        );
+        board.addFigure(new CheesFigure(player.color, behavior), baseCoordinates.add(index, player.yCoordinatesOffset));
       }
     }
   }

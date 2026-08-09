@@ -13,9 +13,6 @@ export class QueenBehavior implements FigureBehavior {
   }
 
   public getDirections(): Direction[] {
-    return [
-      ...this.towerBehavior.getDirections(),
-      ...this.bishopBehavior.getDirections(),
-    ];
+    return [...this.towerBehavior.getDirections(), ...this.bishopBehavior.getDirections()];
   }
 }

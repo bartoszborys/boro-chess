@@ -12,7 +12,7 @@ import {
 } from "./chess-bootstrap";
 import { Coordinates } from "./domain/value-objects/Coordinates";
 import { Movement } from "./domain/value-objects/Movement";
-import { FigureColor } from "./domain/enums";
+import { Player } from "./domain/entities/Player";
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -28,7 +28,40 @@ function coordinatesFromKey(key: string): Coordinates {
   return new Coordinates(x, y);
 }
 
-function getExampleMoves(): Movement[] {
+function getMateExampleMoves(): Movement[] {
+  return [
+    new Movement(new Coordinates(5, 2), new Coordinates(5, 3)),
+    new Movement(new Coordinates(6, 1), new Coordinates(3, 4)),
+    new Movement(new Coordinates(4, 1), new Coordinates(8, 5)),
+    new Movement(new Coordinates(8, 5), new Coordinates(6, 7)),
+  ];
+}
+
+function getPatExampleMoves(): Movement[] {
+  return [
+    new Movement(new Coordinates(5, 2), new Coordinates(5, 3)),
+    new Movement(new Coordinates(1, 7), new Coordinates(1, 5)),
+    new Movement(new Coordinates(4, 1), new Coordinates(8, 5)),
+    new Movement(new Coordinates(1, 8), new Coordinates(1, 6)),
+    new Movement(new Coordinates(8, 5), new Coordinates(1, 5)),
+    new Movement(new Coordinates(8, 7), new Coordinates(8, 5)),
+    new Movement(new Coordinates(1, 5), new Coordinates(3, 7)),
+    new Movement(new Coordinates(1, 6), new Coordinates(8, 6)),
+    new Movement(new Coordinates(8, 2), new Coordinates(8, 4)),
+    new Movement(new Coordinates(6, 7), new Coordinates(6, 6)),
+    new Movement(new Coordinates(3, 7), new Coordinates(4, 7)),
+    new Movement(new Coordinates(5, 8), new Coordinates(6, 7)),
+    new Movement(new Coordinates(4, 7), new Coordinates(2, 7)),
+    new Movement(new Coordinates(4, 8), new Coordinates(4, 3)),
+    new Movement(new Coordinates(2, 7), new Coordinates(2, 8)),
+    new Movement(new Coordinates(4, 3), new Coordinates(8, 7)),
+    new Movement(new Coordinates(2, 8), new Coordinates(3, 8)),
+    new Movement(new Coordinates(6, 7), new Coordinates(7, 6)),
+    new Movement(new Coordinates(3, 8), new Coordinates(5, 6)),
+  ];
+}
+
+function getExampleMovesOld(): Movement[] {
   const horseMoveTo = new Movement(new Coordinates(7, 1), new Coordinates(6, 3));
   const horseMoveFrom = new Movement(new Coordinates(6, 3), new Coordinates(7, 1));
   const exampleMoves = [
@@ -64,11 +97,16 @@ function getExampleMoves(): Movement[] {
 async function main() {
   newGameUseCase.execute();
   renderBoard.render();
-  for (const move of getExampleMoves()) {
+  for (const move of getPatExampleMoves()) {
     const figure = boardFactory.getBoard().getFigureByCoordinatesOrThrow(move.from);
-    playerFigureMoveUseCase.execute(move, figure.getColor());
-    await sleep(20);
+    const gameEndResult = playerFigureMoveUseCase.execute(move, new Player(figure.getColor()));
+
     renderBoard.render();
+    if (gameEndResult) {
+      console.log(gameEndResult);
+      break;
+    }
+    await sleep(20);
   }
 
   const rl = createInterface({ input, output });

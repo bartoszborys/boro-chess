@@ -7,6 +7,7 @@ export interface Figure {
   getDirections(): Direction[];
   hasMoved(): boolean;
   markAsMoved(): void;
+  markAsNotMoved(): void;
   getColor(): FigureColor;
   isFriendly(figure: Figure | null): boolean;
   canBeCaptured(): boolean;
@@ -36,6 +37,10 @@ export class CheesFigure implements Figure {
 
   public hasMoved(): boolean {
     return this._hasMoved;
+  }
+
+  public markAsNotMoved(): void {
+    this._hasMoved = false;
   }
 
   public isFriendly(figure: Figure | null): boolean {

@@ -5,6 +5,7 @@ import { Movement } from "@/domain/value-objects/Movement";
 import { GameRulesValidator } from "@/domain/services/GameRules";
 import { Game } from "@/domain/entities/CheesGame";
 import { FigureColor } from "@/domain/enums";
+import { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
 
 export class SelectFigureToMoveUseCase {
   constructor(
@@ -19,22 +20,19 @@ export class SelectFigureToMoveUseCase {
 
     const validMovementKeys: CoordinatesKey[] = [];
 
-    for (const possibleMoveToCoordinate of this.moveAnalyzer.createPossibleMoves(board, from)) {
-      const movement = new Movement(from, Coordinates.fromKey(possibleMoveToCoordinate));
-      const context = this.moveAnalyzer.createValidatedMoveContext(board, movement);
-      this.game.playerMove(board, context);
+    for (const possibleMoveToCoordinateKey of this.moveAnalyzer.createPossibleMoves(board, from)) {
+      const movement = new Movement(from, Coordinates.fromKey(possibleMoveToCoordinateKey));
+      const context: ValidatedMoveContext | null = this.moveAnalyzer.createValidatedMoveContextOrNull(board, movement);
 
-      const isValid = this.gameRules.boardValidStateForPlayer(
-        board.getFiguresState(),
-        board.getFieldsState(playerColor),
-        playerColor,
-      );
-
-      if (isValid) {
-        validMovementKeys.push(possibleMoveToCoordinate);
+      if (!context) {
+        continue;
       }
 
-      this.game.undoLastMove(board);
+      const peekBoardState = this.game.peekMove(board, context, playerColor);
+
+      if (this.gameRules.boardValidStateForPlayer(peekBoardState, playerColor)) {
+        validMovementKeys.push(possibleMoveToCoordinateKey);
+      }
     }
 
     return validMovementKeys;

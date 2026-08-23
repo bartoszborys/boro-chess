@@ -1,32 +1,27 @@
-import type { Board } from "@/domain/entities/CheesBoard";
 import type { ChessCheckRule } from "@/domain/entities/check-rules/CheckRule";
 import type { PathGenerator } from "@/domain/services/PathGenerator";
 import { FigureInvalidMove } from "@/domain/exceptions";
 import { FigureColor, FigureName } from "@/domain/enums";
 import type { BoardFigureState } from "@/domain/value-objects/BoardFigureState";
-import { BoardFieldState } from "../value-objects/BoardFieldState";
 import { CoordinatesKey } from "../value-objects/Coordinates";
+import type { Player } from "@/domain/entities/Player";
+import type { GameEndResult } from "@/domain/value-objects/GameEndResult";
+import type { BoardState } from "@/domain/value-objects/BoardState";
 
-export interface GameRulesValidator {
-  boardValidStateForPlayer(
-    figureStates: BoardFigureState[],
-    fieldsState: BoardFieldState[],
-    movingPlayerColor: FigureColor,
-  ): boolean;
-}
+export type GameRulesValidator = {
+  boardValidStateForPlayer(boardState: BoardState, movingPlayerColor: FigureColor): boolean;
+  checkEnd(boardState: BoardState, player: Player): GameEndResult;
+};
 
 export class ChessGameRulesValidator implements GameRulesValidator {
   constructor(
     private readonly pathGenerator: PathGenerator,
     private readonly checkRules: ChessCheckRule[],
-  ) {}
+  ) { }
 
-  public boardValidStateForPlayer(
-    figureStates: BoardFigureState[],
-    fieldsState: BoardFieldState[],
-    movingPlayerColor: FigureColor,
-  ): boolean {
-    const playerKingState = figureStates.find(
+  public boardValidStateForPlayer(boardState: BoardState, movingPlayerColor: FigureColor): boolean {
+    const { figuresState } = boardState;
+    const playerKingState = figuresState.find(
       (figure) => figure.name === FigureName.KING && figure.color === movingPlayerColor,
     );
 
@@ -34,20 +29,48 @@ export class ChessGameRulesValidator implements GameRulesValidator {
       throw new FigureInvalidMove(`Player king not found`);
     }
 
-    if (this.isKingInCheck(fieldsState, figureStates, movingPlayerColor, playerKingState)) {
+    if (this.isKingInCheck(boardState, movingPlayerColor, playerKingState)) {
       return false;
     }
 
     return true;
   }
 
+  public checkEnd(boardState: BoardState, player: Player): GameEndResult {
+    const { figuresState } = boardState;
+    const enemyColor = player.getEnemyColor();
+    const enemyKingState = figuresState.find(
+      (figure) => figure.name === FigureName.KING && figure.color === enemyColor,
+    );
+
+    if (!enemyKingState) {
+      throw new FigureInvalidMove(`Player king not found`);
+    }
+
+    const enemyInCheck = this.isKingInCheck(boardState, enemyColor, enemyKingState);
+
+    if (enemyInCheck) {
+      return {
+        win: true,
+        draw: false,
+        winner: player,
+      };
+    }
+
+    return {
+      win: false,
+      draw: true,
+      winner: null,
+    };
+  }
+
   private isKingInCheck(
-    fieldsState: BoardFieldState[],
-    figureStates: BoardFigureState[],
+    boardState: BoardState,
     playerColor: FigureColor,
     kingState: BoardFigureState,
   ): boolean {
-    const figuresByCoordinates = figureStates.reduce(
+    const { figuresState, fieldsState } = boardState;
+    const figuresByCoordinates = figuresState.reduce(
       (acc, state) => {
         acc[state.coordinates.toKey()] = state;
         return acc;
@@ -70,7 +93,7 @@ export class ChessGameRulesValidator implements GameRulesValidator {
 
         const possiblyCheckPath = this.pathGenerator.forDirectionOnExistingFields({
           from: kingState.coordinates,
-          direction,
+          direction: direction.reverse(),
           existingFields,
         });
 

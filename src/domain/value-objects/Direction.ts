@@ -53,6 +53,14 @@ export class Direction {
     this.castling = castling ?? false;
   }
 
+  public reverse(): Direction {
+    return new Direction({
+      ...this,
+      deltaX: -this.deltaX,
+      deltaY: -this.deltaY,
+    });
+  }
+
   public matches(movement: Movement, conditions: DirectionMatchingConditions): boolean {
     return this.matchesMovement(movement) && this.matchesConditions(conditions);
   }

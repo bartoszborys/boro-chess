@@ -10,14 +10,25 @@ import type { BoardFieldState } from "../value-objects/BoardFieldState";
 import type { Direction } from "../value-objects/Direction";
 
 export interface MoveAnalyzer {
-  createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext;
+  createValidatedMoveContextOrThrow(board: Board, movement: Movement): ValidatedMoveContext;
+  createValidatedMoveContextOrNull(board: Board, movement: Movement): ValidatedMoveContext | null;
   createPossibleMoves(board: Board, from: Coordinates): CoordinatesKey[];
 }
 
 export class CheesMoveAnalyzer implements MoveAnalyzer {
-  constructor(private readonly pathGenerator: PathGenerator) {}
+  constructor(private readonly pathGenerator: PathGenerator) { }
 
-  public createValidatedMoveContext(board: Board, movement: Movement): ValidatedMoveContext {
+  public createValidatedMoveContextOrThrow(board: Board, movement: Movement): ValidatedMoveContext {
+    const context = this.createValidatedMoveContextOrNull(board, movement);
+
+    if (!context) {
+      throw new FigureInvalidMove(`Figure cannot move from ${movement.from} to ${movement.to}`);
+    }
+
+    return context;
+  }
+
+  public createValidatedMoveContextOrNull(board: Board, movement: Movement): ValidatedMoveContext | null {
     const { from, to } = movement;
 
     const movingFigure = board.getFigureByCoordinatesOrThrow(from);
@@ -38,7 +49,7 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
     const direction = allDirections.find((direction) => direction.matches(movement, directionConditions));
 
     if (!direction) {
-      throw new FigureInvalidMove(`Figure cannot move from ${from} to ${to}`);
+      return null;
     }
 
     if (direction.castling && capturing) {

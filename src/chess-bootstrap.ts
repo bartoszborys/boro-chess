@@ -24,6 +24,7 @@ import { ChessPromotionRule } from "./domain/entities/rules/PromotionRule";
 import { ConsolePromotionChoice } from "./ui/ConsolePromotionChoice";
 import { ChessFigureBehaviorFactory } from "./application/factories/FigureBehaviorFactory";
 import { FigurePromotionUseCase } from "./application/use-cases/Promotion.use-case";
+import { CheckGameEndUseCase } from "./application/use-cases/CheckGameEnd.use-case";
 
 const boardSettings = new ChessBoardSettings();
 export const pathGenerator: PathGenerator = new CheesPathGenerator();
@@ -48,6 +49,7 @@ export const moveAnalyzer: MoveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
 export const gameRules: GameRulesValidator = new ChessGameRulesValidator(pathGenerator, checkRules, promotionRules);
 export const newGameUseCase = new NewCheesGameUseCase(boardFactory);
 export const playerFigureMoveUseCase = new PlayerFigureMoveUseCase(moveAnalyzer, boardFactory, game, gameRules);
+export const checkGameEndUseCase = new CheckGameEndUseCase(moveAnalyzer, boardFactory, game, gameRules);
 export const promotionUseCase = new FigurePromotionUseCase(game, figureBehaviorFactory);
 export const renderBoard = new RenderBoard(boardFactory);
 export const consolePromotionChoice = new ConsolePromotionChoice();

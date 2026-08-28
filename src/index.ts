@@ -10,12 +10,12 @@ import {
   newGameUseCase,
   playerFigureMoveUseCase,
   promotionUseCase,
+  checkGameEndUseCase,
   renderBoard,
 } from "./chess-bootstrap";
 import { Coordinates } from "./domain/value-objects/Coordinates";
 import { Movement } from "./domain/value-objects/Movement";
 import { Player } from "./domain/entities/Player";
-import { ConsolePromotionChoice } from "./ui/ConsolePromotionChoice";
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -118,13 +118,21 @@ async function main() {
   for (const move of getPromotionExampleMoves()) {
     const figure = boardFactory.getBoard().getFigureByCoordinatesOrThrow(move.from);
     const currentPlayer = new Player(figure.getColor());
-    const gameState = playerFigureMoveUseCase.execute(move, currentPlayer);
+    const moveResult = playerFigureMoveUseCase.execute(move, currentPlayer);
 
-    if (gameState?.promotion) {
+    if (moveResult.promotion) {
       const result = await consolePromotionChoice.pick();
       promotionUseCase.execute(boardFactory.getBoard(), currentPlayer, result);
     }
+
     renderBoard.render();
+    const gameEndState = checkGameEndUseCase.execute(currentPlayer);
+
+    if (gameEndState) {
+      console.log(`Game ended: ${gameEndState.winner?.color} won`);
+      break;
+    }
+
     await sleep(20);
   }
 

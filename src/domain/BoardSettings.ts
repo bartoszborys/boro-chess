@@ -15,7 +15,7 @@ export class ChessBoardSettings implements BoardSettings {
     const [, ySize] = this.getBoardSize();
 
     if (color === FigureColor.WHITE) {
-      return y === ySize - 1;
+      return y === ySize;
     }
 
     return y === 0;

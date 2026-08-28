@@ -7,7 +7,8 @@ import { Movement } from "@/domain/value-objects/Movement";
 import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
 
 describe("CheesGame", () => {
-  const game = new CheesGame();
+  const pawnFactory = { createPawn: jest.fn() };
+  const game = new CheesGame(pawnFactory);
   const movement = new Movement(new Coordinates(1, 2), new Coordinates(1, 3));
 
   let board: Board;

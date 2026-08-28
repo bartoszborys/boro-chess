@@ -6,4 +6,8 @@ export class Player {
   public getEnemyColor(): FigureColor {
     return this.color === FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE;
   }
+
+  public equals(player: Player): boolean {
+    return this.color === player.color;
+  }
 }

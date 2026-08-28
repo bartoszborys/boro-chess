@@ -1,23 +1,33 @@
-import type { ChessCheckRule } from "@/domain/entities/check-rules/CheckRule";
 import type { PathGenerator } from "@/domain/services/PathGenerator";
 import { FigureInvalidMove } from "@/domain/exceptions";
 import { FigureColor, FigureName } from "@/domain/enums";
 import type { BoardFigureState } from "@/domain/value-objects/BoardFigureState";
 import { CoordinatesKey } from "../value-objects/Coordinates";
 import type { Player } from "@/domain/entities/Player";
-import type { GameEndResult } from "@/domain/value-objects/GameEndResult";
+import type { GameEndState } from "@/domain/value-objects/GameEndState";
 import type { BoardState } from "@/domain/value-objects/BoardState";
+import type { ChessCheckRule } from "@/domain/entities/rules/CheckRule";
+import type { PromotionRule } from "@/domain/entities/rules/PromotionRule";
 
 export type GameRulesValidator = {
   boardValidStateForPlayer(boardState: BoardState, movingPlayerColor: FigureColor): boolean;
-  checkEnd(boardState: BoardState, player: Player): GameEndResult;
+  checkGameEndState(boardState: BoardState, player: Player): GameEndState;
+  promotionAvailable(boardState: BoardState): boolean;
 };
 
 export class ChessGameRulesValidator implements GameRulesValidator {
   constructor(
     private readonly pathGenerator: PathGenerator,
     private readonly checkRules: ChessCheckRule[],
+    private readonly promotionRules: PromotionRule[],
   ) { }
+
+  public promotionAvailable(boardState: BoardState): boolean {
+    const { figuresState } = boardState;
+    return figuresState.some((figure) =>
+      this.promotionRules.some((rule) => rule.isPromotable(figure.name, figure.color, figure.coordinates)),
+    );
+  }
 
   public boardValidStateForPlayer(boardState: BoardState, movingPlayerColor: FigureColor): boolean {
     const { figuresState } = boardState;
@@ -36,7 +46,7 @@ export class ChessGameRulesValidator implements GameRulesValidator {
     return true;
   }
 
-  public checkEnd(boardState: BoardState, player: Player): GameEndResult {
+  public checkGameEndState(boardState: BoardState, player: Player): GameEndState {
     const { figuresState } = boardState;
     const enemyColor = player.getEnemyColor();
     const enemyKingState = figuresState.find(

@@ -9,8 +9,9 @@ import { CheesMoveAnalyzer } from "./domain/services/MoveAnalyzer";
 import { ChessGameRulesValidator, type GameRulesValidator } from "./domain/services/GameRules";
 import { RenderBoard } from "./ui/RenderBoard";
 import { InAppMemoryCheesBoardFactory } from "./infrastructure/InAppMemoryCheesBoardFactory";
-import { ByBehaviorCheckRule } from "./domain/entities/check-rules/ByBehaviorCheckRule";
 import { FigureColor, FigureName } from "./domain/enums";
+import { ByBehaviorCheckRule } from "./domain/entities/rules/ByBehaviorCheckRule";
+import { ChessBoardSettings } from "./domain/BoardSettings";
 import {
   BishopBehavior,
   BlackPawnBehavior,
@@ -19,9 +20,15 @@ import {
   TowerBehavior,
   WhitePawnBehavior,
 } from "@/domain";
+import { ChessPromotionRule } from "./domain/entities/rules/PromotionRule";
+import { ConsolePromotionChoice } from "./ui/ConsolePromotionChoice";
+import { ChessFigureBehaviorFactory } from "./application/factories/FigureBehaviorFactory";
+import { FigurePromotionUseCase } from "./application/use-cases/Promotion.use-case";
 
+const boardSettings = new ChessBoardSettings();
 export const pathGenerator: PathGenerator = new CheesPathGenerator();
-export const game = new CheesGame();
+export const figureBehaviorFactory = new ChessFigureBehaviorFactory();
+export const game = new CheesGame(figureBehaviorFactory);
 
 const checkRules = [
   new ByBehaviorCheckRule([FigureName.BISHOP, FigureName.QUEEN], new BishopBehavior()),
@@ -32,9 +39,15 @@ const checkRules = [
   new ByBehaviorCheckRule([FigureName.KING], new KingBehavior()),
 ];
 
-export const boardFactory: BoardFactory = new InAppMemoryCheesBoardFactory();
+const promotionRules = [
+  new ChessPromotionRule(boardSettings),
+];
+
+export const boardFactory: BoardFactory = new InAppMemoryCheesBoardFactory(boardSettings);
 export const moveAnalyzer: MoveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
-export const gameRules: GameRulesValidator = new ChessGameRulesValidator(pathGenerator, checkRules);
+export const gameRules: GameRulesValidator = new ChessGameRulesValidator(pathGenerator, checkRules, promotionRules);
 export const newGameUseCase = new NewCheesGameUseCase(boardFactory);
 export const playerFigureMoveUseCase = new PlayerFigureMoveUseCase(moveAnalyzer, boardFactory, game, gameRules);
+export const promotionUseCase = new FigurePromotionUseCase(game, figureBehaviorFactory);
 export const renderBoard = new RenderBoard(boardFactory);
+export const consolePromotionChoice = new ConsolePromotionChoice();

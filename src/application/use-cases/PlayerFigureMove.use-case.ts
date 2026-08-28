@@ -1,13 +1,13 @@
 import { type Board, type Game, type MoveAnalyzer, Movement } from "@/domain";
 import type { BoardFactory } from "@/application/factories/BoardFactory";
 import type { GameRulesValidator } from "@/domain/services/GameRules";
-import { FigureInvalidMove } from "@/domain/exceptions";
+import { FigureInvalidMove, PlayerCannotMoveException } from "@/domain/exceptions";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Player } from "@/domain/entities/Player";
 import { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
 import { FigureColor } from "@/domain/enums";
 import type { BoardFigureState } from "@/domain/value-objects/BoardFigureState";
-import type { GameEndResult } from "@/domain/value-objects/GameEndResult";
+import type { PlayerFigureMoveResult } from "@/domain/value-objects/dto";
 
 export class PlayerFigureMoveUseCase {
   constructor(
@@ -15,9 +15,13 @@ export class PlayerFigureMoveUseCase {
     private readonly boardFactory: BoardFactory,
     private readonly game: Game,
     private readonly gameRules: GameRulesValidator,
-  ) {}
+  ) { }
 
-  public execute(movement: Movement, player: Player): GameEndResult | null {
+  public execute(movement: Movement, player: Player): PlayerFigureMoveResult {
+    if (!this.game.playersCanMove()) {
+      throw new PlayerCannotMoveException(`Player cannot move`);
+    }
+
     const board = this.boardFactory.getBoard();
     const context = this.moveAnalyzer.createValidatedMoveContextOrThrow(board, movement);
     const boardState = this.game.playerMove(board, context, player.color);
@@ -29,11 +33,27 @@ export class PlayerFigureMoveUseCase {
 
     const enemyColor = player.getEnemyColor();
 
-    if (this.hasAnyValidMove(board, boardState.figuresState, enemyColor)) {
-      return null;
+    if (this.gameRules.promotionAvailable(boardState)) {
+      this.game.awaitPromotion({ player, coordinates: movement.to });
+      return {
+        gameEndState: null,
+        promotion: true,
+      };
     }
 
-    return this.gameRules.checkEnd(boardState, player);
+    if (this.hasAnyValidMove(board, boardState.figuresState, enemyColor)) {
+      return {
+        gameEndState: null,
+        promotion: false,
+      };
+    }
+
+    const gameEndState = this.gameRules.checkGameEndState(boardState, player);
+
+    return {
+      gameEndState,
+      promotion: false,
+    };
   }
 
   private hasAnyValidMove(board: Board, figureStates: BoardFigureState[], enemyColor: FigureColor): boolean {

@@ -3,6 +3,7 @@ import { Direction } from "@/domain/value-objects/Direction";
 import { FigureColor, FigureName } from "@/domain/enums";
 
 export interface Figure {
+  promote(figureBehavior: FigureBehavior): void;
   getName(): FigureName;
   getDirections(): Direction[];
   hasMoved(): boolean;
@@ -16,10 +17,14 @@ export interface Figure {
 export class CheesFigure implements Figure {
   private _hasMoved: boolean = false;
   private readonly color: FigureColor;
-  private readonly figureBehavior: FigureBehavior;
+  private figureBehavior: FigureBehavior;
 
   constructor(color: FigureColor, figureBehavior: FigureBehavior) {
     this.color = color;
+    this.figureBehavior = figureBehavior;
+  }
+
+  public promote(figureBehavior: FigureBehavior): void {
     this.figureBehavior = figureBehavior;
   }
 

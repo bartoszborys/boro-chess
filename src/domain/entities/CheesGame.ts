@@ -4,18 +4,51 @@ import {
   CompositeMoveHistory,
   InMemoryCaptureHistory,
   InMemoryMovementHistory,
+  InMemoryPromotionHistory,
   type MoveHistory,
 } from "@/domain/entities/move-history";
 import type { FigureColor } from "@/domain/enums";
 import type { BoardState } from "@/domain/value-objects/BoardState";
+import type { PendingPromotion } from "@/domain/value-objects/dto";
+import type { Player } from "@/domain/entities/Player";
+import type { FigureBehavior } from "@/domain/entities/behaviors";
+import type { PawnFactory } from "@/application/factories/FigureBehaviorFactory";
 
 export interface Game {
+  playersCanMove(): boolean;
+  awaitPromotion(pendingPromotion: PendingPromotion): void;
+  promotionComplete(board: Board, player: Player, figureBehavior: FigureBehavior): boolean;
   playerMove(board: Board, context: ValidatedMoveContext, playerColor: FigureColor): BoardState;
   peekMove(board: Board, context: ValidatedMoveContext, playerColor: FigureColor): BoardState;
   undoLastMove(board: Board): void;
 }
 
 export class CheesGame implements Game {
+  private pendingPromotion: PendingPromotion | null = null;
+
+  constructor(private readonly pawnFactory: PawnFactory) { }
+
+  public playersCanMove(): boolean {
+    return this.pendingPromotion === null;
+  }
+
+  public awaitPromotion(pendingPromotion: PendingPromotion): void {
+    this.pendingPromotion = pendingPromotion;
+  }
+
+  public promotionComplete(board: Board, player: Player, figureBehavior: FigureBehavior): boolean {
+    if (!this.pendingPromotion || !this.pendingPromotion.player.equals(player)) {
+      return false;
+    }
+
+    const promotionFigure = board.getFigureByCoordinatesOrThrow(this.pendingPromotion.coordinates);
+    promotionFigure.promote(figureBehavior);
+    board.addMoveHistory(new InMemoryPromotionHistory(this.pendingPromotion.coordinates, this.pawnFactory));
+
+    this.pendingPromotion = null;
+    return true;
+  }
+
   public playerMove(board: Board, context: ValidatedMoveContext, playerColor: FigureColor): BoardState {
     const { movement, capturing, castlingMovement } = context;
     const steps: MoveHistory[] = [];

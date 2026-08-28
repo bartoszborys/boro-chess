@@ -1,10 +1,13 @@
 import { BoardFactory } from "@/application/factories/BoardFactory";
+import { BoardSettings } from "@/domain/BoardSettings";
 import { Board, BoardState, FieldsBoard } from "@/domain/entities/CheesBoard";
 import { BoardField } from "@/domain/value-objects/BoardField";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class InAppMemoryCheesBoardFactory implements BoardFactory {
   private board: FieldsBoard | null = null;
+
+  public constructor(private readonly boardSettings: BoardSettings) { }
 
   public getBoard(): Board {
     return this.getOrCreateBoard();
@@ -15,7 +18,7 @@ export class InAppMemoryCheesBoardFactory implements BoardFactory {
   }
 
   public getBoardSize(): [number, number] {
-    return [8, 8];
+    return this.boardSettings.getBoardSize();
   }
 
   private getOrCreateBoard(): FieldsBoard {

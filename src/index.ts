@@ -3,16 +3,19 @@ import { stdin as input, stdout as output } from "node:process";
 import { SelectFigureToMoveUseCase } from "./application/use-cases/SelectFigureToMove.use-case";
 import {
   boardFactory,
+  consolePromotionChoice,
   game,
   gameRules,
   moveAnalyzer,
   newGameUseCase,
   playerFigureMoveUseCase,
+  promotionUseCase,
   renderBoard,
 } from "./chess-bootstrap";
 import { Coordinates } from "./domain/value-objects/Coordinates";
 import { Movement } from "./domain/value-objects/Movement";
 import { Player } from "./domain/entities/Player";
+import { ConsolePromotionChoice } from "./ui/ConsolePromotionChoice";
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -94,18 +97,34 @@ function getExampleMovesOld(): Movement[] {
   return exampleMoves;
 }
 
+function getPromotionExampleMoves(): Movement[] {
+  return [
+    new Movement(new Coordinates(5, 2), new Coordinates(5, 4)),
+    new Movement(new Coordinates(4, 1), new Coordinates(8, 5)),
+    new Movement(new Coordinates(8, 5), new Coordinates(8, 7)),
+    new Movement(new Coordinates(8, 7), new Coordinates(8, 8)),
+    new Movement(new Coordinates(8, 8), new Coordinates(7, 8)),
+    new Movement(new Coordinates(8, 2), new Coordinates(8, 4)),
+    new Movement(new Coordinates(8, 4), new Coordinates(8, 5)),
+    new Movement(new Coordinates(8, 5), new Coordinates(8, 6)),
+    new Movement(new Coordinates(8, 6), new Coordinates(8, 7)),
+    new Movement(new Coordinates(8, 7), new Coordinates(8, 8)),
+  ];
+}
+
 async function main() {
   newGameUseCase.execute();
   renderBoard.render();
-  for (const move of getPatExampleMoves()) {
+  for (const move of getPromotionExampleMoves()) {
     const figure = boardFactory.getBoard().getFigureByCoordinatesOrThrow(move.from);
-    const gameEndResult = playerFigureMoveUseCase.execute(move, new Player(figure.getColor()));
+    const currentPlayer = new Player(figure.getColor());
+    const gameState = playerFigureMoveUseCase.execute(move, currentPlayer);
 
-    renderBoard.render();
-    if (gameEndResult) {
-      console.log(gameEndResult);
-      break;
+    if (gameState?.promotion) {
+      const result = await consolePromotionChoice.pick();
+      promotionUseCase.execute(boardFactory.getBoard(), currentPlayer, result);
     }
+    renderBoard.render();
     await sleep(20);
   }
 

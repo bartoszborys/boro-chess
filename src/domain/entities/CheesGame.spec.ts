@@ -1,6 +1,6 @@
 import type { Board } from "@/domain/entities/CheesBoard";
 import { CheesGame } from "@/domain/entities/CheesGame";
-import { CompositeMoveHistory, InMemoryMovementHistory } from "@/domain/entities/move-history";
+import { CompositeMoveHistory, MovementMoveHistory } from "@/domain/entities/move-history";
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
@@ -92,7 +92,7 @@ describe("CheesGame", () => {
       expect(board.undoLastMove).not.toHaveBeenCalled();
     });
 
-    describe("MovementHistory", () => {
+    describe("MovementMoveHistory", () => {
       it.each([true, false])("adds movement history with hasMovedBefore %s for a basic move", (hasMovedBefore) => {
         (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
           hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
@@ -101,7 +101,7 @@ describe("CheesGame", () => {
         game.playerMove(board, { movement, capturing: false }, FigureColor.WHITE);
 
         expect(board.addMoveHistory).toHaveBeenCalledWith(
-          new CompositeMoveHistory([new InMemoryMovementHistory(movement, hasMovedBefore)]),
+          new CompositeMoveHistory([new MovementMoveHistory(movement, hasMovedBefore)]),
         );
       });
 
@@ -115,8 +115,8 @@ describe("CheesGame", () => {
 
         expect(board.addMoveHistory).toHaveBeenCalledWith(
           new CompositeMoveHistory([
-            new InMemoryMovementHistory(movement, hasMovedBefore),
-            new InMemoryMovementHistory(castlingMovement, hasMovedBefore),
+            new MovementMoveHistory(movement, hasMovedBefore),
+            new MovementMoveHistory(castlingMovement, hasMovedBefore),
           ]),
         );
       });

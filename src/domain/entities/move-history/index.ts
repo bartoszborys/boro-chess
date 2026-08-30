@@ -1,5 +1,5 @@
 export type { MoveHistory } from "./MoveHistory";
-export { InMemoryMovementHistory } from "./InMemoryMovementHistory";
-export { InMemoryCaptureHistory } from "./InMemoryCaptureHistory";
-export { InMemoryPromotionHistory } from "./InMemoryPromotionHistory";
+export { MovementMoveHistory } from "./MovementMoveHistory";
+export { CaptureMoveHistory } from "./CaptureMoveHistory";
+export { PromotionMoveHistory } from "./PromotionMoveHistory";
 export { CompositeMoveHistory } from "./CompositeMoveHistory";

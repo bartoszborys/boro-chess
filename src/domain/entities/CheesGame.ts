@@ -1,10 +1,10 @@
 import type { Board } from "@/domain/entities/CheesBoard";
 import type { BoardState, PendingPromotion, ValidatedMoveContext } from "@/domain/dtos";
 import {
+  CaptureMoveHistory,
   CompositeMoveHistory,
-  InMemoryCaptureHistory,
-  InMemoryMovementHistory,
-  InMemoryPromotionHistory,
+  MovementMoveHistory,
+  PromotionMoveHistory,
   type MoveHistory,
 } from "@/domain/entities/move-history";
 import type { FigureColor } from "@/domain/enums";
@@ -41,7 +41,7 @@ export class CheesGame implements Game {
 
     const promotionFigure = board.getFigureByCoordinatesOrThrow(this.pendingPromotion.coordinates);
     promotionFigure.promote(figureBehavior);
-    board.addMoveHistory(new InMemoryPromotionHistory(this.pendingPromotion.coordinates, this.pawnFactory));
+    board.addMoveHistory(new PromotionMoveHistory(this.pendingPromotion.coordinates, this.pawnFactory));
 
     this.pendingPromotion = null;
     return true;
@@ -53,17 +53,17 @@ export class CheesGame implements Game {
 
     if (capturing) {
       const capturedFigure = board.captureFigureByCoordinates(movement.to);
-      steps.push(new InMemoryCaptureHistory(capturedFigure, movement.to));
+      steps.push(new CaptureMoveHistory(capturedFigure, movement.to));
     }
 
     const hasMovedBefore = board.getFigureByCoordinatesOrThrow(movement.from).hasMoved();
     board.moveFigure(movement);
-    steps.push(new InMemoryMovementHistory(movement, hasMovedBefore));
+    steps.push(new MovementMoveHistory(movement, hasMovedBefore));
 
     if (castlingMovement) {
       const castlingHasMovedBefore = board.getFigureByCoordinatesOrThrow(castlingMovement.from).hasMoved();
       board.moveFigure(castlingMovement);
-      steps.push(new InMemoryMovementHistory(castlingMovement, castlingHasMovedBefore));
+      steps.push(new MovementMoveHistory(castlingMovement, castlingHasMovedBefore));
     }
 
     board.addMoveHistory(new CompositeMoveHistory(steps));

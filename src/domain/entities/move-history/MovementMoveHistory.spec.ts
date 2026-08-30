@@ -1,10 +1,10 @@
 import type { Board } from "@/domain/entities/CheesBoard";
 import type { Figure } from "@/domain/entities/CheesFigure";
-import { InMemoryMovementHistory } from "@/domain/entities/move-history/InMemoryMovementHistory";
+import { MovementMoveHistory } from "@/domain/entities/move-history/MovementMoveHistory";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 
-describe("InMemoryMovementHistory", () => {
+describe("MovementMoveHistory", () => {
   describe("undo", () => {
     const from = new Coordinates(1, 2);
     const to = new Coordinates(1, 3);
@@ -16,7 +16,7 @@ describe("InMemoryMovementHistory", () => {
         getFigureByCoordinatesOrThrow: jest.fn(),
       } as unknown as Board;
 
-      new InMemoryMovementHistory(movement, true).undo(board);
+      new MovementMoveHistory(movement, true).undo(board);
 
       const reversedMovement = (board.moveFigure as jest.Mock).mock.calls[0][0] as Movement;
       expect(reversedMovement.from).toEqual(to);
@@ -43,7 +43,7 @@ describe("InMemoryMovementHistory", () => {
         getFigureByCoordinatesOrThrow: jest.fn().mockReturnValue(figure),
       } as unknown as Board;
 
-      new InMemoryMovementHistory(movement, hasMovedBefore).undo(board);
+      new MovementMoveHistory(movement, hasMovedBefore).undo(board);
 
       if (shouldMarkAsNotMoved) {
         expect(figure.markAsNotMoved).toHaveBeenCalled();

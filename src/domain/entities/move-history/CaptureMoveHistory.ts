@@ -3,7 +3,7 @@ import type { Figure } from "@/domain/entities/CheesFigure";
 import type { MoveHistory } from "@/domain/entities/move-history/MoveHistory";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
-export class InMemoryCaptureHistory implements MoveHistory {
+export class CaptureMoveHistory implements MoveHistory {
   constructor(
     private readonly capturedFigure: Figure,
     private readonly coordinates: Coordinates,

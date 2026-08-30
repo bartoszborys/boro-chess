@@ -3,7 +3,7 @@ import type { MoveHistory } from "@/domain/entities/move-history/MoveHistory";
 import type { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { PawnFactory } from "@/application/factories/FigureBehaviorFactory";
 
-export class InMemoryPromotionHistory implements MoveHistory {
+export class PromotionMoveHistory implements MoveHistory {
   constructor(
     private readonly to: Coordinates,
     private readonly pawnFactory: PawnFactory,

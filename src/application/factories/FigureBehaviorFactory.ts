@@ -15,11 +15,11 @@ export type PawnFactory = {
 };
 
 export type FigureBehaviorFactory = {
-  create(figureName: FigureName, color: FigureColor): FigureBehavior;
+  create(figureName: FigureName): FigureBehavior;
 } & PawnFactory;
 
 export class ChessFigureBehaviorFactory implements FigureBehaviorFactory {
-  public create(figureName: FigureName, color: FigureColor): FigureBehavior {
+  public create(figureName: FigureName): FigureBehavior {
     switch (figureName) {
       case FigureName.QUEEN:
         return new QueenBehavior();

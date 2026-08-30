@@ -11,7 +11,7 @@ export class FigurePromotionUseCase {
   ) { }
 
   public execute(board: Board, player: Player, figureName: FigureName): void {
-    const figureBehavior = this.figureBehaviorFactory.create(figureName, player.color);
+    const figureBehavior = this.figureBehaviorFactory.create(figureName);
     this.game.promotionComplete(board, player, figureBehavior);
   }
 }

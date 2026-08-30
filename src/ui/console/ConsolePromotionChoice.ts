@@ -2,7 +2,12 @@ import { FigureName } from "@/domain/enums";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
-const promotionFigures = Object.values(FigureName);
+const promotionFigures = [
+    FigureName.QUEEN,
+    FigureName.TOWER,
+    FigureName.HORSE,
+    FigureName.BISHOP,
+];
 
 export class ConsolePromotionChoice {
     public async pick(): Promise<FigureName> {

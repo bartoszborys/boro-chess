@@ -4,8 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json --noEmit && node ./esbuild.config.js",
+    "build:console": "tsc -p tsconfig.json --noEmit && node ./esbuild.config.js",
+    "build:web": "pnpm --dir src/ui/web build",
     "start": "tsx src/index.ts",
+    "dev:web": "pnpm --dir src/ui/web dev",
     "start:debug": "node --import tsx --inspect-brk src/index.ts",
     "start:dist": "node dist/index.js",
     "test": "jest",

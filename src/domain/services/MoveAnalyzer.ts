@@ -1,12 +1,11 @@
 import type { Board } from "@/domain/entities/CheesBoard";
 import type { Figure } from "@/domain/entities/CheesFigure";
 import type { PathGenerator } from "@/domain/services/PathGenerator";
-import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
+import type { BoardFieldState, ValidatedMoveContext } from "@/domain/dtos";
 import { Movement } from "@/domain/value-objects/Movement";
 import { FigureInvalidMove, FigureMoveCollision } from "@/domain/exceptions";
 import { FigureName } from "@/domain/enums";
 import { Coordinates, CoordinatesKey } from "../value-objects/Coordinates";
-import type { BoardFieldState } from "../value-objects/BoardFieldState";
 import type { Direction } from "../value-objects/Direction";
 
 export interface MoveAnalyzer {
@@ -16,7 +15,7 @@ export interface MoveAnalyzer {
 }
 
 export class CheesMoveAnalyzer implements MoveAnalyzer {
-  constructor(private readonly pathGenerator: PathGenerator) { }
+  constructor(private readonly pathGenerator: PathGenerator) {}
 
   public createValidatedMoveContextOrThrow(board: Board, movement: Movement): ValidatedMoveContext {
     const context = this.createValidatedMoveContextOrNull(board, movement);
@@ -142,8 +141,8 @@ export class CheesMoveAnalyzer implements MoveAnalyzer {
   }
 
   private assertCanCastle(castlingableFigure: Figure, movingFigure: Figure): void {
-    if (castlingableFigure.getName() !== FigureName.TOWER) {
-      throw new FigureInvalidMove(`Cannot be castled by not a tower`);
+    if (castlingableFigure.getName() !== FigureName.ROOK) {
+      throw new FigureInvalidMove(`Cannot be castled by not a rook`);
     }
 
     if (!movingFigure.isFriendly(castlingableFigure)) {

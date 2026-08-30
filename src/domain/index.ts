@@ -8,8 +8,8 @@ export type { FigureBehavior } from "./entities/behaviors/FigureBehavior";
 
 export {
   BishopBehavior,
-  HorseBehavior,
-  TowerBehavior,
+  KnightBehavior,
+  RookBehavior,
   QueenBehavior,
   KingBehavior,
   WhitePawnBehavior,

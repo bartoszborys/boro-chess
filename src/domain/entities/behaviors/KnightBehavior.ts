@@ -3,9 +3,9 @@ import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior"
 import { DirectionsBuilder } from "@/domain/builders/DirectionsBuilder";
 import { FigureName } from "@/domain/enums";
 
-export class HorseBehavior implements FigureBehavior {
+export class KnightBehavior implements FigureBehavior {
   public getName(): FigureName {
-    return FigureName.HORSE;
+    return FigureName.KNIGHT;
   }
 
   public getDirections(): Direction[] {

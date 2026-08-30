@@ -1,12 +1,12 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { TowerBehavior } from "@/domain/entities/behaviors/TowerBehavior";
+import { RookBehavior } from "@/domain/entities/behaviors/RookBehavior";
 
-describe("TowerBehavior", () => {
-  const tower = new TowerBehavior();
+describe("RookBehavior", () => {
+  const rook = new RookBehavior();
 
   describe("getDirections", () => {
     it("returns orthogonal directions with capture enabled and infinite range", () => {
-      const directions = tower.getDirections();
+      const directions = rook.getDirections();
 
       expect(directions).toHaveLength(4);
       expect(directions).toEqual(

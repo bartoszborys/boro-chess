@@ -8,7 +8,7 @@ export class FigurePromotionUseCase {
   constructor(
     private readonly game: Game,
     private readonly figureBehaviorFactory: FigureBehaviorFactory,
-  ) { }
+  ) {}
 
   public execute(board: Board, player: Player, figureName: FigureName): void {
     const figureBehavior = this.figureBehaviorFactory.create(figureName);

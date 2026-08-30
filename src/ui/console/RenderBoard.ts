@@ -1,6 +1,7 @@
 import { FigureColor, FigureName } from "@/domain/enums";
 import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import { BoardFactory } from "@/application/factories/BoardFactory";
+import type { BoardSettings } from "@/domain/services/BoardSettings";
 
 const reset = "\x1b[0m";
 const dim = "\x1b[2m";
@@ -19,29 +20,32 @@ const figureIcons: Record<FigureColor, Record<FigureName, string>> = {
   [FigureColor.WHITE]: {
     [FigureName.KING]: "♔",
     [FigureName.QUEEN]: "♕",
-    [FigureName.TOWER]: "♖",
+    [FigureName.ROOK]: "♖",
     [FigureName.BISHOP]: "♗",
-    [FigureName.HORSE]: "♘",
+    [FigureName.KNIGHT]: "♘",
     [FigureName.PAWN]: "♙",
   },
   [FigureColor.BLACK]: {
     [FigureName.KING]: "♚",
     [FigureName.QUEEN]: "♛",
-    [FigureName.TOWER]: "♜",
+    [FigureName.ROOK]: "♜",
     [FigureName.BISHOP]: "♝",
-    [FigureName.HORSE]: "♞",
+    [FigureName.KNIGHT]: "♞",
     [FigureName.PAWN]: "♟",
   },
 };
 
 export class RenderBoard {
-  public constructor(private readonly board: BoardFactory) {}
+  public constructor(
+    private readonly board: BoardFactory,
+    private readonly boardSettings: BoardSettings,
+  ) {}
 
   public render(possibleMoves: CoordinatesKey[] = []): void {
     console.clear();
     const boardtate = this.board.getBoardState();
     const state = boardtate.getFiguresState();
-    const [xSize, ySize] = this.board.getBoardSize();
+    const [xSize, ySize] = this.boardSettings.getBoardSize();
     const possibleMoveKeys = new Set(possibleMoves);
     const allCoordinates = new Array(ySize)
       .fill(0)
@@ -78,7 +82,7 @@ export class RenderBoard {
 
   private renderColumnLabels(): string {
     const labels = [" ".repeat(rowLabelWidth)];
-    const [xSize] = this.board.getBoardSize();
+    const [xSize] = this.boardSettings.getBoardSize();
     for (let x = 1; x <= xSize; x++) {
       labels.push(`${dim}${labelFg} ${x}  ${reset}`);
     }

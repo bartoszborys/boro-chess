@@ -8,6 +8,6 @@ export class FigureMoveCollision extends Error {}
 
 export class MoveHistoryNotFound extends Error {}
 
-export class PlayerCannotMoveException extends Error { }
+export class PlayerCannotMoveException extends Error {}
 
-export class InvalidFigureNameException extends Error { }
+export class InvalidFigureNameException extends Error {}

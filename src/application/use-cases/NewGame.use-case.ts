@@ -1,4 +1,5 @@
 import { BoardFactory } from "@/application/factories/BoardFactory";
+import type { BoardSettings } from "@/domain/services/BoardSettings";
 import type { Board } from "@/domain/entities/CheesBoard";
 import { CheesFigure } from "@/domain/entities/CheesFigure";
 import { FigureColor } from "@/domain/enums";
@@ -7,12 +8,15 @@ import { BlackPawnBehavior } from "@/domain/entities/behaviors/BlackPawnBehavior
 import { KingBehavior } from "@/domain/entities/behaviors/KingBehavior";
 import { QueenBehavior } from "@/domain/entities/behaviors/QueenBehavior";
 import { BishopBehavior } from "@/domain/entities/behaviors/BishopBehavior";
-import { HorseBehavior } from "@/domain/entities/behaviors/HorseBehavior";
-import { TowerBehavior } from "@/domain/entities/behaviors/TowerBehavior";
+import { KnightBehavior } from "@/domain/entities/behaviors/KnightBehavior";
+import { RookBehavior } from "@/domain/entities/behaviors/RookBehavior";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class NewCheesGameUseCase {
-  public constructor(private readonly boardFactory: BoardFactory) {}
+  public constructor(
+    private readonly boardFactory: BoardFactory,
+    private readonly boardSettings: BoardSettings,
+  ) {}
 
   public execute(): void {
     const board = this.boardFactory.getBoard();
@@ -21,7 +25,7 @@ export class NewCheesGameUseCase {
 
   private initializeBoardWithFigures(board: Board): void {
     const baseCoordinates = new Coordinates(1, 1);
-    const [xSize] = this.boardFactory.getBoardSize();
+    const [xSize] = this.boardSettings.getBoardSize();
 
     for (let index = 0; index < xSize; index++) {
       board.addFigure(new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()), baseCoordinates.add(index, 1));
@@ -40,14 +44,14 @@ export class NewCheesGameUseCase {
     ];
 
     const behaviorsInOrder = [
-      new TowerBehavior(),
-      new HorseBehavior(),
+      new RookBehavior(),
+      new KnightBehavior(),
       new BishopBehavior(),
       new QueenBehavior(),
       new KingBehavior(),
       new BishopBehavior(),
-      new HorseBehavior(),
-      new TowerBehavior(),
+      new KnightBehavior(),
+      new RookBehavior(),
     ];
 
     for (const player of players) {

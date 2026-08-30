@@ -3,7 +3,7 @@ import type { BoardFactory } from "@/application/factories/BoardFactory";
 import type { GameRulesValidator } from "@/domain/services/GameRules";
 import { FigureInvalidMove, PlayerCannotMoveException } from "@/domain/exceptions";
 import { Player } from "@/domain/entities/Player";
-import type { PlayerFigureMoveResult } from "@/domain/value-objects/dto";
+import type { PlayerFigureMoveResult } from "@/domain/dtos";
 
 export class PlayerFigureMoveUseCase {
   constructor(
@@ -11,7 +11,7 @@ export class PlayerFigureMoveUseCase {
     private readonly boardFactory: BoardFactory,
     private readonly game: Game,
     private readonly gameRules: GameRulesValidator,
-  ) { }
+  ) {}
 
   public execute(movement: Movement, player: Player): PlayerFigureMoveResult {
     if (!this.game.playersCanMove()) {

@@ -2,9 +2,9 @@ import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior"
 import {
   BishopBehavior,
   BlackPawnBehavior,
-  HorseBehavior,
+  KnightBehavior,
   QueenBehavior,
-  TowerBehavior,
+  RookBehavior,
   WhitePawnBehavior,
 } from "@/domain/entities/behaviors";
 import { FigureColor, FigureName } from "@/domain/enums";
@@ -23,12 +23,12 @@ export class ChessFigureBehaviorFactory implements FigureBehaviorFactory {
     switch (figureName) {
       case FigureName.QUEEN:
         return new QueenBehavior();
-      case FigureName.TOWER:
-        return new TowerBehavior();
+      case FigureName.ROOK:
+        return new RookBehavior();
       case FigureName.BISHOP:
         return new BishopBehavior();
-      case FigureName.HORSE:
-        return new HorseBehavior();
+      case FigureName.KNIGHT:
+        return new KnightBehavior();
       default:
         throw new InvalidFigureNameException(`Invalid figure name: ${figureName}`);
     }

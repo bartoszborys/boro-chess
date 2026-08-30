@@ -5,9 +5,9 @@ export enum FigureColor {
 
 export enum FigureName {
   PAWN = "pawn",
-  TOWER = "tower",
-  HORSE = "horse",
+  KNIGHT = "knight",
   BISHOP = "bishop",
+  ROOK = "rook",
   QUEEN = "queen",
   KING = "king",
 }

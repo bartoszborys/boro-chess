@@ -1,0 +1,17 @@
+{
+  "name": "@boro-chess/console",
+  "private": true,
+  "scripts": {
+    "build": "tsc --noEmit && node ./esbuild.config.js",
+    "start": "tsx ConsoleMain.ts",
+    "start:debug": "node --import tsx --inspect-brk ConsoleMain.ts",
+    "start:dist": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.23.4",
+    "typescript": "^5.9.3"
+  }
+}

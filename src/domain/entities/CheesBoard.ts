@@ -1,11 +1,8 @@
 import type { Figure } from "@/domain/entities/CheesFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { FigureDetails } from "@/domain/value-objects/CapturedFigure";
+import type { BoardField, BoardFieldState, BoardFigureState, FigureDetails } from "@/domain/dtos";
 import { BoardFieldNotFound, FigureNotFound, MoveHistoryNotFound } from "@/domain/exceptions";
 import { Movement } from "../value-objects/Movement";
-import { BoardFigureState } from "../value-objects/BoardFigureState";
-import { BoardFieldState } from "../value-objects/BoardFieldState";
-import { BoardField } from "../value-objects/BoardField";
 import { FigureColor } from "@/domain/enums";
 import type { MoveHistory } from "./move-history";
 

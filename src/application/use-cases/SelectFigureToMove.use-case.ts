@@ -5,7 +5,7 @@ import { Movement } from "@/domain/value-objects/Movement";
 import { GameRulesValidator } from "@/domain/services/GameRules";
 import { Game } from "@/domain/entities/CheesGame";
 import { FigureColor } from "@/domain/enums";
-import { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
+import type { ValidatedMoveContext } from "@/domain/dtos";
 
 export class SelectFigureToMoveUseCase {
   constructor(
@@ -13,7 +13,7 @@ export class SelectFigureToMoveUseCase {
     private readonly moveAnalyzer: MoveAnalyzer,
     private readonly game: Game,
     private readonly gameRules: GameRulesValidator,
-  ) { }
+  ) {}
 
   public execute(from: Coordinates, playerColor: FigureColor): CoordinatesKey[] {
     const board = this.boardFactory.getBoard();

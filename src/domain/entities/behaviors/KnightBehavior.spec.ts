@@ -1,12 +1,12 @@
 import { Direction } from "@/domain/value-objects/Direction";
-import { HorseBehavior } from "@/domain/entities/behaviors/HorseBehavior";
+import { KnightBehavior } from "@/domain/entities/behaviors/KnightBehavior";
 
-describe("HorseBehavior", () => {
-  const horse = new HorseBehavior();
+describe("KnightBehavior", () => {
+  const knight = new KnightBehavior();
 
   describe("getDirections", () => {
     it("returns all L-shaped directions with capture enabled and range 1", () => {
-      const directions = horse.getDirections();
+      const directions = knight.getDirections();
 
       expect(directions).toHaveLength(8);
       expect(directions).toEqual(

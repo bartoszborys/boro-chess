@@ -4,7 +4,7 @@ import { CompositeMoveHistory, InMemoryMovementHistory } from "@/domain/entities
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
-import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
+import type { ValidatedMoveContext } from "@/domain/dtos";
 
 describe("CheesGame", () => {
   const pawnFactory = { createPawn: jest.fn() };
@@ -93,39 +93,33 @@ describe("CheesGame", () => {
     });
 
     describe("MovementHistory", () => {
-      it.each([true, false])(
-        "adds movement history with hasMovedBefore %s for a basic move",
-        (hasMovedBefore) => {
-          (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
-            hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
-          });
+      it.each([true, false])("adds movement history with hasMovedBefore %s for a basic move", (hasMovedBefore) => {
+        (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
+          hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
+        });
 
-          game.playerMove(board, { movement, capturing: false }, FigureColor.WHITE);
+        game.playerMove(board, { movement, capturing: false }, FigureColor.WHITE);
 
-          expect(board.addMoveHistory).toHaveBeenCalledWith(
-            new CompositeMoveHistory([new InMemoryMovementHistory(movement, hasMovedBefore)]),
-          );
-        },
-      );
+        expect(board.addMoveHistory).toHaveBeenCalledWith(
+          new CompositeMoveHistory([new InMemoryMovementHistory(movement, hasMovedBefore)]),
+        );
+      });
 
-      it.each([true, false])(
-        "adds movement history with hasMovedBefore %s for a castling move",
-        (hasMovedBefore) => {
-          const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
-          (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
-            hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
-          });
+      it.each([true, false])("adds movement history with hasMovedBefore %s for a castling move", (hasMovedBefore) => {
+        const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
+        (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
+          hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
+        });
 
-          game.playerMove(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
+        game.playerMove(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
 
-          expect(board.addMoveHistory).toHaveBeenCalledWith(
-            new CompositeMoveHistory([
-              new InMemoryMovementHistory(movement, hasMovedBefore),
-              new InMemoryMovementHistory(castlingMovement, hasMovedBefore),
-            ]),
-          );
-        },
-      );
+        expect(board.addMoveHistory).toHaveBeenCalledWith(
+          new CompositeMoveHistory([
+            new InMemoryMovementHistory(movement, hasMovedBefore),
+            new InMemoryMovementHistory(castlingMovement, hasMovedBefore),
+          ]),
+        );
+      });
     });
   });
 

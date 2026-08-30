@@ -3,7 +3,7 @@ import { CheesFigure, type Figure } from "@/domain/entities/CheesFigure";
 import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { BoardField } from "@/domain/value-objects/BoardField";
+import type { BoardField } from "@/domain/dtos";
 import { Movement } from "@/domain/value-objects/Movement";
 
 describe("FieldsBoard", () => {

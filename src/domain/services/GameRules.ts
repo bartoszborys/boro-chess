@@ -1,11 +1,9 @@
 import type { PathGenerator } from "@/domain/services/PathGenerator";
 import { FigureInvalidMove } from "@/domain/exceptions";
 import { FigureColor, FigureName } from "@/domain/enums";
-import type { BoardFigureState } from "@/domain/value-objects/BoardFigureState";
+import type { BoardFigureState, BoardState, GameEndState } from "@/domain/dtos";
 import { CoordinatesKey } from "../value-objects/Coordinates";
 import type { Player } from "@/domain/entities/Player";
-import type { GameEndState } from "@/domain/value-objects/GameEndState";
-import type { BoardState } from "@/domain/value-objects/BoardState";
 import type { ChessCheckRule } from "@/domain/entities/rules/CheckRule";
 import type { PromotionRule } from "@/domain/entities/rules/PromotionRule";
 
@@ -20,7 +18,7 @@ export class ChessGameRulesValidator implements GameRulesValidator {
     private readonly pathGenerator: PathGenerator,
     private readonly checkRules: ChessCheckRule[],
     private readonly promotionRules: PromotionRule[],
-  ) { }
+  ) {}
 
   public promotionAvailable(boardState: BoardState): boolean {
     const { figuresState } = boardState;
@@ -74,11 +72,7 @@ export class ChessGameRulesValidator implements GameRulesValidator {
     };
   }
 
-  private isKingInCheck(
-    boardState: BoardState,
-    playerColor: FigureColor,
-    kingState: BoardFigureState,
-  ): boolean {
+  private isKingInCheck(boardState: BoardState, playerColor: FigureColor, kingState: BoardFigureState): boolean {
     const { figuresState, fieldsState } = boardState;
     const figuresByCoordinates = figuresState.reduce(
       (acc, state) => {

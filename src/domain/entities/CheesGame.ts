@@ -1,5 +1,5 @@
 import type { Board } from "@/domain/entities/CheesBoard";
-import type { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
+import type { BoardState, PendingPromotion, ValidatedMoveContext } from "@/domain/dtos";
 import {
   CompositeMoveHistory,
   InMemoryCaptureHistory,
@@ -8,8 +8,6 @@ import {
   type MoveHistory,
 } from "@/domain/entities/move-history";
 import type { FigureColor } from "@/domain/enums";
-import type { BoardState } from "@/domain/value-objects/BoardState";
-import type { PendingPromotion } from "@/domain/value-objects/dto";
 import type { Player } from "@/domain/entities/Player";
 import type { FigureBehavior } from "@/domain/entities/behaviors";
 import type { PawnFactory } from "@/application/factories/FigureBehaviorFactory";
@@ -26,7 +24,7 @@ export interface Game {
 export class CheesGame implements Game {
   private pendingPromotion: PendingPromotion | null = null;
 
-  constructor(private readonly pawnFactory: PawnFactory) { }
+  constructor(private readonly pawnFactory: PawnFactory) {}
 
   public playersCanMove(): boolean {
     return this.pendingPromotion === null;

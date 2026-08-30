@@ -15,4 +15,3 @@ export class InMemoryPromotionHistory implements MoveHistory {
     figure.promote(pawnBehavior);
   }
 }
-

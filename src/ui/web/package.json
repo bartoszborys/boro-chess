@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "@boro-chess/web",
   "private": true,
   "type": "module",
   "scripts": {

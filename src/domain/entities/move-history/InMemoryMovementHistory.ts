@@ -6,7 +6,7 @@ export class InMemoryMovementHistory implements MoveHistory {
   constructor(
     private readonly movement: Movement,
     private readonly hasMovedBefore: boolean,
-  ) { }
+  ) {}
 
   public undo(board: Board): void {
     const reversedMovement = this.movement.reverse();

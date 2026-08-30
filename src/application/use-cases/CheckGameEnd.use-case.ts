@@ -3,10 +3,8 @@ import type { BoardFactory } from "@/application/factories/BoardFactory";
 import type { GameRulesValidator } from "@/domain/services/GameRules";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Player } from "@/domain/entities/Player";
-import { ValidatedMoveContext } from "@/domain/value-objects/ValidatedMoveContext";
+import type { BoardFigureState, GameEndState, ValidatedMoveContext } from "@/domain/dtos";
 import { FigureColor } from "@/domain/enums";
-import type { BoardFigureState } from "@/domain/value-objects/BoardFigureState";
-import type { GameEndState } from "@/domain/value-objects/GameEndState";
 
 export class CheckGameEndUseCase {
   constructor(
@@ -14,7 +12,7 @@ export class CheckGameEndUseCase {
     private readonly boardFactory: BoardFactory,
     private readonly game: Game,
     private readonly gameRules: GameRulesValidator,
-  ) { }
+  ) {}
 
   public execute(player: Player): GameEndState | null {
     const board = this.boardFactory.getBoard();

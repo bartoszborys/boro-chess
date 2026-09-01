@@ -1,10 +1,10 @@
-import { BoardFactory } from "@/application/factories/BoardFactory";
+import type { BoardRepository } from "@/application/repositories/BoardRepository";
 import { BoardSettings } from "@/domain/services/BoardSettings";
 import { Board, BoardState, FieldsBoard } from "@/domain/entities/CheesBoard";
 import type { BoardField } from "@/domain/dtos";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
-export class InAppMemoryCheesBoardFactory implements BoardFactory {
+export class InAppMemoryBoardRepository implements BoardRepository {
   private board: FieldsBoard | null = null;
 
   public constructor(private readonly boardSettings: BoardSettings) {}

@@ -1,4 +1,4 @@
-import { BoardFactory } from "@/application/factories/BoardFactory";
+import { BoardRepository } from "@/application/repositories/BoardRepository";
 import type { BoardSettings } from "@/domain/services/BoardSettings";
 import type { Board } from "@/domain/entities/CheesBoard";
 import { CheesFigure } from "@/domain/entities/CheesFigure";
@@ -14,12 +14,12 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export class NewCheesGameUseCase {
   public constructor(
-    private readonly boardFactory: BoardFactory,
+    private readonly boardRepository: BoardRepository,
     private readonly boardSettings: BoardSettings,
   ) {}
 
   public execute(): void {
-    const board = this.boardFactory.getBoard();
+    const board = this.boardRepository.getBoard();
     this.initializeBoardWithFigures(board);
   }
 

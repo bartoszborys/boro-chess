@@ -1,21 +1,22 @@
-import { type Board, type Game, type MoveAnalyzer, Movement } from "@/domain";
-import type { BoardFactory } from "@/application/factories/BoardFactory";
-import type { GameRulesValidator } from "@/domain/services/GameRules";
+import { type Board, type MoveAnalyzer, Movement } from "@/domain";
+import type { BoardRepository } from "@/application/repositories/BoardRepository";
+import type { GameRules } from "@/domain/services/GameRules";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Player } from "@/domain/entities/Player";
 import type { BoardFigureState, GameEndState, ValidatedMoveContext } from "@/domain/dtos";
 import { FigureColor } from "@/domain/enums";
+import type { MoveMaker } from "@/domain/services/MoveMaker";
 
 export class CheckGameEndUseCase {
   constructor(
     private readonly moveAnalyzer: MoveAnalyzer,
-    private readonly boardFactory: BoardFactory,
-    private readonly game: Game,
-    private readonly gameRules: GameRulesValidator,
+    private readonly boardRepository: BoardRepository,
+    private readonly moveApplier: MoveMaker,
+    private readonly gameRules: GameRules,
   ) {}
 
   public execute(player: Player): GameEndState | null {
-    const board = this.boardFactory.getBoard();
+    const board = this.boardRepository.getBoard();
     const figuresState = board.getFiguresState();
     const enemyColor = player.getEnemyColor();
 
@@ -49,7 +50,7 @@ export class CheckGameEndUseCase {
           continue;
         }
 
-        const peekedBoardState = this.game.peekMove(board, context, enemyColor);
+        const peekedBoardState = this.moveApplier.peek(board, context, enemyColor);
 
         if (this.gameRules.boardValidStateForPlayer(peekedBoardState, enemyColor)) {
           return true;

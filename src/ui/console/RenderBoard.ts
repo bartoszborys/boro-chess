@@ -1,6 +1,6 @@
 import { FigureColor, FigureName } from "@/domain/enums";
 import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
-import { BoardFactory } from "@/application/factories/BoardFactory";
+import { BoardRepository } from "@/application/repositories/BoardRepository";
 import type { BoardSettings } from "@/domain/services/BoardSettings";
 
 const reset = "\x1b[0m";
@@ -38,13 +38,13 @@ const figureIcons: Record<FigureColor, Record<FigureName, string>> = {
 
 export class RenderBoard {
   public constructor(
-    private readonly board: BoardFactory,
+    private readonly boardRepository: BoardRepository,
     private readonly boardSettings: BoardSettings,
   ) {}
 
   public render(possibleMoves: CoordinatesKey[] = [], cursor?: Coordinates): void {
     console.clear();
-    const boardtate = this.board.getBoardState();
+    const boardtate = this.boardRepository.getBoardState();
     const state = boardtate.getFiguresState();
     const [xSize, ySize] = this.boardSettings.getBoardSize();
     const possibleMoveKeys = new Set(possibleMoves);

@@ -1,14 +1,13 @@
 import type { Board } from "@/domain/entities/CheesBoard";
-import { CheesGame } from "@/domain/entities/CheesGame";
+import { ChessMoveMaker } from "@/domain/services/MoveMaker";
 import { CompositeMoveHistory, MovementMoveHistory } from "@/domain/entities/move-history";
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { ValidatedMoveContext } from "@/domain/dtos";
 
-describe("CheesGame", () => {
-  const pawnFactory = { createPawn: jest.fn() };
-  const game = new CheesGame(pawnFactory);
+describe("ChessMoveApplier", () => {
+  const moveApplier = new ChessMoveMaker({ createPawn: jest.fn() });
   const movement = new Movement(new Coordinates(1, 2), new Coordinates(1, 3));
 
   let board: Board;
@@ -37,7 +36,7 @@ describe("CheesGame", () => {
         capturing: false,
       };
 
-      game.playerMove(board, context, FigureColor.WHITE);
+      moveApplier.move(board, context, FigureColor.WHITE);
 
       expect(board.moveFigure).toHaveBeenCalledTimes(1);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
@@ -51,7 +50,7 @@ describe("CheesGame", () => {
         capturing: true,
       };
 
-      game.playerMove(board, context, FigureColor.WHITE);
+      moveApplier.move(board, context, FigureColor.WHITE);
 
       expect(board.captureFigureByCoordinates).toHaveBeenCalledWith(movement.to);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
@@ -66,7 +65,7 @@ describe("CheesGame", () => {
         castlingMovement,
       };
 
-      game.playerMove(board, context, FigureColor.WHITE);
+      moveApplier.move(board, context, FigureColor.WHITE);
 
       expect(board.moveFigure).toHaveBeenCalledTimes(2);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
@@ -85,7 +84,7 @@ describe("CheesGame", () => {
       (board.getFiguresState as jest.Mock).mockReturnValue(figuresState);
       (board.getFieldsState as jest.Mock).mockReturnValue(fieldsState);
 
-      const result = game.playerMove(board, context, FigureColor.WHITE);
+      const result = moveApplier.move(board, context, FigureColor.WHITE);
 
       expect(board.getFieldsState).toHaveBeenCalledWith(FigureColor.WHITE);
       expect(result).toEqual({ figuresState, fieldsState });
@@ -98,7 +97,7 @@ describe("CheesGame", () => {
           hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
         });
 
-        game.playerMove(board, { movement, capturing: false }, FigureColor.WHITE);
+        moveApplier.move(board, { movement, capturing: false }, FigureColor.WHITE);
 
         expect(board.addMoveHistory).toHaveBeenCalledWith(
           new CompositeMoveHistory([new MovementMoveHistory(movement, hasMovedBefore)]),
@@ -111,7 +110,7 @@ describe("CheesGame", () => {
           hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
         });
 
-        game.playerMove(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
+        moveApplier.move(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
 
         expect(board.addMoveHistory).toHaveBeenCalledWith(
           new CompositeMoveHistory([
@@ -134,7 +133,7 @@ describe("CheesGame", () => {
       (board.getFiguresState as jest.Mock).mockReturnValue(figuresState);
       (board.getFieldsState as jest.Mock).mockReturnValue(fieldsState);
 
-      const result = game.peekMove(board, context, FigureColor.WHITE);
+      const result = moveApplier.peek(board, context, FigureColor.WHITE);
 
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
       expect(board.getFieldsState).toHaveBeenCalledWith(FigureColor.WHITE);
@@ -151,7 +150,7 @@ describe("CheesGame", () => {
         throw new Error("figures state failed");
       });
 
-      expect(() => game.peekMove(board, context, FigureColor.WHITE)).toThrow("figures state failed");
+      expect(() => moveApplier.peek(board, context, FigureColor.WHITE)).toThrow("figures state failed");
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
       expect(board.undoLastMove).toHaveBeenCalledTimes(1);
     });

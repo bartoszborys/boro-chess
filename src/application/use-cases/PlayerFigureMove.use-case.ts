@@ -1,41 +1,42 @@
-import { type Game, type MoveAnalyzer, Movement } from "@/domain";
-import type { BoardFactory } from "@/application/factories/BoardFactory";
-import type { GameRulesValidator } from "@/domain/services/GameRules";
+import { type MoveAnalyzer, Movement } from "@/domain";
+import type { BoardRepository } from "@/application/repositories/BoardRepository";
+import type { GameRepository } from "@/application/repositories/GameRepository";
+import type { GameRules } from "@/domain/services/GameRules";
 import { FigureInvalidMove, PlayerCannotMoveException } from "@/domain/exceptions";
 import { Player } from "@/domain/entities/Player";
 import type { PlayerFigureMoveResult } from "@/domain/dtos";
+import type { MoveMaker } from "@/domain/services/MoveMaker";
 
 export class PlayerFigureMoveUseCase {
   constructor(
-    private readonly moveAnalyzer: MoveAnalyzer,
-    private readonly boardFactory: BoardFactory,
-    private readonly game: Game,
-    private readonly gameRules: GameRulesValidator,
-  ) {}
+    private readonly analyzer: MoveAnalyzer,
+    private readonly boardRepository: BoardRepository,
+    private readonly gameRepository: GameRepository,
+    private readonly applier: MoveMaker,
+    private readonly gameRules: GameRules,
+  ) { }
 
   public execute(movement: Movement, player: Player): PlayerFigureMoveResult {
-    if (!this.game.playersCanMove()) {
+    const game = this.gameRepository.getGame();
+
+    if (!game.playersCanMove()) {
       throw new PlayerCannotMoveException(`Player cannot move`);
     }
 
-    const board = this.boardFactory.getBoard();
-    const context = this.moveAnalyzer.createValidatedMoveContextOrThrow(board, movement);
-    const boardState = this.game.playerMove(board, context, player.color);
+    const board = this.boardRepository.getBoard();
+    const context = this.analyzer.createValidatedMoveContextOrThrow(board, movement);
+    const boardState = this.applier.move(board, context, player.color);
 
     if (!this.gameRules.boardValidStateForPlayer(boardState, player.color)) {
-      this.game.undoLastMove(board);
+      board.undoLastMove();
       throw new FigureInvalidMove(`Invalid state after move`);
     }
 
-    if (this.gameRules.promotionAvailable(boardState)) {
-      this.game.awaitPromotion({ player, coordinates: movement.to });
-      return {
-        promotion: true,
-      };
+    const promotion = this.gameRules.promotionAvailable(boardState);
+    if (promotion) {
+      game.awaitPromotion({ player, coordinates: movement.to });
     }
 
-    return {
-      promotion: false,
-    };
+    return { promotion };
   }
 }

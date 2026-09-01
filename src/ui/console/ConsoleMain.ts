@@ -1,5 +1,5 @@
 import {
-  boardFactory,
+  boardRepository,
   boardSettings,
   newGameUseCase,
   playerFigureMoveUseCase,
@@ -14,7 +14,7 @@ import { ConsoleMovementChoice } from "./ConsoleMovementChoice";
 import { ConsolePromotionChoice } from "./ConsolePromotionChoice";
 import { RenderBoard } from "./RenderBoard";
 
-const renderBoard = new RenderBoard(boardFactory, boardSettings);
+const renderBoard = new RenderBoard(boardRepository, boardSettings);
 const consolePromotionChoice = new ConsolePromotionChoice();
 const consoleMovementChoice = new ConsoleMovementChoice(boardSettings, (cursor, availableMoves = []) => {
   renderBoard.render(availableMoves, cursor);
@@ -26,7 +26,7 @@ async function consoleMain() {
 
   while (true) {
     const from = await consoleMovementChoice.pickFrom();
-    const figure = boardFactory.getBoard().getFigureByCoordinates(from);
+    const figure = boardRepository.getBoard().getFigureByCoordinates(from);
 
     if (figure === null) {
       console.log("No figure found at the selected coordinates");
@@ -55,7 +55,7 @@ async function consoleMain() {
 
     if (moveResult.promotion) {
       const result = await consolePromotionChoice.pick();
-      promotionUseCase.execute(boardFactory.getBoard(), currentPlayer, result);
+      promotionUseCase.execute(boardRepository.getBoard(), currentPlayer, result);
     }
 
     renderBoard.render();

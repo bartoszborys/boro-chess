@@ -1,22 +1,22 @@
 import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
-import { BoardFactory } from "../factories/BoardFactory";
+import { BoardRepository } from "@/application/repositories/BoardRepository";
 import { MoveAnalyzer } from "@/domain/services/MoveAnalyzer";
 import { Movement } from "@/domain/value-objects/Movement";
-import { GameRulesValidator } from "@/domain/services/GameRules";
-import { Game } from "@/domain/entities/CheesGame";
+import { GameRules } from "@/domain/services/GameRules";
 import { FigureColor } from "@/domain/enums";
 import type { ValidatedMoveContext } from "@/domain/dtos";
+import type { MoveMaker } from "@/domain/services/MoveMaker";
 
 export class SelectFigureToMoveUseCase {
   constructor(
-    private readonly boardFactory: BoardFactory,
+    private readonly boardRepository: BoardRepository,
     private readonly moveAnalyzer: MoveAnalyzer,
-    private readonly game: Game,
-    private readonly gameRules: GameRulesValidator,
+    private readonly moveApplier: MoveMaker,
+    private readonly gameRules: GameRules,
   ) {}
 
   public execute(from: Coordinates, playerColor: FigureColor): CoordinatesKey[] {
-    const board = this.boardFactory.getBoard();
+    const board = this.boardRepository.getBoard();
 
     const validMovementKeys: CoordinatesKey[] = [];
 
@@ -28,7 +28,7 @@ export class SelectFigureToMoveUseCase {
         continue;
       }
 
-      const peekBoardState = this.game.peekMove(board, context, playerColor);
+      const peekBoardState = this.moveApplier.peek(board, context, playerColor);
 
       if (this.gameRules.boardValidStateForPlayer(peekBoardState, playerColor)) {
         validMovementKeys.push(possibleMoveToCoordinateKey);

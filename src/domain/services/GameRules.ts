@@ -7,18 +7,18 @@ import type { Player } from "@/domain/entities/Player";
 import type { ChessCheckRule } from "@/domain/entities/rules/CheckRule";
 import type { PromotionRule } from "@/domain/entities/rules/PromotionRule";
 
-export type GameRulesValidator = {
+export type GameRules = {
   boardValidStateForPlayer(boardState: BoardState, movingPlayerColor: FigureColor): boolean;
   checkGameEndState(boardState: BoardState, player: Player): GameEndState;
   promotionAvailable(boardState: BoardState): boolean;
 };
 
-export class ChessGameRulesValidator implements GameRulesValidator {
+export class ChessGameRules implements GameRules {
   constructor(
     private readonly pathGenerator: PathGenerator,
     private readonly checkRules: ChessCheckRule[],
     private readonly promotionRules: PromotionRule[],
-  ) {}
+  ) { }
 
   public promotionAvailable(boardState: BoardState): boolean {
     const { figuresState } = boardState;

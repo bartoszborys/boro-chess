@@ -12,6 +12,7 @@ const darkPossibleMoveBg = "\x1b[48;5;97m";
 const emptyFg = "\x1b[90m";
 const labelFg = "\x1b[37m";
 const possibleMoveMarkerFg = "\x1b[38;5;231m";
+const cursorBg = "\x1b[48;5;39m";
 
 const cellWidth = 4;
 const rowLabelWidth = 3;
@@ -41,7 +42,7 @@ export class RenderBoard {
     private readonly boardSettings: BoardSettings,
   ) {}
 
-  public render(possibleMoves: CoordinatesKey[] = []): void {
+  public render(possibleMoves: CoordinatesKey[] = [], cursor?: Coordinates): void {
     console.clear();
     const boardtate = this.board.getBoardState();
     const state = boardtate.getFiguresState();
@@ -56,15 +57,18 @@ export class RenderBoard {
     for (const [rowIndex, coordinatesRow] of allCoordinates.entries()) {
       const toRender = [this.renderRowLabel(rowIndex + 1)];
       for (const [colIndex, coordinate] of coordinatesRow.entries()) {
+        const isCursor = cursor?.equals(coordinate) ?? false;
         const isPossibleMove = possibleMoveKeys.has(coordinate.toKey());
         const isLightSquare = (rowIndex + colIndex) % 2 === 0;
-        const squareBg = isPossibleMove
-          ? isLightSquare
-            ? lightPossibleMoveBg
-            : darkPossibleMoveBg
-          : isLightSquare
-            ? lightSquareBg
-            : darkSquareBg;
+        const squareBg = isCursor
+          ? cursorBg
+          : isPossibleMove
+            ? isLightSquare
+              ? lightPossibleMoveBg
+              : darkPossibleMoveBg
+            : isLightSquare
+              ? lightSquareBg
+              : darkSquareBg;
         const figure = state.find((item) => item.coordinates.equals(coordinate));
 
         if (figure) {
@@ -77,6 +81,10 @@ export class RenderBoard {
         }
       }
       console.log(toRender.join(""));
+    }
+
+    if (cursor) {
+      console.log(`${dim}${labelFg}Cursor ${cursor.toKey()}  arrows move, Enter confirm${reset}`);
     }
   }
 

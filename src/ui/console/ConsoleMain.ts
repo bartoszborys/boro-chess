@@ -16,7 +16,9 @@ import { RenderBoard } from "./RenderBoard";
 
 const renderBoard = new RenderBoard(boardFactory, boardSettings);
 const consolePromotionChoice = new ConsolePromotionChoice();
-const consoleMovementChoice = new ConsoleMovementChoice();
+const consoleMovementChoice = new ConsoleMovementChoice(boardSettings, (cursor, availableMoves = []) => {
+  renderBoard.render(availableMoves, cursor);
+});
 
 async function consoleMain() {
   newGameUseCase.execute();

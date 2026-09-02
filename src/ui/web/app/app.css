@@ -6,6 +6,40 @@
     "Noto Color Emoji";
 }
 
+.chess-board {
+  --square-size: 4rem;
+  --piece-move-ms: 220ms;
+}
+
+.chess-square {
+  width: var(--square-size);
+  height: var(--square-size);
+}
+
+@keyframes piece-from-vector {
+  from {
+    transform: translate(
+      calc(var(--move-x) * var(--square-size)),
+      calc(var(--move-y) * var(--square-size))
+    );
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+.piece-from-vector {
+  animation: piece-from-vector var(--piece-move-ms) ease-out both;
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .piece-from-vector {
+    animation: none;
+  }
+}
+
 html,
 body {
   @apply bg-white dark:bg-gray-950;

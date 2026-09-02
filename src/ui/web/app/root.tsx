@@ -2,6 +2,7 @@ import { isRouteErrorResponse, Meta, Outlet, Scripts, ScrollRestoration } from "
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { OfflineGameStateProvider } from "./contexts/GameStateContext";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +22,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <OfflineGameStateProvider>
+      <Outlet />
+    </OfflineGameStateProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

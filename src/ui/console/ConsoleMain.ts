@@ -55,7 +55,7 @@ async function consoleMain() {
 
     if (moveResult.promotion) {
       const result = await consolePromotionChoice.pick();
-      promotionUseCase.execute(boardRepository.getBoard(), currentPlayer, result);
+      promotionUseCase.execute(currentPlayer, result);
     }
 
     renderBoard.render();

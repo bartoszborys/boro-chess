@@ -1,18 +1,30 @@
 import type { PendingPromotion } from "@/domain/dtos";
-import type { Player } from "@/domain/entities/Player";
+import { Player } from "@/domain/entities/Player";
+import { FigureColor } from "../enums";
 
 export interface Game {
-  playersCanMove(): boolean;
+  playersCanMove(player: Player): boolean;
   awaitPromotion(pendingPromotion: PendingPromotion): void;
   getPendingPromotion(): PendingPromotion | null;
   promotionComplete(player: Player): boolean;
+  nextPlayerTurn(): void;
+  getCurrentTurn(): Player;
 }
 
 export class CheesGame implements Game {
   private pendingPromotion: PendingPromotion | null = null;
+  private playerTurn: Player = new Player(FigureColor.WHITE);
 
-  public playersCanMove(): boolean {
-    return this.pendingPromotion === null;
+  public getCurrentTurn(): Player {
+    return this.playerTurn;
+  }
+
+  public nextPlayerTurn(): void {
+    this.playerTurn = new Player(this.playerTurn.getEnemyColor());
+  }
+
+  public playersCanMove(player: Player): boolean {
+    return this.pendingPromotion === null && this.playerTurn.equals(player);
   }
 
   public awaitPromotion(pendingPromotion: PendingPromotion): void {

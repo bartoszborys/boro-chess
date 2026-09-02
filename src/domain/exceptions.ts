@@ -10,4 +10,6 @@ export class MoveHistoryNotFound extends Error {}
 
 export class PlayerCannotMoveException extends Error {}
 
+export class FigureColorMismatchException extends Error {}
+
 export class InvalidFigureNameException extends Error {}

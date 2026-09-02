@@ -19,7 +19,7 @@ export class PlayerFigureMoveUseCase {
   public execute(movement: Movement, player: Player): PlayerFigureMoveResult {
     const game = this.gameRepository.getGame();
 
-    if (!game.playersCanMove()) {
+    if (!game.playersCanMove(player)) {
       throw new PlayerCannotMoveException(`Player cannot move`);
     }
 
@@ -36,6 +36,8 @@ export class PlayerFigureMoveUseCase {
     if (promotion) {
       game.awaitPromotion({ player, coordinates: movement.to });
     }
+
+    game.nextPlayerTurn();
 
     return { promotion };
   }

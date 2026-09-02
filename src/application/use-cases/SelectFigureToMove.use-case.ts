@@ -6,6 +6,7 @@ import type { GameRules } from "@/domain/services/GameRules";
 import { FigureColor } from "@/domain/enums";
 import type { ValidatedMoveContext } from "@/domain/dtos";
 import type { MoveMaker } from "@/domain/services/MoveMaker";
+import { FigureColorMismatchException } from "@/domain/exceptions";
 
 export class SelectFigureToMoveUseCase {
   constructor(
@@ -17,6 +18,12 @@ export class SelectFigureToMoveUseCase {
 
   public execute(from: Coordinates, playerColor: FigureColor): CoordinatesKey[] {
     const board = this.boardRepository.getBoard();
+
+    const figure = board.getFigureByCoordinates(from);
+
+    if (figure?.getColor() !== playerColor) {
+      throw new FigureColorMismatchException(`Figure color mismatch`);
+    }
 
     const validMovementKeys: CoordinatesKey[] = [];
 

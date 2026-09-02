@@ -1,14 +1,16 @@
 import type { FigureColor, FigureName } from "@/domain/enums";
+import type { Player } from "@/domain/entities/Player";
 import type { Coordinates } from "@/domain/value-objects/Coordinates";
 
 export type GameStateContext = {
     board: DrawBoardState;
     fields: DrawField[];
     possibleMovesPositions: DrawField[];
+    currentTurn: Player;
     startNewGame: () => Promise<void>;
     clearPossibleMoves: () => void;
     selectFigureToMove: (x: number, y: number, color: FigureColor) => Promise<void>;
-    playerFigureMove: (from: Coordinates, to: Coordinates, color: FigureColor) => Promise<MoveEvent[]>;
+    playerFigureMove: (from: Coordinates, to: Coordinates) => Promise<MoveEvent[]>;
     promotion: (playerColor: FigureColor, figureName: FigureName) => Promise<void>;
     checkGameEnd: (color: FigureColor) => Promise<DrawGameEnd | null>;
 }

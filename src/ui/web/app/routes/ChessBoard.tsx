@@ -38,6 +38,7 @@ const ChessBoard = () => {
     promotion,
     checkGameEnd,
     clearPossibleMoves,
+    currentTurn,
   } = useGameState();
   const [selectedFigure, setSelectedFigure] = useState<SelectedFigure | null>(null);
   const [pieceMove, setPieceMove] = useState<PieceMoveAnimation | null>(null);
@@ -130,7 +131,6 @@ const ChessBoard = () => {
       }
 
       if (selectedFigure && isPossibleMove(x, y)) {
-        const color = selectedFigure.color;
         pieceMoveIdRef.current += 1;
         setPieceMove({
           id: pieceMoveIdRef.current,
@@ -145,25 +145,35 @@ const ChessBoard = () => {
         const events = await playerFigureMove(
           new Coordinates(selectedFigure.x, selectedFigure.y),
           new Coordinates(x, y),
-          color,
         );
         setSelectedFigure(null);
         await moving;
-        await dispatchMoveEvents(events, color);
+        await dispatchMoveEvents(events, currentTurn.color);
         return;
       }
 
       const figure = board.figures.find((item: Figure) => item.x === x && item.y === y);
       if (figure) {
+        await selectFigureToMove(x, y, currentTurn.color);
         setSelectedFigure({ x, y, color: figure.color });
-        await selectFigureToMove(x, y, figure.color);
         return;
       }
 
       setSelectedFigure(null);
       clearPossibleMoves();
     },
-    [board.figures, clearPossibleMoves, dispatchMoveEvents, isPossibleMove, pieceMove, playerFigureMove, selectFigureToMove, selectedFigure, waitForPieceMove],
+    [
+      board.figures,
+      clearPossibleMoves,
+      currentTurn,
+      dispatchMoveEvents,
+      isPossibleMove,
+      pieceMove,
+      playerFigureMove,
+      selectFigureToMove,
+      selectedFigure,
+      waitForPieceMove,
+    ],
   );
 
   const drawCell = useCallback(
@@ -195,6 +205,9 @@ const ChessBoard = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-center bg-[#FFFFFF] p-6 rounded-md">
+        <p className="mb-3 text-sm text-[#3d2e1f]">
+          Current turn: <span className="font-medium capitalize">{currentTurn.color}</span>
+        </p>
         <div className="chess-board grid grid-cols-8 grid-rows-8 border-2 border-[#3d2e1f]">
           {fields.map((field) => drawCell(field.x, field.y))}
         </div>

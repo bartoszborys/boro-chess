@@ -8,6 +8,7 @@ import {
   promotionUseCase,
   boardRepository,
   boardSettings,
+  gameRepository,
 } from "@/chess-bootstrap";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Player } from "@/domain/entities/Player";
@@ -44,6 +45,8 @@ const createInitialFields = () => {
   }));
 };
 
+const readCurrentTurn = (): Player => gameRepository.getGame().getCurrentTurn();
+
 const mapMoveResultToEvents = (promotion: boolean): MoveEvent[] => {
   if (promotion) {
     return ["promotion", "gameEndCheck"];
@@ -56,9 +59,14 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
   const [board, setBoard] = useState<DrawBoardState>(createInitialBoard);
   const [fields] = useState<DrawField[]>(createInitialFields);
   const [possibleMovesPositions, setPossibleMovesPositions] = useState<DrawField[]>([]);
+  const [currentTurn, setCurrentTurn] = useState<Player>(readCurrentTurn);
 
   const updateCurrentBoardState = useCallback(() => {
     setBoard((prev) => ({ ...prev, figures: readFigures() }));
+  }, []);
+
+  const syncCurrentTurn = useCallback(() => {
+    setCurrentTurn(readCurrentTurn());
   }, []);
 
   const clearPossibleMoves = useCallback(() => {
@@ -69,27 +77,31 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
     newGameUseCase.execute();
     setPossibleMovesPositions([]);
     updateCurrentBoardState();
-  }, [updateCurrentBoardState]);
+    syncCurrentTurn();
+  }, [syncCurrentTurn, updateCurrentBoardState]);
 
-  const selectFigureToMove = useCallback(async (x: number, y: number, color: FigureColor) => {
-    const possibleMoves = selectFigureToMoveUseCase.execute(new Coordinates(x, y), color);
-    setPossibleMovesPositions(
-      possibleMoves.map((move) => {
-        const coordinates = Coordinates.fromKey(move);
-        return { x: coordinates.x, y: coordinates.y };
-      }),
-    );
-  }, []);
+  const selectFigureToMove = useCallback(
+    async (x: number, y: number, color: FigureColor) => {
+      const possibleMoves = selectFigureToMoveUseCase.execute(new Coordinates(x, y), currentTurn.color);
+      setPossibleMovesPositions(
+        possibleMoves.map((move) => {
+          const coordinates = Coordinates.fromKey(move);
+          return { x: coordinates.x, y: coordinates.y };
+        }),
+      );
+    },
+    [currentTurn],
+  );
 
   const playerFigureMove = useCallback(
-    async (from: Coordinates, to: Coordinates, color: FigureColor) => {
-      const player = new Player(color);
-      const moveResult = playerFigureMoveUseCase.execute(new Movement(from, to), player);
+    async (from: Coordinates, to: Coordinates) => {
+      const moveResult = playerFigureMoveUseCase.execute(new Movement(from, to), currentTurn);
       setPossibleMovesPositions([]);
       updateCurrentBoardState();
+      syncCurrentTurn();
       return mapMoveResultToEvents(moveResult.promotion);
     },
-    [updateCurrentBoardState],
+    [currentTurn, syncCurrentTurn, updateCurrentBoardState],
   );
 
   const promotion = useCallback(
@@ -119,6 +131,7 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
         board,
         fields,
         possibleMovesPositions,
+        currentTurn,
         startNewGame,
         clearPossibleMoves,
         selectFigureToMove,

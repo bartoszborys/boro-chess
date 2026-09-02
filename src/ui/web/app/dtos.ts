@@ -11,8 +11,8 @@ export type GameStateContext = {
     clearPossibleMoves: () => void;
     selectFigureToMove: (x: number, y: number) => Promise<void>;
     playerFigureMove: (from: Coordinates, to: Coordinates) => Promise<MoveEvent[]>;
-    promotion: (playerColor: FigureColor, figureName: FigureName) => Promise<void>;
-    checkGameEnd: (color: FigureColor) => Promise<DrawGameEnd | null>;
+    promotion: (player: Player, figureName: FigureName) => Promise<void>;
+    checkGameEnd: (player: Player) => Promise<DrawGameEnd | null>;
 }
 
 export type MoveEvent = "promotion" | "gameEndCheck";

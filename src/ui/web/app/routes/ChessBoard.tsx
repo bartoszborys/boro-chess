@@ -1,9 +1,10 @@
-import { FigureColor, FigureName } from "@/domain/enums";
+import { FigureName } from "@/domain/enums";
 import { useCallback, useRef, useState } from "react";
 import { ChessPiece } from "~/components/ChessPiece";
 import { useGameState } from "~/contexts/GameStateContext";
 import type { Figure, MoveEvent, SelectedFigure } from "~/dtos";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
+import type { Player } from "@/domain/entities/Player";
 
 type PieceMoveAnimation = {
   id: number;
@@ -75,16 +76,16 @@ const ChessBoard = () => {
   );
 
   const handlePromotion = useCallback(
-    async (color: FigureColor) => {
+    async (player: Player) => {
       const choice = window.prompt("Promote to (queen, rook, bishop, knight)", FigureName.QUEEN);
-      await promotion(color, parsePromotionChoice(choice));
+      await promotion(player, parsePromotionChoice(choice));
     },
     [promotion],
   );
 
   const handleGameEndCheck = useCallback(
-    async (color: FigureColor) => {
-      const gameEnd = await checkGameEnd(color);
+    async (player: Player) => {
+      const gameEnd = await checkGameEnd(player);
       if (gameEnd?.win) {
         if (gameEnd.winner) {
           window.alert(`${gameEnd.winner} won`);
@@ -97,15 +98,15 @@ const ChessBoard = () => {
     [checkGameEnd],
   );
 
-  const moveEventHandlers: Record<MoveEvent, (color: FigureColor) => Promise<void>> = {
+  const moveEventHandlers: Record<MoveEvent, (player: Player) => Promise<void>> = {
     promotion: handlePromotion,
     gameEndCheck: handleGameEndCheck,
   };
 
   const dispatchMoveEvents = useCallback(
-    async (events: MoveEvent[], color: FigureColor) => {
+    async (events: MoveEvent[], player: Player) => {
       for (const event of events) {
-        await moveEventHandlers[event](color);
+        await moveEventHandlers[event](player);
       }
     },
     [handleGameEndCheck, handlePromotion],
@@ -148,7 +149,7 @@ const ChessBoard = () => {
         );
         setSelectedFigure(null);
         await moving;
-        await dispatchMoveEvents(events, currentTurn.color);
+        await dispatchMoveEvents(events, currentTurn);
         return;
       }
 

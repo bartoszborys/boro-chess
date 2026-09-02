@@ -102,15 +102,15 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
   );
 
   const promotion = useCallback(
-    async (playerColor: FigureColor, figureName: FigureName) => {
-      promotionUseCase.execute(new Player(playerColor), figureName);
+    async (player: Player, figureName: FigureName) => {
+      promotionUseCase.execute(player, figureName);
       updateCurrentBoardState();
     },
     [updateCurrentBoardState],
   );
 
-  const checkGameEnd = useCallback(async (color: FigureColor): Promise<DrawGameEnd | null> => {
-    const gameEnd = checkGameEndUseCase.execute(new Player(color));
+  const checkGameEnd = useCallback(async (player: Player): Promise<DrawGameEnd | null> => {
+    const gameEnd = checkGameEndUseCase.execute(player);
     if (!gameEnd) {
       return null;
     }

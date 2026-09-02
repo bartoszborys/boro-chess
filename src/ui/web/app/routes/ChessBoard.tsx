@@ -154,7 +154,7 @@ const ChessBoard = () => {
 
       const figure = board.figures.find((item: Figure) => item.x === x && item.y === y);
       if (figure) {
-        await selectFigureToMove(x, y, currentTurn.color);
+        await selectFigureToMove(x, y);
         setSelectedFigure({ x, y, color: figure.color });
         return;
       }

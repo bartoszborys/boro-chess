@@ -47,14 +47,6 @@ const createInitialFields = () => {
 
 const readCurrentTurn = (): Player => gameRepository.getGame().getCurrentTurn();
 
-const mapMoveResultToEvents = (promotion: boolean): MoveEvent[] => {
-  if (promotion) {
-    return ["promotion", "gameEndCheck"];
-  }
-
-  return ["gameEndCheck"];
-};
-
 export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderProps) => {
   const [board, setBoard] = useState<DrawBoardState>(createInitialBoard);
   const [fields] = useState<DrawField[]>(createInitialFields);
@@ -81,7 +73,7 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
   }, [syncCurrentTurn, updateCurrentBoardState]);
 
   const selectFigureToMove = useCallback(
-    async (x: number, y: number, color: FigureColor) => {
+    async (x: number, y: number) => {
       const possibleMoves = selectFigureToMoveUseCase.execute(new Coordinates(x, y), currentTurn.color);
       setPossibleMovesPositions(
         possibleMoves.map((move) => {
@@ -94,12 +86,17 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
   );
 
   const playerFigureMove = useCallback(
-    async (from: Coordinates, to: Coordinates) => {
+    async (from: Coordinates, to: Coordinates): Promise<MoveEvent[]> => {
       const moveResult = playerFigureMoveUseCase.execute(new Movement(from, to), currentTurn);
       setPossibleMovesPositions([]);
       updateCurrentBoardState();
       syncCurrentTurn();
-      return mapMoveResultToEvents(moveResult.promotion);
+
+      if (moveResult.promotion) {
+        return ["promotion", "gameEndCheck"];
+      }
+
+      return ["gameEndCheck"];
     },
     [currentTurn, syncCurrentTurn, updateCurrentBoardState],
   );

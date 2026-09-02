@@ -9,7 +9,7 @@ export type GameStateContext = {
     currentTurn: Player;
     startNewGame: () => Promise<void>;
     clearPossibleMoves: () => void;
-    selectFigureToMove: (x: number, y: number, color: FigureColor) => Promise<void>;
+    selectFigureToMove: (x: number, y: number) => Promise<void>;
     playerFigureMove: (from: Coordinates, to: Coordinates) => Promise<MoveEvent[]>;
     promotion: (playerColor: FigureColor, figureName: FigureName) => Promise<void>;
     checkGameEnd: (color: FigureColor) => Promise<DrawGameEnd | null>;

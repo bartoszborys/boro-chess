@@ -1,4 +1,4 @@
-import { DirectionMoveVector } from "./Direction";
+import type { DirectionMoveVector } from "./Direction";
 
 export type CoordinatesKey = `${number}-${number}`;
 

@@ -5,7 +5,7 @@ import type { BoardFieldState, ValidatedMoveContext } from "@/domain/dtos";
 import { Movement } from "@/domain/value-objects/Movement";
 import { FigureInvalidMove, FigureMoveCollision } from "@/domain/exceptions";
 import { FigureName } from "@/domain/enums";
-import { Coordinates, CoordinatesKey } from "../value-objects/Coordinates";
+import { Coordinates, type CoordinatesKey } from "../value-objects/Coordinates";
 import type { Direction } from "../value-objects/Direction";
 
 export interface MoveAnalyzer {

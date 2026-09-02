@@ -1,7 +1,7 @@
 import { FigureColor, FigureName } from "@/domain/enums";
 import { Direction } from "@/domain/value-objects/Direction";
-import { ChessCheckRule } from "./CheckRule";
-import { FigureBehavior } from "@/domain/entities/behaviors";
+import type { ChessCheckRule } from "./CheckRule";
+import type { FigureBehavior } from "@/domain/entities/behaviors";
 
 export class ByBehaviorCheckRule implements ChessCheckRule {
   constructor(

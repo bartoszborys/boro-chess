@@ -1,11 +1,9 @@
-import { BoardRepository } from "./application/repositories/BoardRepository";
+import type { BoardRepository } from "./application/repositories/BoardRepository";
 import { NewCheesGameUseCase } from "./application/use-cases/NewGame.use-case";
 import { PlayerFigureMoveUseCase } from "./application/use-cases/PlayerFigureMove.use-case";
 import { ChessMoveMaker, type MoveMaker } from "./domain/services/MoveMaker";
-import { MoveAnalyzer } from "./domain/services/MoveAnalyzer";
-import { PathGenerator } from "./domain/services/PathGenerator";
-import { CheesPathGenerator } from "./domain/services/PathGenerator";
-import { CheesMoveAnalyzer } from "./domain/services/MoveAnalyzer";
+import { CheesMoveAnalyzer, type MoveAnalyzer } from "./domain/services/MoveAnalyzer";
+import { CheesPathGenerator, type PathGenerator } from "./domain/services/PathGenerator";
 import { ChessGameRules, type GameRules } from "./domain/services/GameRules";
 import { InAppMemoryBoardRepository } from "./infrastructure/InAppMemoryBoardRepository";
 import { InAppMemoryGameRepository } from "./infrastructure/InAppMemoryGameRepository";
@@ -25,7 +23,7 @@ import { ChessFigureBehaviorFactory } from "./application/factories/FigureBehavi
 import { FigurePromotionUseCase } from "./application/use-cases/Promotion.use-case";
 import { CheckGameEndUseCase } from "./application/use-cases/CheckGameEnd.use-case";
 import { SelectFigureToMoveUseCase } from "./application/use-cases/SelectFigureToMove.use-case";
-import { GameRepository } from "./application/repositories/GameRepository";
+import type { GameRepository } from "./application/repositories/GameRepository";
 
 //Domain
 export const boardSettings = new ChessBoardSettings();
@@ -65,6 +63,7 @@ export const playerFigureMoveUseCase = new PlayerFigureMoveUseCase(
 );
 export const checkGameEndUseCase = new CheckGameEndUseCase(moveAnalyzer, boardRepository, moveApplier, gameRules);
 export const promotionUseCase = new FigurePromotionUseCase(
+  boardRepository,
   gameRepository,
   figureBehaviorFactory,
   moveApplier,

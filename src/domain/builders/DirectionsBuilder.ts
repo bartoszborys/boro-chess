@@ -1,4 +1,4 @@
-import { Direction, DirectionOptions } from "@/domain/value-objects/Direction";
+import { Direction, type DirectionOptions } from "@/domain/value-objects/Direction";
 
 export class DirectionsBuilder {
   public readonly directions: Direction[] = [];

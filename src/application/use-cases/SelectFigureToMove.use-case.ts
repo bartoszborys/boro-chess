@@ -1,8 +1,8 @@
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
-import { BoardRepository } from "@/application/repositories/BoardRepository";
-import { MoveAnalyzer } from "@/domain/services/MoveAnalyzer";
+import { Coordinates, type CoordinatesKey } from "@/domain/value-objects/Coordinates";
+import type { BoardRepository } from "@/application/repositories/BoardRepository";
+import type { MoveAnalyzer } from "@/domain/services/MoveAnalyzer";
 import { Movement } from "@/domain/value-objects/Movement";
-import { GameRules } from "@/domain/services/GameRules";
+import type { GameRules } from "@/domain/services/GameRules";
 import { FigureColor } from "@/domain/enums";
 import type { ValidatedMoveContext } from "@/domain/dtos";
 import type { MoveMaker } from "@/domain/services/MoveMaker";

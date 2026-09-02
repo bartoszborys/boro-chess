@@ -1,4 +1,4 @@
-import { BoardRepository } from "@/application/repositories/BoardRepository";
+import type { BoardRepository } from "@/application/repositories/BoardRepository";
 import type { BoardSettings } from "@/domain/services/BoardSettings";
 import type { Board } from "@/domain/entities/CheesBoard";
 import { CheesFigure } from "@/domain/entities/CheesFigure";

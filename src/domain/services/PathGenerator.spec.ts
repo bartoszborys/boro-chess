@@ -1,5 +1,5 @@
 import { CheesPathGenerator } from "@/domain/services/PathGenerator";
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
+import { Coordinates, type CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 
 const board3x3: CoordinatesKey[] = ["1-1", "2-1", "3-1", "1-2", "2-2", "3-2", "1-3", "2-3", "3-3"];

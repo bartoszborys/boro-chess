@@ -1,6 +1,6 @@
 import type { BoardRepository } from "@/application/repositories/BoardRepository";
-import { BoardSettings } from "@/domain/services/BoardSettings";
-import { Board, BoardState, FieldsBoard } from "@/domain/entities/CheesBoard";
+import type { BoardSettings } from "@/domain/services/BoardSettings";
+import { FieldsBoard, type Board, type BoardState } from "@/domain/entities/CheesBoard";
 import type { BoardField } from "@/domain/dtos";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 

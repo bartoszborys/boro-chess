@@ -1,4 +1,4 @@
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
+import { Coordinates, type CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import type { DirectionMoveVector } from "@/domain/value-objects/Direction";
 import type { Movement } from "@/domain/value-objects/Movement";
 

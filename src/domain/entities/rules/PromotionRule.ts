@@ -1,6 +1,6 @@
 import { FigureColor, FigureName } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
-import { BoardSettings } from "@/domain/services/BoardSettings";
+import type { BoardSettings } from "@/domain/services/BoardSettings";
 
 export interface PromotionRule {
   isPromotable(figureName: FigureName, color: FigureColor, coordinate: Coordinates): boolean;

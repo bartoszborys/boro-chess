@@ -2,7 +2,7 @@ import type { PathGenerator } from "@/domain/services/PathGenerator";
 import { FigureInvalidMove } from "@/domain/exceptions";
 import { FigureColor, FigureName } from "@/domain/enums";
 import type { BoardFigureState, BoardState, GameEndState } from "@/domain/dtos";
-import { CoordinatesKey } from "../value-objects/Coordinates";
+import type { CoordinatesKey } from "../value-objects/Coordinates";
 import type { Player } from "@/domain/entities/Player";
 import type { ChessCheckRule } from "@/domain/entities/rules/CheckRule";
 import type { PromotionRule } from "@/domain/entities/rules/PromotionRule";

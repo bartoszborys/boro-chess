@@ -1,12 +1,12 @@
-import type { Board } from "@/domain/entities/CheesBoard";
-import type { Figure } from "@/domain/entities/CheesFigure";
-import { CheesMoveAnalyzer } from "@/domain/services/MoveAnalyzer";
+import type { Board } from "@/domain/entities/ChessBoard";
+import type { Figure } from "@/domain/entities/ChessFigure";
+import { ChessMoveAnalyzer } from "@/domain/services/MoveAnalyzer";
 import type { PathGenerator } from "@/domain/services/PathGenerator";
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Direction } from "@/domain/value-objects/Direction";
 
-describe("CheesMoveAnalyzer", () => {
+describe("ChessMoveAnalyzer", () => {
   describe("createPossibleMoves", () => {
     it("should stop at the first capturable figure when two are on the same direction", () => {
       const from = new Coordinates(1, 1);
@@ -40,7 +40,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(possibleMoves).toEqual(["1-2", "1-3", "1-4"]);
@@ -70,7 +70,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(possibleMoves).toEqual(["1-2"]);
@@ -110,7 +110,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(possibleMoves).toEqual(["1-2", "2-1", "3-1"]);
@@ -169,7 +169,7 @@ describe("CheesMoveAnalyzer", () => {
         getFieldsState: jest.fn().mockReturnValue(fieldsState),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(forVectorMovementOnExistingFields).toHaveBeenCalled();
@@ -202,7 +202,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(forVectorMovementOnExistingFields).toHaveBeenCalled();
@@ -239,7 +239,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(forVectorMovementOnExistingFields).toHaveBeenCalled();
@@ -276,7 +276,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(forVectorMovementOnExistingFields).not.toHaveBeenCalled();
@@ -300,7 +300,7 @@ describe("CheesMoveAnalyzer", () => {
         getFieldsState: jest.fn().mockReturnValue([{ coordinatesKey: "1-1", occupied: true, canCapture: false }]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(forVectorMovementOnExistingFields).toHaveBeenCalled();
@@ -333,7 +333,7 @@ describe("CheesMoveAnalyzer", () => {
         ]),
       } as unknown as Board;
 
-      const moveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+      const moveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
       const possibleMoves = moveAnalyzer.createPossibleMoves(board, from);
 
       expect(forVectorMovementOnExistingFields).toHaveBeenCalled();

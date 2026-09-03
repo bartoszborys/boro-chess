@@ -1,9 +1,9 @@
 import type { BoardRepository } from "./application/repositories/BoardRepository";
-import { NewCheesGameUseCase } from "./application/use-cases/NewGame.use-case";
+import { NewChessGameUseCase } from "./application/use-cases/NewGame.use-case";
 import { PlayerFigureMoveUseCase } from "./application/use-cases/PlayerFigureMove.use-case";
 import { ChessMoveMaker, type MoveMaker } from "./domain/services/MoveMaker";
-import { CheesMoveAnalyzer, type MoveAnalyzer } from "./domain/services/MoveAnalyzer";
-import { CheesPathGenerator, type PathGenerator } from "./domain/services/PathGenerator";
+import { ChessMoveAnalyzer, type MoveAnalyzer } from "./domain/services/MoveAnalyzer";
+import { ChessPathGenerator, type PathGenerator } from "./domain/services/PathGenerator";
 import { ChessGameRules, type GameRules } from "./domain/services/GameRules";
 import { InAppMemoryBoardRepository } from "./infrastructure/InAppMemoryBoardRepository";
 import { InAppMemoryGameRepository } from "./infrastructure/InAppMemoryGameRepository";
@@ -36,10 +36,10 @@ const checkRules = [
   new ByBehaviorCheckRule([FigureName.PAWN], new WhitePawnBehavior(), FigureColor.BLACK),
   new ByBehaviorCheckRule([FigureName.KING], new KingBehavior()),
 ];
-export const pathGenerator: PathGenerator = new CheesPathGenerator();
+export const pathGenerator: PathGenerator = new ChessPathGenerator();
 export const figureBehaviorFactory = new ChessFigureBehaviorFactory();
 export const moveApplier: MoveMaker = new ChessMoveMaker(figureBehaviorFactory);
-export const moveAnalyzer: MoveAnalyzer = new CheesMoveAnalyzer(pathGenerator);
+export const moveAnalyzer: MoveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
 export const gameRules: GameRules = new ChessGameRules(pathGenerator, checkRules, promotionRules);
 
 // Infrastructures - application repositories
@@ -47,7 +47,7 @@ export const gameRepository: GameRepository = new InAppMemoryGameRepository();
 export const boardRepository: BoardRepository = new InAppMemoryBoardRepository(boardSettings);
 
 // Application
-export const newGameUseCase = new NewCheesGameUseCase(boardRepository, boardSettings);
+export const newGameUseCase = new NewChessGameUseCase(boardRepository, boardSettings);
 export const selectFigureToMoveUseCase = new SelectFigureToMoveUseCase(
   boardRepository,
   moveAnalyzer,

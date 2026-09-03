@@ -1,5 +1,5 @@
-import type { Board } from "@/domain/entities/CheesBoard";
-import type { Figure } from "@/domain/entities/CheesFigure";
+import type { Board } from "@/domain/entities/ChessBoard";
+import type { Figure } from "@/domain/entities/ChessFigure";
 import type { PathGenerator } from "@/domain/services/PathGenerator";
 import type { BoardFieldState, ValidatedMoveContext } from "@/domain/dtos";
 import { Movement } from "@/domain/value-objects/Movement";
@@ -14,7 +14,7 @@ export interface MoveAnalyzer {
   createPossibleMoves(board: Board, from: Coordinates): CoordinatesKey[];
 }
 
-export class CheesMoveAnalyzer implements MoveAnalyzer {
+export class ChessMoveAnalyzer implements MoveAnalyzer {
   constructor(private readonly pathGenerator: PathGenerator) {}
 
   public createValidatedMoveContextOrThrow(board: Board, movement: Movement): ValidatedMoveContext {

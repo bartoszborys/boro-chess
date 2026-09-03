@@ -1,4 +1,4 @@
-import type { Figure } from "@/domain/entities/CheesFigure";
+import type { Figure } from "@/domain/entities/ChessFigure";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { BoardField, BoardFieldState, BoardFigureState, FigureDetails } from "@/domain/dtos";
 import { BoardFieldNotFound, FigureNotFound, MoveHistoryNotFound } from "@/domain/exceptions";

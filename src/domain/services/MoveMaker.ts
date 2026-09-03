@@ -1,4 +1,4 @@
-import type { Board } from "@/domain/entities/CheesBoard";
+import type { Board } from "@/domain/entities/ChessBoard";
 import type { BoardState, ValidatedMoveContext } from "@/domain/dtos";
 import {
   CaptureMoveHistory,

@@ -2,7 +2,7 @@ import { Movement } from "@/domain/value-objects/Movement";
 
 type DirectionConstructorOptions = DirectionMoveVector & DirectionOptions;
 
-export type DirectionOptions = Omit<DirectionMoveVector, "deltaX" | "deltaY"> & CheesDirectionOptions;
+export type DirectionOptions = Omit<DirectionMoveVector, "deltaX" | "deltaY"> & ChessDirectionOptions;
 
 export type DirectionMoveVector = {
   deltaX: number;
@@ -11,7 +11,7 @@ export type DirectionMoveVector = {
   minRange?: number;
 };
 
-type CheesDirectionOptions = {
+type ChessDirectionOptions = {
   whenEnemy?: boolean;
   canCapture?: boolean;
   whenStartingPosition?: boolean;

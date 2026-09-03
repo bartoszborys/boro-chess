@@ -1,4 +1,4 @@
-import type { Board } from "@/domain/entities/CheesBoard";
+import type { Board } from "@/domain/entities/ChessBoard";
 import type { MoveHistory } from "@/domain/entities/move-history/MoveHistory";
 
 export class CompositeMoveHistory implements MoveHistory {

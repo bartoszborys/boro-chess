@@ -18,7 +18,7 @@ export interface PathGenerator {
   forDirectionOnExistingFields(options: PathGenerationOptionsOnExistingFields): Coordinates[];
 }
 
-export class CheesPathGenerator implements PathGenerator {
+export class ChessPathGenerator implements PathGenerator {
   public forVectorMovementWithoutTarget({ movement, stepVector }: PathGenerationOptions): Coordinates[] {
     const steps = this.calculateStepsFor(movement, stepVector);
     const path: Coordinates[] = [];

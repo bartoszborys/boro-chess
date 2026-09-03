@@ -1,4 +1,4 @@
-import type { Board } from "@/domain/entities/CheesBoard";
+import type { Board } from "@/domain/entities/ChessBoard";
 import { ChessMoveMaker } from "@/domain/services/MoveMaker";
 import { CompositeMoveHistory, MovementMoveHistory } from "@/domain/entities/move-history";
 import { FigureColor } from "@/domain/enums";

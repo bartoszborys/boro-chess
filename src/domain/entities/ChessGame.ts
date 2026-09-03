@@ -12,7 +12,7 @@ export interface Game {
   getCurrentPlayer(): Player;
 }
 
-export class CheesGame implements Game {
+export class ChessGame implements Game {
   private pendingPromotion: PendingPromotion | null = null;
   private currentPlayer: Player;
 

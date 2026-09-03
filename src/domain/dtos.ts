@@ -1,5 +1,5 @@
 import type { Player } from "@/domain/entities/Player";
-import type { Figure } from "@/domain/entities/CheesFigure";
+import type { Figure } from "@/domain/entities/ChessFigure";
 import type { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import type { Movement } from "@/domain/value-objects/Movement";
 import type { FigureColor, FigureName } from "@/domain/enums";

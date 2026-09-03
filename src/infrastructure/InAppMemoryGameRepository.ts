@@ -1,5 +1,5 @@
 import type { GameRepository } from "@/application/repositories/GameRepository";
-import { CheesGame, type Game } from "@/domain/entities/CheesGame";
+import { ChessGame, type Game } from "@/domain/entities/ChessGame";
 import { Player } from "@/domain/entities/Player";
 import { FigureColor } from "@/domain/enums";
 
@@ -12,7 +12,7 @@ export class InAppMemoryGameRepository implements GameRepository {
 
   public getGame(): Game {
     if (this.game === null) {
-      this.game = new CheesGame(this.players);
+      this.game = new ChessGame(this.players);
     }
     return this.game;
   }

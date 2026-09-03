@@ -1,5 +1,5 @@
-import { FieldsBoard } from "@/domain/entities/CheesBoard";
-import { CheesFigure, type Figure } from "@/domain/entities/CheesFigure";
+import { FieldsBoard } from "@/domain/entities/ChessBoard";
+import { ChessFigure, type Figure } from "@/domain/entities/ChessFigure";
 import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
@@ -20,11 +20,11 @@ describe("FieldsBoard", () => {
         },
         [enemyCoordinates.toKey()]: {
           coordinates: enemyCoordinates,
-          figure: new CheesFigure(FigureColor.BLACK, new WhitePawnBehavior()),
+          figure: new ChessFigure(FigureColor.BLACK, new WhitePawnBehavior()),
         },
         [friendlyCoordinates.toKey()]: {
           coordinates: friendlyCoordinates,
-          figure: new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()),
+          figure: new ChessFigure(FigureColor.WHITE, new WhitePawnBehavior()),
         },
       };
 

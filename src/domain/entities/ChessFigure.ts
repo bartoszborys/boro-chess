@@ -14,7 +14,7 @@ export interface Figure {
   canBeCaptured(): boolean;
 }
 
-export class CheesFigure implements Figure {
+export class ChessFigure implements Figure {
   private _hasMoved: boolean = false;
   private readonly color: FigureColor;
   private figureBehavior: FigureBehavior;

@@ -1,5 +1,5 @@
-import type { Board } from "@/domain/entities/CheesBoard";
-import type { Figure } from "@/domain/entities/CheesFigure";
+import type { Board } from "@/domain/entities/ChessBoard";
+import type { Figure } from "@/domain/entities/ChessFigure";
 import type { MoveHistory } from "@/domain/entities/move-history/MoveHistory";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 

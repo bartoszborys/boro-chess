@@ -1,4 +1,4 @@
-import { CheesPathGenerator } from "@/domain/services/PathGenerator";
+import { ChessPathGenerator } from "@/domain/services/PathGenerator";
 import { Coordinates, type CoordinatesKey } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 
@@ -15,10 +15,10 @@ const directions = [
   { deltaX: -1, deltaY: 1, maxRange: 3 },
 ];
 
-describe("CheesPathGenerator", () => {
+describe("ChessPathGenerator", () => {
   describe("forVectorMovementOnExistingFields", () => {
     it("should generate paths in every direction across a 3x3 board from the center", () => {
-      const pathGenerator = new CheesPathGenerator();
+      const pathGenerator = new ChessPathGenerator();
       const from = new Coordinates(2, 2);
 
       const paths = directions.flatMap((direction) =>
@@ -45,7 +45,7 @@ describe("CheesPathGenerator", () => {
     });
 
     it("should stop at the board edge when starting from the far right side", () => {
-      const pathGenerator = new CheesPathGenerator();
+      const pathGenerator = new ChessPathGenerator();
       const from = new Coordinates(3, 2);
 
       const paths = directions.flatMap((direction) =>
@@ -72,7 +72,7 @@ describe("CheesPathGenerator", () => {
 
   describe("forVectorMovementWithoutTarget", () => {
     it("should generate intermediate coordinates for a linear 1,1 move across several fields", () => {
-      const pathGenerator = new CheesPathGenerator();
+      const pathGenerator = new ChessPathGenerator();
       const path = pathGenerator.forVectorMovementWithoutTarget({
         movement: new Movement(new Coordinates(1, 1), new Coordinates(5, 5)),
         stepVector: { deltaX: 1, deltaY: 1 },
@@ -94,7 +94,7 @@ describe("CheesPathGenerator", () => {
         expectedPath: [new Coordinates(9, 9)],
       },
     ])("should generate intermediate coordinates for a non-linear 8,8 move with $name", ({ to, expectedPath }) => {
-      const pathGenerator = new CheesPathGenerator();
+      const pathGenerator = new ChessPathGenerator();
       const path = pathGenerator.forVectorMovementWithoutTarget({
         movement: new Movement(new Coordinates(1, 1), to),
         stepVector: { deltaX: 8, deltaY: 8 },

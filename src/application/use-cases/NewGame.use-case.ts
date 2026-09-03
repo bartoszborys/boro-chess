@@ -1,7 +1,7 @@
 import type { BoardRepository } from "@/application/repositories/BoardRepository";
 import type { BoardSettings } from "@/domain/services/BoardSettings";
-import type { Board } from "@/domain/entities/CheesBoard";
-import { CheesFigure } from "@/domain/entities/CheesFigure";
+import type { Board } from "@/domain/entities/ChessBoard";
+import { ChessFigure } from "@/domain/entities/ChessFigure";
 import { FigureColor } from "@/domain/enums";
 import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
 import { BlackPawnBehavior } from "@/domain/entities/behaviors/BlackPawnBehavior";
@@ -12,7 +12,7 @@ import { KnightBehavior } from "@/domain/entities/behaviors/KnightBehavior";
 import { RookBehavior } from "@/domain/entities/behaviors/RookBehavior";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 
-export class NewCheesGameUseCase {
+export class NewChessGameUseCase {
   public constructor(
     private readonly boardRepository: BoardRepository,
     private readonly boardSettings: BoardSettings,
@@ -28,8 +28,8 @@ export class NewCheesGameUseCase {
     const [xSize] = this.boardSettings.getBoardSize();
 
     for (let index = 0; index < xSize; index++) {
-      board.addFigure(new CheesFigure(FigureColor.WHITE, new WhitePawnBehavior()), baseCoordinates.add(index, 1));
-      board.addFigure(new CheesFigure(FigureColor.BLACK, new BlackPawnBehavior()), baseCoordinates.add(index, 6));
+      board.addFigure(new ChessFigure(FigureColor.WHITE, new WhitePawnBehavior()), baseCoordinates.add(index, 1));
+      board.addFigure(new ChessFigure(FigureColor.BLACK, new BlackPawnBehavior()), baseCoordinates.add(index, 6));
     }
 
     const players = [
@@ -56,7 +56,7 @@ export class NewCheesGameUseCase {
 
     for (const player of players) {
       for (const [index, behavior] of behaviorsInOrder.entries()) {
-        board.addFigure(new CheesFigure(player.color, behavior), baseCoordinates.add(index, player.yCoordinatesOffset));
+        board.addFigure(new ChessFigure(player.color, behavior), baseCoordinates.add(index, player.yCoordinatesOffset));
       }
     }
   }

@@ -1,6 +1,6 @@
-export type { Board } from "./entities/CheesBoard";
-export type { Figure } from "./entities/CheesFigure";
-export type { Game } from "./entities/CheesGame";
+export type { Board } from "./entities/ChessBoard";
+export type { Figure } from "./entities/ChessFigure";
+export type { Game } from "./entities/ChessGame";
 export type { PathGenerator, PathGenerationOptions } from "./services/PathGenerator";
 export type { MoveAnalyzer } from "./services/MoveAnalyzer";
 export type { MoveMaker as MoveApplier } from "./services/MoveMaker";

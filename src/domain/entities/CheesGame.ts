@@ -1,6 +1,7 @@
 import type { PendingPromotion } from "@/domain/dtos";
 import { Player } from "@/domain/entities/Player";
 import { FigureColor } from "../enums";
+import { PlayerNotFound } from "@/domain/exceptions";
 
 export interface Game {
   playersCanMove(player: Player): boolean;
@@ -8,23 +9,35 @@ export interface Game {
   getPendingPromotion(): PendingPromotion | null;
   promotionComplete(player: Player): boolean;
   nextPlayerTurn(): void;
-  getCurrentTurn(): Player;
+  getCurrentPlayer(): Player;
 }
 
 export class CheesGame implements Game {
   private pendingPromotion: PendingPromotion | null = null;
-  private playerTurn: Player = new Player(FigureColor.WHITE);
+  private currentPlayer: Player;
 
-  public getCurrentTurn(): Player {
-    return this.playerTurn;
+  constructor(private readonly players: Record<FigureColor, Player>) {
+    const firstPlayer = players[FigureColor.WHITE];
+    if (!firstPlayer) {
+      throw new PlayerNotFound();
+    }
+    this.currentPlayer = firstPlayer;
+  }
+
+  public getCurrentPlayer(): Player {
+    return this.currentPlayer;
   }
 
   public nextPlayerTurn(): void {
-    this.playerTurn = new Player(this.playerTurn.getEnemyColor());
+    const enemyPlayer = this.players[this.currentPlayer.getEnemyColor()];
+    if (!enemyPlayer) {
+      throw new PlayerNotFound();
+    }
+    this.currentPlayer = enemyPlayer;
   }
 
   public playersCanMove(player: Player): boolean {
-    return this.pendingPromotion === null && this.playerTurn.equals(player);
+    return this.pendingPromotion === null && this.currentPlayer.equals(player);
   }
 
   public awaitPromotion(pendingPromotion: PendingPromotion): void {

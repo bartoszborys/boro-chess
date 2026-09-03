@@ -39,7 +39,7 @@ const ChessBoard = () => {
     promotion,
     checkGameEnd,
     clearPossibleMoves,
-    currentTurn,
+    currentPlayer,
   } = useGameState();
   const [selectedFigure, setSelectedFigure] = useState<SelectedFigure | null>(null);
   const [pieceMove, setPieceMove] = useState<PieceMoveAnimation | null>(null);
@@ -149,7 +149,7 @@ const ChessBoard = () => {
         );
         setSelectedFigure(null);
         await moving;
-        await dispatchMoveEvents(events, currentTurn);
+        await dispatchMoveEvents(events, currentPlayer);
         return;
       }
 
@@ -166,7 +166,7 @@ const ChessBoard = () => {
     [
       board.figures,
       clearPossibleMoves,
-      currentTurn,
+      currentPlayer,
       dispatchMoveEvents,
       isPossibleMove,
       pieceMove,
@@ -207,7 +207,7 @@ const ChessBoard = () => {
     <>
       <div className="flex flex-col items-center justify-center bg-[#FFFFFF] p-6 rounded-md">
         <p className="mb-3 text-sm text-[#3d2e1f]">
-          Current turn: <span className="font-medium capitalize">{currentTurn.color}</span>
+          Current player: <span className="font-medium capitalize">{currentPlayer.color}</span>
         </p>
         <div className="chess-board grid grid-cols-8 grid-rows-8 border-2 border-[#3d2e1f]">
           {fields.map((field) => drawCell(field.x, field.y))}

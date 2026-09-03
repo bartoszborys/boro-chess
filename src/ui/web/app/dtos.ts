@@ -6,7 +6,7 @@ export type GameStateContext = {
     board: DrawBoardState;
     fields: DrawField[];
     possibleMovesPositions: DrawField[];
-    currentTurn: Player;
+    currentPlayer: Player;
     startNewGame: () => Promise<void>;
     clearPossibleMoves: () => void;
     selectFigureToMove: (x: number, y: number) => Promise<void>;

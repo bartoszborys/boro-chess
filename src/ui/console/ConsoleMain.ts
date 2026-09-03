@@ -6,9 +6,9 @@ import {
   promotionUseCase,
   checkGameEndUseCase,
   selectFigureToMoveUseCase,
+  gameRepository,
 } from "@/chess-bootstrap";
 import { Movement } from "@/domain/value-objects/Movement";
-import { Player } from "@/domain/entities/Player";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { ConsoleMovementChoice } from "./ConsoleMovementChoice";
 import { ConsolePromotionChoice } from "./ConsolePromotionChoice";
@@ -43,7 +43,7 @@ async function consoleMain() {
     }
 
     const move = new Movement(from, Coordinates.fromKey(to));
-    const currentPlayer = new Player(figure.getColor());
+    const currentPlayer = gameRepository.getGame().getCurrentPlayer();
 
     let moveResult;
     try {

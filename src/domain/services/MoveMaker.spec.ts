@@ -6,8 +6,8 @@ import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { ValidatedMoveContext } from "@/domain/dtos";
 
-describe("ChessMoveApplier", () => {
-  const moveApplier = new ChessMoveMaker({ createPawn: jest.fn() });
+describe("ChessMoveMaker", () => {
+  const moveMaker = new ChessMoveMaker({ createPawn: jest.fn() });
   const movement = new Movement(new Coordinates(1, 2), new Coordinates(1, 3));
 
   let board: Board;
@@ -36,7 +36,7 @@ describe("ChessMoveApplier", () => {
         capturing: false,
       };
 
-      moveApplier.move(board, context, FigureColor.WHITE);
+      moveMaker.move(board, context, FigureColor.WHITE);
 
       expect(board.moveFigure).toHaveBeenCalledTimes(1);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
@@ -50,7 +50,7 @@ describe("ChessMoveApplier", () => {
         capturing: true,
       };
 
-      moveApplier.move(board, context, FigureColor.WHITE);
+      moveMaker.move(board, context, FigureColor.WHITE);
 
       expect(board.captureFigureByCoordinates).toHaveBeenCalledWith(movement.to);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
@@ -65,7 +65,7 @@ describe("ChessMoveApplier", () => {
         castlingMovement,
       };
 
-      moveApplier.move(board, context, FigureColor.WHITE);
+      moveMaker.move(board, context, FigureColor.WHITE);
 
       expect(board.moveFigure).toHaveBeenCalledTimes(2);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
@@ -84,7 +84,7 @@ describe("ChessMoveApplier", () => {
       (board.getFiguresState as jest.Mock).mockReturnValue(figuresState);
       (board.getFieldsState as jest.Mock).mockReturnValue(fieldsState);
 
-      const result = moveApplier.move(board, context, FigureColor.WHITE);
+      const result = moveMaker.move(board, context, FigureColor.WHITE);
 
       expect(board.getFieldsState).toHaveBeenCalledWith(FigureColor.WHITE);
       expect(result).toEqual({ figuresState, fieldsState });
@@ -97,7 +97,7 @@ describe("ChessMoveApplier", () => {
           hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
         });
 
-        moveApplier.move(board, { movement, capturing: false }, FigureColor.WHITE);
+        moveMaker.move(board, { movement, capturing: false }, FigureColor.WHITE);
 
         expect(board.addMoveHistory).toHaveBeenCalledWith(
           new CompositeMoveHistory([new MovementMoveHistory(movement, hasMovedBefore)]),
@@ -110,7 +110,7 @@ describe("ChessMoveApplier", () => {
           hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
         });
 
-        moveApplier.move(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
+        moveMaker.move(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
 
         expect(board.addMoveHistory).toHaveBeenCalledWith(
           new CompositeMoveHistory([
@@ -133,7 +133,7 @@ describe("ChessMoveApplier", () => {
       (board.getFiguresState as jest.Mock).mockReturnValue(figuresState);
       (board.getFieldsState as jest.Mock).mockReturnValue(fieldsState);
 
-      const result = moveApplier.peek(board, context, FigureColor.WHITE);
+      const result = moveMaker.peek(board, context, FigureColor.WHITE);
 
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
       expect(board.getFieldsState).toHaveBeenCalledWith(FigureColor.WHITE);
@@ -150,7 +150,7 @@ describe("ChessMoveApplier", () => {
         throw new Error("figures state failed");
       });
 
-      expect(() => moveApplier.peek(board, context, FigureColor.WHITE)).toThrow("figures state failed");
+      expect(() => moveMaker.peek(board, context, FigureColor.WHITE)).toThrow("figures state failed");
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
       expect(board.undoLastMove).toHaveBeenCalledTimes(1);
     });

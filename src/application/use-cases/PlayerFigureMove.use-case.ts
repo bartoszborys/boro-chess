@@ -12,7 +12,7 @@ export class PlayerFigureMoveUseCase {
     private readonly analyzer: MoveAnalyzer,
     private readonly boardRepository: BoardRepository,
     private readonly gameRepository: GameRepository,
-    private readonly applier: MoveMaker,
+    private readonly moveMaker: MoveMaker,
     private readonly gameRules: GameRules,
   ) { }
 
@@ -25,7 +25,7 @@ export class PlayerFigureMoveUseCase {
 
     const board = this.boardRepository.getBoard();
     const context = this.analyzer.createValidatedMoveContextOrThrow(board, movement);
-    const boardState = this.applier.move(board, context, player.color);
+    const boardState = this.moveMaker.move(board, context, player.color);
 
     if (!this.gameRules.boardValidStateForPlayer(boardState, player.color)) {
       board.undoLastMove();

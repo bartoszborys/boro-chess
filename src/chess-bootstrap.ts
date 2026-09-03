@@ -38,7 +38,7 @@ const checkRules = [
 ];
 export const pathGenerator: PathGenerator = new ChessPathGenerator();
 export const figureBehaviorFactory = new ChessFigureBehaviorFactory();
-export const moveApplier: MoveMaker = new ChessMoveMaker(figureBehaviorFactory);
+export const moveMaker: MoveMaker = new ChessMoveMaker(figureBehaviorFactory);
 export const moveAnalyzer: MoveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
 export const gameRules: GameRules = new ChessGameRules(pathGenerator, checkRules, promotionRules);
 
@@ -51,20 +51,20 @@ export const newGameUseCase = new NewChessGameUseCase(boardRepository, boardSett
 export const selectFigureToMoveUseCase = new SelectFigureToMoveUseCase(
   boardRepository,
   moveAnalyzer,
-  moveApplier,
+  moveMaker,
   gameRules,
 );
 export const playerFigureMoveUseCase = new PlayerFigureMoveUseCase(
   moveAnalyzer,
   boardRepository,
   gameRepository,
-  moveApplier,
+  moveMaker,
   gameRules,
 );
-export const checkGameEndUseCase = new CheckGameEndUseCase(moveAnalyzer, boardRepository, moveApplier, gameRules);
+export const checkGameEndUseCase = new CheckGameEndUseCase(moveAnalyzer, boardRepository, moveMaker, gameRules);
 export const promotionUseCase = new FigurePromotionUseCase(
   boardRepository,
   gameRepository,
   figureBehaviorFactory,
-  moveApplier,
+  moveMaker,
 );

@@ -11,7 +11,7 @@ export class CheckGameEndUseCase {
   constructor(
     private readonly moveAnalyzer: MoveAnalyzer,
     private readonly boardRepository: BoardRepository,
-    private readonly moveApplier: MoveMaker,
+    private readonly moveMaker: MoveMaker,
     private readonly gameRules: GameRules,
   ) {}
 
@@ -50,7 +50,7 @@ export class CheckGameEndUseCase {
           continue;
         }
 
-        const peekedBoardState = this.moveApplier.peek(board, context, enemyColor);
+        const peekedBoardState = this.moveMaker.peek(board, context, enemyColor);
 
         if (this.gameRules.boardValidStateForPlayer(peekedBoardState, enemyColor)) {
           return true;

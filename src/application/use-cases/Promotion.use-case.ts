@@ -10,7 +10,7 @@ export class FigurePromotionUseCase {
     private readonly boardRepository: BoardRepository,
     private readonly gameRepository: GameRepository,
     private readonly figureBehaviorFactory: FigureBehaviorFactory,
-    private readonly moveApplier: MoveMaker,
+    private readonly moveMaker: MoveMaker,
   ) {}
 
   public execute(player: Player, figureName: FigureName): void {
@@ -23,7 +23,7 @@ export class FigurePromotionUseCase {
 
     const board = this.boardRepository.getBoard();
     const figureBehavior = this.figureBehaviorFactory.create(figureName);
-    this.moveApplier.promote(board, pendingPromotion.coordinates, figureBehavior);
+    this.moveMaker.promote(board, pendingPromotion.coordinates, figureBehavior);
     game.promotionComplete(player);
   }
 }

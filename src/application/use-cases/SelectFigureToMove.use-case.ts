@@ -12,7 +12,7 @@ export class SelectFigureToMoveUseCase {
   constructor(
     private readonly boardRepository: BoardRepository,
     private readonly moveAnalyzer: MoveAnalyzer,
-    private readonly moveApplier: MoveMaker,
+    private readonly moveMaker: MoveMaker,
     private readonly gameRules: GameRules,
   ) {}
 
@@ -35,7 +35,7 @@ export class SelectFigureToMoveUseCase {
         continue;
       }
 
-      const peekBoardState = this.moveApplier.peek(board, context, playerColor);
+      const peekBoardState = this.moveMaker.peek(board, context, playerColor);
 
       if (this.gameRules.boardValidStateForPlayer(peekBoardState, playerColor)) {
         validMovementKeys.push(possibleMoveToCoordinateKey);

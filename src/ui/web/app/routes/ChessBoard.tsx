@@ -1,6 +1,7 @@
 import { FigureName } from "@/domain/enums";
 import { useCallback, useRef, useState } from "react";
 import { ChessPiece } from "~/components/ChessPiece";
+import { PlayerClock } from "~/components/PlayerClock";
 import { useGameState } from "~/contexts/GameStateContext";
 import type { Figure, MoveEvent, SelectedFigure } from "~/dtos";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
@@ -40,6 +41,7 @@ const ChessBoard = () => {
     checkGameEnd,
     clearPossibleMoves,
     currentPlayer,
+    players,
   } = useGameState();
   const [selectedFigure, setSelectedFigure] = useState<SelectedFigure | null>(null);
   const [pieceMove, setPieceMove] = useState<PieceMoveAnimation | null>(null);
@@ -203,8 +205,22 @@ const ChessBoard = () => {
     [board.figures, drawCellColor, finishPieceMove, onCellClick, pieceMove],
   );
 
+  const playersDetails = Object.entries(players).map(([color, player]) => {
+    return (
+      <div key={color}>
+        <p>Color: {color}</p>
+        <p>
+          Time Left:{" "}
+          <PlayerClock timeLeftInSeconds={player.getTimeLeftInSeconds()} running={currentPlayer.equals(player)} />
+        </p>
+        <p>Player Id: {player.playerId}</p>
+      </div>
+    );
+  });
+
   return (
     <>
+      <div className="flex justify-between gap-4 p-4">{playersDetails}</div>
       <div className="flex flex-col items-center justify-center bg-[#FFFFFF] p-6 rounded-md">
         <p className="mb-3 text-sm text-[#3d2e1f]">
           Current player: <span className="font-medium capitalize">{currentPlayer.color}</span>

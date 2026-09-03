@@ -15,6 +15,7 @@ export interface Game {
 export class ChessGame implements Game {
   private pendingPromotion: PendingPromotion | null = null;
   private currentPlayer: Player;
+  private currentPlayerTimeStarted: number = 0;
 
   constructor(private readonly players: Record<FigureColor, Player>) {
     const firstPlayer = players[FigureColor.WHITE];
@@ -22,6 +23,7 @@ export class ChessGame implements Game {
       throw new PlayerNotFound();
     }
     this.currentPlayer = firstPlayer;
+    this.currentPlayerTimeStarted = Date.now();
   }
 
   public getCurrentPlayer(): Player {
@@ -33,7 +35,10 @@ export class ChessGame implements Game {
     if (!enemyPlayer) {
       throw new PlayerNotFound();
     }
+    const timeDif = Date.now() - this.currentPlayerTimeStarted;
+    this.currentPlayer.reduceTimeLeft(timeDif / 1000);
     this.currentPlayer = enemyPlayer;
+    this.currentPlayerTimeStarted = Date.now();
   }
 
   public playersCanMove(player: Player): boolean {

@@ -12,7 +12,7 @@ import {
 } from "@/chess-bootstrap";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Player } from "@/domain/entities/Player";
-import { FigureName } from "@/domain/enums";
+import { FigureColor, FigureName } from "@/domain/enums";
 import { Movement } from "@/domain/value-objects/Movement";
 
 export const OfflineGameStateContext = createContext<GameStateContext | null>(null);
@@ -46,12 +46,18 @@ const createInitialFields = () => {
 };
 
 const readCurrentPlayer = (): Player => gameRepository.getGame().getCurrentPlayer();
+const readPlayers = (): Record<FigureColor, Player> => gameRepository.getPlayers();
 
 export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderProps) => {
   const [board, setBoard] = useState<DrawBoardState>(createInitialBoard);
   const [fields] = useState<DrawField[]>(createInitialFields);
   const [possibleMovesPositions, setPossibleMovesPositions] = useState<DrawField[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>(readCurrentPlayer);
+  const [players, setPlayers] = useState<Record<FigureColor, Player>>(readPlayers);
+
+  const updatePlayers = useCallback(() => {
+    setPlayers({ ...readPlayers() });
+  }, []);
 
   const updateCurrentBoardState = useCallback(() => {
     setBoard((prev) => ({ ...prev, figures: readFigures() }));
@@ -70,6 +76,7 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
     setPossibleMovesPositions([]);
     updateCurrentBoardState();
     syncCurrentPlayer();
+    updatePlayers();
   }, [syncCurrentPlayer, updateCurrentBoardState]);
 
   const selectFigureToMove = useCallback(
@@ -96,6 +103,7 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
       }
 
       syncCurrentPlayer();
+      updatePlayers();
       return ["gameEndCheck"];
     },
     [currentPlayer, syncCurrentPlayer, updateCurrentBoardState],
@@ -106,6 +114,7 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
       promotionUseCase.execute(player, figureName);
       updateCurrentBoardState();
       syncCurrentPlayer();
+      updatePlayers();
     },
     [updateCurrentBoardState],
   );
@@ -136,6 +145,7 @@ export const OfflineGameStateProvider = ({ children }: OfflineGameStateProviderP
         playerFigureMove,
         promotion,
         checkGameEnd,
+        players,
       }}
     >
       {children}

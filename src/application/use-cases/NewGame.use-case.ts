@@ -16,7 +16,7 @@ export class NewChessGameUseCase {
   public constructor(
     private readonly boardRepository: BoardRepository,
     private readonly boardSettings: BoardSettings,
-  ) {}
+  ) { }
 
   public execute(): void {
     const board = this.boardRepository.getBoard();

@@ -26,8 +26,8 @@ import { ChessMoveAnalyzer } from "@/chess/domain/services/ChessMoveAnalyzer";
 import { ChessMoveMaker } from "@/chess/domain/services/ChessMoveMaker";
 import { GridPathGenerator } from "@/core/domain/services/GridPathGenerator";
 import { CoreMoveMaker } from "@/core/domain/services/CoreMoveMaker";
-import { InAppMemoryBoardRepository } from "@/chess/infrastructure/InAppMemoryBoardRepository";
-import { InAppMemoryGameRepository } from "@/chess/infrastructure/InAppMemoryGameRepository";
+import { ChessInAppMemoryBoardRepository } from "@/chess/infrastructure/ChessInAppMemoryBoardRepository";
+import { ChessInAppMemoryGameRepository } from "@/chess/infrastructure/ChessInAppMemoryGameRepository";
 import type { NewGameUseCase } from "@/core/application/use-cases/NewGame.use-case";
 
 //Domain
@@ -48,8 +48,8 @@ export const moveAnalyzer: MoveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
 export const gameRules: GameRules = new ChessGameRules(new ChessKingCheck(pathGenerator, checkRules), promotionRules);
 
 // Infrastructures - application repositories
-export const gameRepository: GameRepository = new InAppMemoryGameRepository();
-export const boardRepository: BoardRepository = new InAppMemoryBoardRepository(boardSettings);
+export const gameRepository: GameRepository = new ChessInAppMemoryGameRepository();
+export const boardRepository: BoardRepository = new ChessInAppMemoryBoardRepository(boardSettings);
 
 // Application
 export const newGameUseCase: NewGameUseCase = new NewChessGameUseCase(boardRepository, boardSettings);

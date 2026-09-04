@@ -5,7 +5,7 @@ import { FieldsBoard } from "@/core/domain/entities/FieldsBoard";
 import type { BoardField } from "@/core/domain/dtos";
 import { Coordinates } from "@/core/domain/value-objects/Coordinates";
 
-export class InAppMemoryBoardRepository implements BoardRepository {
+export class ChessInAppMemoryBoardRepository implements BoardRepository {
   private board: FieldsBoard | null = null;
 
   public constructor(private readonly boardSettings: BoardSettings) {}

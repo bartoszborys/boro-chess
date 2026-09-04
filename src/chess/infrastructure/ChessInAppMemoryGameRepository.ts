@@ -4,7 +4,7 @@ import { ChessGame } from "@/chess/domain/entities/ChessGame";
 import { Player } from "@/core/domain/entities/Player";
 import { FigureColor } from "@/core/domain/enums";
 
-export class InAppMemoryGameRepository implements GameRepository {
+export class ChessInAppMemoryGameRepository implements GameRepository {
   private game: Game | null = null;
   private players: Record<FigureColor, Player> = {
     [FigureColor.WHITE]: new Player(FigureColor.WHITE, crypto.randomUUID(), 5 * 60),

@@ -12,7 +12,7 @@
     "start:dist": "pnpm --filter @boro-chess/console start:dist",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "test:coverage:domain": "jest src/domain --coverage --collectCoverageFrom='src/domain/**/*.ts' --collectCoverageFrom='!src/domain/**/*.spec.ts'",
+    "test:coverage:domain": "jest --coverage --collectCoverageFrom='src/*/domain/**/*.ts' --collectCoverageFrom='!**/*.spec.ts'",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --watchAll=false",
     "typecheck": "tsc --noEmit",

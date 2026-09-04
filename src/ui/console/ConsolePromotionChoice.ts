@@ -1,4 +1,4 @@
-import { FigureName } from "@/domain/enums";
+import { FigureName } from "@/core/domain/enums";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 

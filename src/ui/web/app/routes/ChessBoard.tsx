@@ -1,11 +1,11 @@
-import { FigureName } from "@/domain/enums";
+import { FigureName } from "@/core/domain/enums";
 import { useCallback, useRef, useState } from "react";
 import { ChessPiece } from "~/components/ChessPiece";
 import { PlayerClock } from "~/components/PlayerClock";
 import { useGameState } from "~/contexts/GameStateContext";
 import type { Figure, MoveEvent, SelectedFigure } from "~/dtos";
-import { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { Player } from "@/domain/entities/Player";
+import { Coordinates } from "@/core/domain/value-objects/Coordinates";
+import type { Player } from "@/core/domain/entities/Player";
 
 type PieceMoveAnimation = {
   id: number;

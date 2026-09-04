@@ -9,11 +9,11 @@ import {
   boardRepository,
   boardSettings,
   gameRepository,
-} from "@/chess-bootstrap";
-import { Coordinates } from "@/domain/value-objects/Coordinates";
-import { Player } from "@/domain/entities/Player";
-import { FigureColor, FigureName } from "@/domain/enums";
-import { Movement } from "@/domain/value-objects/Movement";
+} from "@/chess/chess-bootstrap";
+import { Coordinates } from "@/core/domain/value-objects/Coordinates";
+import { Player } from "@/core/domain/entities/Player";
+import { FigureColor, FigureName } from "@/core/domain/enums";
+import { Movement } from "@/core/domain/value-objects/Movement";
 
 export const OfflineGameStateContext = createContext<GameStateContext | null>(null);
 

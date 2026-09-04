@@ -1,7 +1,7 @@
 import { emitKeypressEvents, type Key } from "node:readline";
 import { stdin as input } from "node:process";
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
-import type { BoardSettings } from "@/domain/services/BoardSettings";
+import { Coordinates, CoordinatesKey } from "@/core/domain/value-objects/Coordinates";
+import type { BoardSettings } from "@/core/domain/services/BoardSettings";
 
 export class ConsoleMovementChoice {
   private currentX = 1;

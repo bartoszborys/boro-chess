@@ -1,6 +1,6 @@
-import type { FigureColor, FigureName } from "@/domain/enums";
-import type { Player } from "@/domain/entities/Player";
-import type { Coordinates } from "@/domain/value-objects/Coordinates";
+import type { FigureColor, FigureName } from "@/core/domain/enums";
+import type { Player } from "@/core/domain/entities/Player";
+import type { Coordinates } from "@/core/domain/value-objects/Coordinates";
 
 export type GameStateContext = {
     board: DrawBoardState;

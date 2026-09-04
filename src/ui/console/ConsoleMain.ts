@@ -7,9 +7,9 @@ import {
   checkGameEndUseCase,
   selectFigureToMoveUseCase,
   gameRepository,
-} from "@/chess-bootstrap";
-import { Movement } from "@/domain/value-objects/Movement";
-import { Coordinates } from "@/domain/value-objects/Coordinates";
+} from "@/chess/chess-bootstrap";
+import { Movement } from "@/core/domain/value-objects/Movement";
+import { Coordinates } from "@/core/domain/value-objects/Coordinates";
 import { ConsoleMovementChoice } from "./ConsoleMovementChoice";
 import { ConsolePromotionChoice } from "./ConsolePromotionChoice";
 import { RenderBoard } from "./RenderBoard";

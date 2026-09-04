@@ -1,4 +1,4 @@
-import { FigureColor, FigureName } from "@/domain/enums";
+import { FigureColor, FigureName } from "@/core/domain/enums";
 import type { CSSProperties } from "react";
 import wK from "~/assets/pieces/wK.svg";
 import wQ from "~/assets/pieces/wQ.svg";

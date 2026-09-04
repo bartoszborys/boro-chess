@@ -1,7 +1,7 @@
-import { FigureColor, FigureName } from "@/domain/enums";
-import { Coordinates, CoordinatesKey } from "@/domain/value-objects/Coordinates";
-import { BoardRepository } from "@/application/repositories/BoardRepository";
-import type { BoardSettings } from "@/domain/services/BoardSettings";
+import { FigureColor, FigureName } from "@/core/domain/enums";
+import { Coordinates, CoordinatesKey } from "@/core/domain/value-objects/Coordinates";
+import { BoardRepository } from "@/core/application/repositories/BoardRepository";
+import type { BoardSettings } from "@/core/domain/services/BoardSettings";
 
 const reset = "\x1b[0m";
 const dim = "\x1b[2m";

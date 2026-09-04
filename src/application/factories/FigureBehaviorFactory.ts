@@ -1,12 +1,12 @@
-import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import {
   BishopBehavior,
   BlackPawnBehavior,
+  type FigureBehavior,
   KnightBehavior,
   QueenBehavior,
   RookBehavior,
   WhitePawnBehavior,
-} from "@/domain/entities/behaviors";
+} from "@/domain";
 import { FigureColor, FigureName } from "@/domain/enums";
 import { InvalidFigureNameException } from "@/domain/exceptions";
 

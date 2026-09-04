@@ -15,15 +15,18 @@ export interface Game {
 export class ChessGame implements Game {
   private pendingPromotion: PendingPromotion | null = null;
   private currentPlayer: Player;
-  private currentPlayerTimeStarted: number = 0;
+  private currentPlayerTimeStarted: number;
 
-  constructor(private readonly players: Record<FigureColor, Player>) {
+  constructor(
+    private readonly players: Record<FigureColor, Player>,
+    private readonly now: () => number = () => Date.now(),
+  ) {
     const firstPlayer = players[FigureColor.WHITE];
     if (!firstPlayer) {
       throw new PlayerNotFound();
     }
     this.currentPlayer = firstPlayer;
-    this.currentPlayerTimeStarted = Date.now();
+    this.currentPlayerTimeStarted = this.now();
   }
 
   public getCurrentPlayer(): Player {
@@ -35,10 +38,10 @@ export class ChessGame implements Game {
     if (!enemyPlayer) {
       throw new PlayerNotFound();
     }
-    const timeDif = Date.now() - this.currentPlayerTimeStarted;
+    const timeDif = this.now() - this.currentPlayerTimeStarted;
     this.currentPlayer.reduceTimeLeft(timeDif / 1000);
     this.currentPlayer = enemyPlayer;
-    this.currentPlayerTimeStarted = Date.now();
+    this.currentPlayerTimeStarted = this.now();
   }
 
   public playersCanMove(player: Player): boolean {

@@ -5,6 +5,18 @@ const whiteId = "11111111-1111-4111-8111-111111111111";
 const otherId = "22222222-2222-4222-8222-222222222222";
 
 describe("Player", () => {
+  describe("getTimeLeftInSeconds", () => {
+    it("returns the remaining time", () => {
+      const player = new Player(FigureColor.WHITE, whiteId, 100);
+
+      expect(player.getTimeLeftInSeconds()).toBe(100);
+
+      player.reduceTimeLeft(40);
+
+      expect(player.getTimeLeftInSeconds()).toBe(60);
+    });
+  });
+
   describe("outOfTime", () => {
     it("returns true when timeLeft is 0", () => {
       expect(new Player(FigureColor.WHITE, whiteId, 0).outOfTime()).toBe(true);

@@ -9,7 +9,7 @@ import {
 } from "@/domain/entities/move-history";
 import type { FigureColor } from "@/domain/enums";
 import type { Coordinates } from "@/domain/value-objects/Coordinates";
-import type { FigureBehavior } from "@/domain/entities/behaviors";
+import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import type { PawnFactory } from "@/application/factories/FigureBehaviorFactory";
 
 export type MoveMaker = {

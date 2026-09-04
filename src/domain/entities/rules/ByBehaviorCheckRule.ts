@@ -10,7 +10,7 @@ export class ByBehaviorCheckRule implements ChessCheckRule {
     private readonly color?: FigureColor,
   ) {}
 
-  isCheck(figureName: FigureName): boolean {
+  handlesFigure(figureName: FigureName): boolean {
     return this.figureNames.includes(figureName);
   }
 

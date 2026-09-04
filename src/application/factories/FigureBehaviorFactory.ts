@@ -1,12 +1,10 @@
-import {
-  BishopBehavior,
-  BlackPawnBehavior,
-  type FigureBehavior,
-  KnightBehavior,
-  QueenBehavior,
-  RookBehavior,
-  WhitePawnBehavior,
-} from "@/domain";
+import { BishopBehavior } from "@/domain/entities/behaviors/BishopBehavior";
+import { BlackPawnBehavior } from "@/domain/entities/behaviors/BlackPawnBehavior";
+import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
+import { KnightBehavior } from "@/domain/entities/behaviors/KnightBehavior";
+import { QueenBehavior } from "@/domain/entities/behaviors/QueenBehavior";
+import { RookBehavior } from "@/domain/entities/behaviors/RookBehavior";
+import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
 import { FigureColor, FigureName } from "@/domain/enums";
 import { InvalidFigureNameException } from "@/domain/exceptions";
 

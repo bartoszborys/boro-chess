@@ -1,8 +1,15 @@
 import { Direction } from "@/domain/value-objects/Direction";
 import { KingBehavior } from "@/domain/entities/behaviors/KingBehavior";
+import { FigureName } from "@/domain/enums";
 
 describe("KingBehavior", () => {
   const king = new KingBehavior();
+
+  describe("getName", () => {
+    it("returns king", () => {
+      expect(king.getName()).toBe(FigureName.KING);
+    });
+  });
 
   describe("getDirections", () => {
     it("returns 10 directions", () => {

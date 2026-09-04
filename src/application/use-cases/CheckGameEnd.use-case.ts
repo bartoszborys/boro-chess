@@ -1,11 +1,13 @@
-import { type Board, type MoveAnalyzer, Movement } from "@/domain";
 import type { BoardRepository } from "@/application/repositories/BoardRepository";
-import type { GameRules } from "@/domain/services/GameRules";
-import { Coordinates } from "@/domain/value-objects/Coordinates";
+import type { Board } from "@/domain/entities/ChessBoard";
 import { Player } from "@/domain/entities/Player";
 import type { BoardFigureState, GameEndState, ValidatedMoveContext } from "@/domain/dtos";
 import { FigureColor } from "@/domain/enums";
+import type { GameRules } from "@/domain/services/GameRules";
+import type { MoveAnalyzer } from "@/domain/services/MoveAnalyzer";
 import type { MoveMaker } from "@/domain/services/MoveMaker";
+import { Coordinates } from "@/domain/value-objects/Coordinates";
+import { Movement } from "@/domain/value-objects/Movement";
 
 export class CheckGameEndUseCase {
   constructor(

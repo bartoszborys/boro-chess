@@ -4,7 +4,7 @@ import type { BoardField, BoardFieldState, BoardFigureState, FigureDetails } fro
 import { BoardFieldNotFound, FigureNotFound, MoveHistoryNotFound } from "@/domain/exceptions";
 import { Movement } from "../value-objects/Movement";
 import { FigureColor } from "@/domain/enums";
-import type { MoveHistory } from "./move-history";
+import type { MoveHistory } from "./move-history/MoveHistory";
 
 export type BoardState = {
   getFiguresState(): BoardFigureState[];
@@ -73,7 +73,7 @@ export class FieldsBoard implements Board, BoardState {
   }
 
   public getFigureByCoordinates(coordinates: Coordinates): Figure | null {
-    return this.fields[coordinates.toKey()]?.figure;
+    return this.fields[coordinates.toKey()]?.figure ?? null;
   }
 
   private getFieldUnderCoordinatesOrThrow(coordinates: Coordinates): BoardField {

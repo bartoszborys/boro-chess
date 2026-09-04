@@ -1,8 +1,15 @@
 import { Direction } from "@/domain/value-objects/Direction";
 import { RookBehavior } from "@/domain/entities/behaviors/RookBehavior";
+import { FigureName } from "@/domain/enums";
 
 describe("RookBehavior", () => {
   const rook = new RookBehavior();
+
+  describe("getName", () => {
+    it("returns rook", () => {
+      expect(rook.getName()).toBe(FigureName.ROOK);
+    });
+  });
 
   describe("getDirections", () => {
     it("returns orthogonal directions with capture enabled and infinite range", () => {

@@ -119,7 +119,7 @@ export class ChessGameRules implements GameRules {
           continue;
         }
 
-        if (checkRule.isCheck(possiblyCheckFigureState.name)) {
+        if (checkRule.handlesFigure(possiblyCheckFigureState.name)) {
           return true;
         }
       }

@@ -1,12 +1,10 @@
 import type { Board } from "@/domain/entities/ChessBoard";
 import type { BoardState, ValidatedMoveContext } from "@/domain/dtos";
-import {
-  CaptureMoveHistory,
-  CompositeMoveHistory,
-  MovementMoveHistory,
-  PromotionMoveHistory,
-  type MoveHistory,
-} from "@/domain/entities/move-history";
+import { CaptureMoveHistory } from "@/domain/entities/move-history/CaptureMoveHistory";
+import { CompositeMoveHistory } from "@/domain/entities/move-history/CompositeMoveHistory";
+import type { MoveHistory } from "@/domain/entities/move-history/MoveHistory";
+import { MovementMoveHistory } from "@/domain/entities/move-history/MovementMoveHistory";
+import { PromotionMoveHistory } from "@/domain/entities/move-history/PromotionMoveHistory";
 import type { FigureColor } from "@/domain/enums";
 import type { Coordinates } from "@/domain/value-objects/Coordinates";
 import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";

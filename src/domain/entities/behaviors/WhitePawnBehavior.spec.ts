@@ -1,8 +1,15 @@
 import { Direction } from "@/domain/value-objects/Direction";
 import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
+import { FigureName } from "@/domain/enums";
 
 describe("WhitePawnBehavior", () => {
   const whitePawn = new WhitePawnBehavior();
+
+  describe("getName", () => {
+    it("returns pawn", () => {
+      expect(whitePawn.getName()).toBe(FigureName.PAWN);
+    });
+  });
 
   describe("getDirections", () => {
     it("returns all possible directions including double-step from start", () => {

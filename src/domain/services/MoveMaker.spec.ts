@@ -1,14 +1,22 @@
 import type { Board } from "@/domain/entities/ChessBoard";
 import { ChessMoveMaker } from "@/domain/services/MoveMaker";
-import { CompositeMoveHistory, MovementMoveHistory } from "@/domain/entities/move-history";
+import { CaptureMoveHistory } from "@/domain/entities/move-history/CaptureMoveHistory";
+import { CompositeMoveHistory } from "@/domain/entities/move-history/CompositeMoveHistory";
+import { MovementMoveHistory } from "@/domain/entities/move-history/MovementMoveHistory";
+import { PromotionMoveHistory } from "@/domain/entities/move-history/PromotionMoveHistory";
+import type { Figure } from "@/domain/entities/ChessFigure";
+import type { FigureBehavior } from "@/domain/entities/behaviors/FigureBehavior";
 import { FigureColor } from "@/domain/enums";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Movement } from "@/domain/value-objects/Movement";
 import type { ValidatedMoveContext } from "@/domain/dtos";
+import { FigureNotFound } from "@/domain/exceptions";
 
 describe("ChessMoveMaker", () => {
-  const moveMaker = new ChessMoveMaker({ createPawn: jest.fn() });
+  const pawnFactory = { createPawn: jest.fn() };
+  const moveMaker = new ChessMoveMaker(pawnFactory);
   const movement = new Movement(new Coordinates(1, 2), new Coordinates(1, 3));
+  const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
 
   let board: Board;
 
@@ -41,7 +49,6 @@ describe("ChessMoveMaker", () => {
       expect(board.moveFigure).toHaveBeenCalledTimes(1);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
       expect(board.captureFigureByCoordinates).not.toHaveBeenCalled();
-      expect(board.addMoveHistory).toHaveBeenCalledWith(expect.any(CompositeMoveHistory));
     });
 
     it("captures on the destination when capturing is true", () => {
@@ -54,11 +61,9 @@ describe("ChessMoveMaker", () => {
 
       expect(board.captureFigureByCoordinates).toHaveBeenCalledWith(movement.to);
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
-      expect(board.addMoveHistory).toHaveBeenCalledWith(expect.any(CompositeMoveHistory));
     });
 
     it("moves the castling partner when castlingMovement is set", () => {
-      const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
       const context: ValidatedMoveContext = {
         movement,
         capturing: false,
@@ -71,7 +76,6 @@ describe("ChessMoveMaker", () => {
       expect(board.moveFigure).toHaveBeenCalledWith(movement);
       expect(board.moveFigure).toHaveBeenCalledWith(castlingMovement);
       expect(board.captureFigureByCoordinates).not.toHaveBeenCalled();
-      expect(board.addMoveHistory).toHaveBeenCalledWith(expect.any(CompositeMoveHistory));
     });
 
     it("returns board state for player after commit", () => {
@@ -90,35 +94,98 @@ describe("ChessMoveMaker", () => {
       expect(result).toEqual({ figuresState, fieldsState });
       expect(board.undoLastMove).not.toHaveBeenCalled();
     });
+  });
 
-    describe("MovementMoveHistory", () => {
-      it.each([true, false])("adds movement history with hasMovedBefore %s for a basic move", (hasMovedBefore) => {
-        (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
-          hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
-        });
-
-        moveMaker.move(board, { movement, capturing: false }, FigureColor.WHITE);
-
-        expect(board.addMoveHistory).toHaveBeenCalledWith(
-          new CompositeMoveHistory([new MovementMoveHistory(movement, hasMovedBefore)]),
-        );
+  describe("move history", () => {
+    it.each([
+      { name: "hasMovedBefore", hasMovedBefore: true },
+      { name: "hasNotMovedBefore", hasMovedBefore: false },
+    ])("adds movement history with $name for a basic move", ({ hasMovedBefore }) => {
+      (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
+        hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
       });
 
-      it.each([true, false])("adds movement history with hasMovedBefore %s for a castling move", (hasMovedBefore) => {
-        const castlingMovement = new Movement(new Coordinates(1, 1), new Coordinates(1, 2));
-        (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
-          hasMoved: jest.fn().mockReturnValue(hasMovedBefore),
-        });
+      moveMaker.move(board, { movement, capturing: false }, FigureColor.WHITE);
 
-        moveMaker.move(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
+      expect(board.addMoveHistory).toHaveBeenCalledWith(
+        new CompositeMoveHistory([new MovementMoveHistory(movement, hasMovedBefore)]),
+      );
+    });
 
-        expect(board.addMoveHistory).toHaveBeenCalledWith(
-          new CompositeMoveHistory([
-            new MovementMoveHistory(movement, hasMovedBefore),
-            new MovementMoveHistory(castlingMovement, hasMovedBefore),
-          ]),
-        );
+    it("adds movement history for a castling move", () => {
+      moveMaker.move(board, { movement, capturing: false, castlingMovement }, FigureColor.WHITE);
+
+      expect(board.addMoveHistory).toHaveBeenCalledWith(
+        new CompositeMoveHistory([
+          new MovementMoveHistory(movement, false),
+          new MovementMoveHistory(castlingMovement, false),
+        ]),
+      );
+    });
+
+    it("adds capture history when capturing", () => {
+      const capturedFigure = {} as Figure;
+      (board.captureFigureByCoordinates as jest.Mock).mockReturnValue(capturedFigure);
+
+      moveMaker.move(board, { movement, capturing: true }, FigureColor.WHITE);
+
+      expect(board.addMoveHistory).toHaveBeenCalledWith(
+        new CompositeMoveHistory([
+          new CaptureMoveHistory(capturedFigure, movement.to),
+          new MovementMoveHistory(movement, false),
+        ]),
+      );
+    });
+
+    it("adds capture and castling history together", () => {
+      const capturedFigure = {} as Figure;
+      (board.captureFigureByCoordinates as jest.Mock).mockReturnValue(capturedFigure);
+
+      moveMaker.move(board, { movement, capturing: true, castlingMovement }, FigureColor.WHITE);
+
+      expect(board.addMoveHistory).toHaveBeenCalledWith(
+        new CompositeMoveHistory([
+          new CaptureMoveHistory(capturedFigure, movement.to),
+          new MovementMoveHistory(movement, false),
+          new MovementMoveHistory(castlingMovement, false),
+        ]),
+      );
+    });
+
+    it("adds promotion history after promote", () => {
+      const coordinates = new Coordinates(1, 8);
+      const figureBehavior = {} as FigureBehavior;
+      (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue({
+        promote: jest.fn(),
       });
+
+      moveMaker.promote(board, coordinates, figureBehavior);
+
+      expect(board.addMoveHistory).toHaveBeenCalledWith(new PromotionMoveHistory(coordinates, pawnFactory));
+    });
+  });
+
+  describe("promote", () => {
+    it("promotes the figure at the given coordinates", () => {
+      const coordinates = new Coordinates(1, 8);
+      const figureBehavior = {} as FigureBehavior;
+      const figure = { promote: jest.fn() };
+      (board.getFigureByCoordinatesOrThrow as jest.Mock).mockReturnValue(figure);
+
+      moveMaker.promote(board, coordinates, figureBehavior);
+
+      expect(board.getFigureByCoordinatesOrThrow).toHaveBeenCalledWith(coordinates);
+      expect(figure.promote).toHaveBeenCalledWith(figureBehavior);
+    });
+
+    it("throws FigureNotFound when there is no figure on the board", () => {
+      const coordinates = new Coordinates(1, 8);
+      (board.getFigureByCoordinatesOrThrow as jest.Mock).mockImplementation(() => {
+        throw new FigureNotFound();
+      });
+
+      expect(() => moveMaker.promote(board, coordinates, {} as FigureBehavior)).toThrow(FigureNotFound);
+      expect(board.addMoveHistory).not.toHaveBeenCalled();
     });
   });
 

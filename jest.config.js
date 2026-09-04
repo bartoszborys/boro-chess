@@ -12,4 +12,12 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   collectCoverageFrom: ["src/**/*.{ts,js}", "!src/**/*.spec.ts"],
+  coverageThreshold: {
+    "./src/domain/": {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
 };

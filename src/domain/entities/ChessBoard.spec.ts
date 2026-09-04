@@ -1,6 +1,6 @@
 import { FieldsBoard } from "@/domain/entities/ChessBoard";
 import type { Figure } from "@/domain/entities/ChessFigure";
-import type { MoveHistory } from "@/domain/entities/move-history";
+import type { MoveHistory } from "@/domain/entities/move-history/MoveHistory";
 import { FigureColor, FigureName } from "@/domain/enums";
 import { BoardFieldNotFound, FigureNotFound, MoveHistoryNotFound } from "@/domain/exceptions";
 import { Coordinates } from "@/domain/value-objects/Coordinates";

@@ -1,8 +1,15 @@
 import { Direction } from "@/domain/value-objects/Direction";
 import { KnightBehavior } from "@/domain/entities/behaviors/KnightBehavior";
+import { FigureName } from "@/domain/enums";
 
 describe("KnightBehavior", () => {
   const knight = new KnightBehavior();
+
+  describe("getName", () => {
+    it("returns knight", () => {
+      expect(knight.getName()).toBe(FigureName.KNIGHT);
+    });
+  });
 
   describe("getDirections", () => {
     it("returns all L-shaped directions with capture enabled and range 1", () => {

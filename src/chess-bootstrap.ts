@@ -10,14 +10,12 @@ import { InAppMemoryGameRepository } from "./infrastructure/InAppMemoryGameRepos
 import { FigureColor, FigureName } from "./domain/enums";
 import { ByBehaviorCheckRule } from "./domain/entities/rules/ByBehaviorCheckRule";
 import { ChessBoardSettings } from "./domain/services/BoardSettings";
-import {
-  BishopBehavior,
-  BlackPawnBehavior,
-  KnightBehavior,
-  KingBehavior,
-  RookBehavior,
-  WhitePawnBehavior,
-} from "@/domain";
+import { BishopBehavior } from "@/domain/entities/behaviors/BishopBehavior";
+import { BlackPawnBehavior } from "@/domain/entities/behaviors/BlackPawnBehavior";
+import { KingBehavior } from "@/domain/entities/behaviors/KingBehavior";
+import { KnightBehavior } from "@/domain/entities/behaviors/KnightBehavior";
+import { RookBehavior } from "@/domain/entities/behaviors/RookBehavior";
+import { WhitePawnBehavior } from "@/domain/entities/behaviors/WhitePawnBehavior";
 import { ChessPromotionRule } from "./domain/entities/rules/PromotionRule";
 import { ChessFigureBehaviorFactory } from "./application/factories/FigureBehaviorFactory";
 import { FigurePromotionUseCase } from "./application/use-cases/Promotion.use-case";

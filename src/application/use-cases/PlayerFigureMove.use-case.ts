@@ -1,7 +1,8 @@
-import { type MoveAnalyzer, Movement } from "@/domain";
 import type { BoardRepository } from "@/application/repositories/BoardRepository";
 import type { GameRepository } from "@/application/repositories/GameRepository";
 import type { GameRules } from "@/domain/services/GameRules";
+import type { MoveAnalyzer } from "@/domain/services/MoveAnalyzer";
+import { Movement } from "@/domain/value-objects/Movement";
 import { FigureInvalidMove, PlayerCannotMoveException } from "@/domain/exceptions";
 import { Player } from "@/domain/entities/Player";
 import type { PlayerFigureMoveResult } from "@/domain/dtos";

@@ -62,10 +62,10 @@ export class Direction {
   }
 
   public matches(movement: Movement, conditions: DirectionMatchingConditions): boolean {
-    return this.matchesMovement(movement) && this.matchesConditions(conditions);
-  }
+    if (!this.matchesConditions(conditions)) {
+      return false;
+    }
 
-  private matchesMovement(movement: Movement): boolean {
     const moveX = movement.to.x - movement.from.x;
     const moveY = movement.to.y - movement.from.y;
 

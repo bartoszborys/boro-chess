@@ -82,6 +82,18 @@ describe("ChessPathGenerator", () => {
       expect(path).toEqual([new Coordinates(2, 2), new Coordinates(3, 3), new Coordinates(4, 4)]);
     });
 
+    it("should generate intermediate coordinates for a vertical move", () => {
+      const pathGenerator = new ChessPathGenerator();
+      const path = pathGenerator.forVectorMovementWithoutTarget({
+        movement: new Movement(new Coordinates(1, 1), new Coordinates(1, 5)),
+        stepVector: { deltaX: 0, deltaY: 1 },
+      });
+
+      const expectedPath = [new Coordinates(1, 2), new Coordinates(1, 3), new Coordinates(1, 4)];
+
+      expect(path).toEqual(expectedPath);
+    });
+
     it.each([
       {
         name: "one 8,8 step",

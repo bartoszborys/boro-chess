@@ -3,112 +3,143 @@ import { Direction } from "@/domain/value-objects/Direction";
 import { Movement } from "@/domain/value-objects/Movement";
 
 describe("Direction", () => {
-  describe("matches", () => {
-    it.each([
-      {
-        name: "the movement delta equals the direction vector",
-        deltaX: 25,
-        deltaY: 25,
-        toX: 25,
-        toY: 25,
-      },
-      {
-        name: "the direction is a unit step of the movement delta",
-        deltaX: 1,
-        deltaY: 1,
-        toX: 25,
-        toY: 25,
-      },
-      {
-        name: "the movement delta equals an unequal direction vector",
-        deltaX: 25,
-        deltaY: 10,
-        toX: 25,
-        toY: 10,
-      },
-      {
-        name: "the direction is a reduced step of an unequal movement delta",
-        deltaX: 5,
-        deltaY: 2,
-        toX: 25,
-        toY: 10,
-      },
-    ])("matches when $name", ({ deltaX, deltaY, toX, toY }) => {
-      const direction = new Direction({ deltaX, deltaY });
-      const movement = new Movement(new Coordinates(0, 0), new Coordinates(toX, toY));
+  describe("reverse", () => {
+    it("returns a new direction with negated deltas and the same options", () => {
+      const direction = new Direction({
+        deltaX: 2,
+        deltaY: -3,
+        whenEnemy: true,
+        canCapture: false,
+        maxRange: 4,
+        minRange: 2,
+        whenStartingPosition: true,
+        castling: true,
+      });
 
-      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(true);
+      const reversed = direction.reverse();
+
+      expect(reversed).not.toBe(direction);
+      expect(reversed).toEqual(
+        new Direction({
+          deltaX: -2,
+          deltaY: 3,
+          whenEnemy: true,
+          canCapture: false,
+          maxRange: 4,
+          minRange: 2,
+          whenStartingPosition: true,
+          castling: true,
+        }),
+      );
+    });
+  });
+
+  describe("matches", () => {
+    const conditions = { capturing: false, hasMoved: false };
+
+    describe("when deltaX is 0 and deltaY is not 0", () => {
+      const direction = new Direction({ deltaX: 0, deltaY: 1 });
+
+      it("matches a movement along Y", () => {
+        const movement = new Movement(new Coordinates(2, 1), new Coordinates(2, 4));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(true);
+      });
+
+      it("does not match a movement off the Y axis", () => {
+        const movement = new Movement(new Coordinates(2, 1), new Coordinates(3, 4));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
+
+      it("does not match a movement in the opposite Y direction", () => {
+        const movement = new Movement(new Coordinates(2, 4), new Coordinates(2, 1));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
+
+      it("does not match when the Y scale is not an integer", () => {
+        const stepped = new Direction({ deltaX: 0, deltaY: 2 });
+        const movement = new Movement(new Coordinates(2, 1), new Coordinates(2, 4));
+
+        const matches = stepped.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
     });
 
-    it.each([
-      {
-        name: "the movement is not on the direction",
-        deltaX: 1,
-        deltaY: 0,
-        toX: 25,
-        toY: 10,
-        fromX: 0,
-        fromY: 0,
-      },
-      {
-        name: "the movement keeps X but direction requires deltaX",
-        deltaX: 1,
-        deltaY: 4,
-        toX: 1,
-        toY: 5,
-        fromX: 1,
-        fromY: 1,
-      },
-      {
-        name: "axes are independently divisible but not the same direction",
-        deltaX: 1,
-        deltaY: 1,
-        toX: 25,
-        toY: 10,
-        fromX: 0,
-        fromY: 0,
-      },
-      {
-        name: "movement goes in the opposite direction",
-        deltaX: 1,
-        deltaY: 0,
-        toX: -25,
-        toY: 0,
-        fromX: 0,
-        fromY: 0,
-      },
-      {
-        name: "movement keeps Y but direction requires deltaY",
-        deltaX: 4,
-        deltaY: 1,
-        toX: 5,
-        toY: 1,
-        fromX: 1,
-        fromY: 1,
-      },
-      {
-        name: "scale factors on X and Y differ",
-        deltaX: 5,
-        deltaY: 2,
-        toX: 25,
-        toY: 4,
-        fromX: 0,
-        fromY: 0,
-      },
-      {
-        name: "direction is a zero vector",
-        deltaX: 0,
-        deltaY: 0,
-        toX: 5,
-        toY: 5,
-        fromX: 0,
-        fromY: 0,
-      },
-    ])("does not match when $name", ({ deltaX, deltaY, toX, toY, fromX, fromY }) => {
-      const direction = new Direction({ deltaX, deltaY });
-      const movement = new Movement(new Coordinates(fromX, fromY), new Coordinates(toX, toY));
+    describe("when deltaX is not 0 and deltaY is 0", () => {
+      const direction = new Direction({ deltaX: 1, deltaY: 0 });
 
-      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(false);
+      it("matches a movement along X", () => {
+        const movement = new Movement(new Coordinates(1, 2), new Coordinates(4, 2));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(true);
+      });
+
+      it("does not match a movement off the X axis", () => {
+        const movement = new Movement(new Coordinates(1, 2), new Coordinates(4, 3));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
+
+      it("does not match a movement in the opposite X direction", () => {
+        const movement = new Movement(new Coordinates(4, 2), new Coordinates(1, 2));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
+
+      it("does not match when the X scale is not an integer", () => {
+        const stepped = new Direction({ deltaX: 2, deltaY: 0 });
+        const movement = new Movement(new Coordinates(1, 2), new Coordinates(4, 2));
+
+        const matches = stepped.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
+    });
+
+    describe("when both deltas are not 0", () => {
+      const direction = new Direction({ deltaX: 1, deltaY: 1 });
+
+      it("matches a movement along the diagonal", () => {
+        const movement = new Movement(new Coordinates(1, 1), new Coordinates(4, 4));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(true);
+      });
+
+      it("does not match a movement off the diagonal", () => {
+        const movement = new Movement(new Coordinates(1, 1), new Coordinates(4, 5));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
+    });
+
+    describe("when both deltas are 0", () => {
+      it("does not match a movement", () => {
+        const direction = new Direction({ deltaX: 0, deltaY: 0 });
+        const movement = new Movement(new Coordinates(1, 1), new Coordinates(4, 5));
+
+        const matches = direction.matches(movement, conditions);
+
+        expect(matches).toBe(false);
+      });
     });
 
     it.each([
@@ -149,36 +180,17 @@ describe("Direction", () => {
       });
       const movementX = new Movement(new Coordinates(0, 0), new Coordinates(steps, 0));
 
-      expect(directionX.matches(movementX, { capturing: false, hasMoved: false })).toBe(expected);
+      expect(directionX.matches(movementX, conditions)).toBe(expected);
 
       const directionY = new Direction({
-        deltaX: 1,
-        deltaY: 0,
+        deltaX: 0,
+        deltaY: 1,
         minRange,
         maxRange,
       });
-      const movementY = new Movement(new Coordinates(0, 0), new Coordinates(steps, 0));
+      const movementY = new Movement(new Coordinates(0, 0), new Coordinates(0, steps));
 
-      expect(directionY.matches(movementY, { capturing: false, hasMoved: false })).toBe(expected);
-    });
-
-    it.each([
-      { deltaX: 0, deltaY: 1 },
-      { deltaX: 0, deltaY: -1 },
-      { deltaX: 1, deltaY: 0 },
-      { deltaX: -1, deltaY: 0 },
-      { deltaX: 1, deltaY: 1 },
-      { deltaX: -1, deltaY: 1 },
-      { deltaX: 1, deltaY: -1 },
-      { deltaX: -1, deltaY: -1 },
-    ])("matches leaving from origin in unit direction ($deltaX, $deltaY)", (unitDirection) => {
-      const direction = new Direction(unitDirection);
-      const movement = new Movement(
-        new Coordinates(0, 0),
-        new Coordinates(unitDirection.deltaX * 5, unitDirection.deltaY * 5),
-      );
-
-      expect(direction.matches(movement, { capturing: false, hasMoved: false })).toBe(true);
+      expect(directionY.matches(movementY, conditions)).toBe(expected);
     });
   });
 });

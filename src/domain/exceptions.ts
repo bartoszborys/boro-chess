@@ -1,17 +1,21 @@
-export class FigureInvalidMove extends Error {}
+export class GameException extends Error { }
 
-export class FigureNotFound extends Error {}
+export class FigureInvalidMove extends GameException { }
 
-export class BoardFieldNotFound extends Error {}
+export class FigureNotFound extends GameException { }
 
-export class FigureMoveCollision extends Error {}
+export class BoardFieldNotFound extends GameException { }
 
-export class MoveHistoryNotFound extends Error {}
+export class FigureMoveCollision extends GameException { }
 
-export class PlayerCannotMoveException extends Error {}
+export class MoveHistoryNotFound extends GameException { }
 
-export class FigureColorMismatchException extends Error {}
+export class PlayerCannotMoveException extends GameException { }
 
-export class InvalidFigureNameException extends Error {}
+export class FigureColorMismatchException extends GameException { }
 
-export class PlayerNotFound extends Error { }
+export class InvalidFigureNameException extends GameException { }
+
+export class PlayerNotFound extends GameException { }
+
+export class KingNotFound extends GameException { }

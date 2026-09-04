@@ -2,9 +2,12 @@ import type { Board } from "@/domain/entities/ChessBoard";
 import type { Figure } from "@/domain/entities/ChessFigure";
 import { ChessMoveAnalyzer } from "@/domain/services/MoveAnalyzer";
 import type { PathGenerator } from "@/domain/services/PathGenerator";
-import { FigureColor } from "@/domain/enums";
+import { FigureColor, FigureName } from "@/domain/enums";
+import { FigureInvalidMove, FigureMoveCollision } from "@/domain/exceptions";
 import { Coordinates } from "@/domain/value-objects/Coordinates";
 import { Direction } from "@/domain/value-objects/Direction";
+import { Movement } from "@/domain/value-objects/Movement";
+import type { ValidatedMoveContext } from "@/domain/dtos";
 
 describe("ChessMoveAnalyzer", () => {
   describe("createPossibleMoves", () => {
@@ -26,6 +29,7 @@ describe("ChessMoveAnalyzer", () => {
       const figure = {
         getColor: () => FigureColor.WHITE,
         getDirections: () => [new Direction({ deltaX: 0, deltaY: 1, maxRange: 8 })],
+        hasMoved: () => false,
       } as unknown as Figure;
 
       const board = {
@@ -58,6 +62,7 @@ describe("ChessMoveAnalyzer", () => {
       const figure = {
         getColor: () => FigureColor.WHITE,
         getDirections: () => [new Direction({ deltaX: 0, deltaY: 1, maxRange: 8 })],
+        hasMoved: () => false,
       } as unknown as Figure;
 
       const board = {
@@ -95,6 +100,7 @@ describe("ChessMoveAnalyzer", () => {
       const figure = {
         getColor: () => FigureColor.WHITE,
         getDirections: () => [vertical, horizontal],
+        hasMoved: () => false,
       } as unknown as Figure;
 
       const board = {
@@ -341,5 +347,260 @@ describe("ChessMoveAnalyzer", () => {
     });
   });
 
-  describe("createValidatedMoveContext", () => {});
+  describe("createValidatedMoveContextOrNull", () => {
+    const from = new Coordinates(5, 1);
+    const to = new Coordinates(7, 1);
+    const movement = new Movement(from, to);
+    const step = new Direction({ deltaX: 1, deltaY: 0 });
+    const castlingStep = new Direction({ deltaX: 1, deltaY: 0, castling: true });
+
+    const pathGenerator = (path: Coordinates[] = []): PathGenerator => ({
+      forVectorMovementWithoutTarget: jest.fn().mockReturnValue(path),
+      forDirectionOnExistingFields: jest.fn(),
+    });
+
+    const figure = (overrides: Partial<Figure> = {}): Figure =>
+      ({
+        isFriendly: () => false,
+        hasMoved: () => false,
+        getDirections: () => [step],
+        getName: () => FigureName.KING,
+        ...overrides,
+      }) as unknown as Figure;
+
+    const board = (movingFigure: Figure, overrides: Partial<Board> = {}): Board =>
+      ({
+        getFigureByCoordinatesOrThrow: jest.fn().mockReturnValue(movingFigure),
+        getFigureByCoordinates: jest.fn().mockReturnValue(null),
+        anyFigureOnCoordinates: jest.fn().mockReturnValue(false),
+        ...overrides,
+      }) as unknown as Board;
+
+    it("returns a quiet move context when the path is free", () => {
+      const movingFigure = figure();
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      const context = analyzer.createValidatedMoveContextOrNull(board(movingFigure), movement);
+
+      expect(context).toEqual({ movement, capturing: false });
+    });
+
+    it("returns a capturing context when the target is an enemy", () => {
+      const movingFigure = figure();
+      const targetFigure = figure();
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      const context = analyzer.createValidatedMoveContextOrNull(
+        board(movingFigure, {
+          getFigureByCoordinates: jest.fn().mockReturnValue(targetFigure),
+        }),
+        movement,
+      );
+
+      expect(context).toEqual({ movement, capturing: true });
+    });
+
+    it("returns a castling context with the partner movement", () => {
+      const rook = figure({
+        getName: () => FigureName.ROOK,
+        isFriendly: () => true,
+        hasMoved: () => false,
+      });
+      const movingFigure = figure({
+        getDirections: () => [castlingStep],
+        isFriendly: (other) => other === rook,
+      });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+      const expectedCastlingable = to.addVector(castlingStep);
+
+      const context = analyzer.createValidatedMoveContextOrNull(
+        board(movingFigure, {
+          getFigureByCoordinatesOrThrow: jest.fn((coordinates: Coordinates) =>
+            coordinates.equals(from) ? movingFigure : rook,
+          ),
+        }),
+        movement,
+      );
+
+      expect(context).toEqual({
+        movement,
+        capturing: false,
+        castlingMovement: new Movement(expectedCastlingable, to.subtractVector(castlingStep)),
+      });
+    });
+
+    it("throws FigureInvalidMove when the target is friendly", () => {
+      const movingFigure = figure({ isFriendly: () => true });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      expect(() =>
+        analyzer.createValidatedMoveContextOrNull(
+          board(movingFigure, {
+            getFigureByCoordinates: jest.fn().mockReturnValue(figure()),
+          }),
+          movement,
+        ),
+      ).toThrow(FigureInvalidMove);
+    });
+
+    it("returns null when capturing with a direction that cannot capture", () => {
+      const movingFigure = figure({
+        getDirections: () => [new Direction({ deltaX: 1, deltaY: 0, canCapture: false })],
+      });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      const context = analyzer.createValidatedMoveContextOrNull(
+        board(movingFigure, {
+          getFigureByCoordinates: jest.fn().mockReturnValue(figure()),
+        }),
+        movement,
+      );
+
+      expect(context).toBeNull();
+    });
+
+    it("returns null when a starting-position direction is used after the figure has moved", () => {
+      const movingFigure = figure({
+        hasMoved: () => true,
+        getDirections: () => [new Direction({ deltaX: 1, deltaY: 0, whenStartingPosition: true })],
+      });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      const context = analyzer.createValidatedMoveContextOrNull(board(movingFigure), movement);
+
+      expect(context).toBeNull();
+    });
+
+    it("allows a starting-position direction when the figure has not moved", () => {
+      const movingFigure = figure({
+        hasMoved: () => false,
+        getDirections: () => [new Direction({ deltaX: 1, deltaY: 0, whenStartingPosition: true })],
+      });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      const context = analyzer.createValidatedMoveContextOrNull(board(movingFigure), movement);
+
+      expect(context).toEqual({ movement, capturing: false });
+    });
+
+    it("returns null when no direction matches the movement", () => {
+      const movingFigure = figure({
+        getDirections: () => [new Direction({ deltaX: 0, deltaY: 1 })],
+      });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      const context = analyzer.createValidatedMoveContextOrNull(board(movingFigure), movement);
+
+      expect(context).toBeNull();
+    });
+
+    it("throws FigureInvalidMove when castling and capturing at the same time", () => {
+      const movingFigure = figure({ getDirections: () => [castlingStep] });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      expect(() =>
+        analyzer.createValidatedMoveContextOrNull(
+          board(movingFigure, {
+            getFigureByCoordinates: jest.fn().mockReturnValue(figure()),
+          }),
+          movement,
+        ),
+      ).toThrow(FigureInvalidMove);
+    });
+
+    it("throws FigureMoveCollision when a figure stands on the path", () => {
+      const movingFigure = figure();
+      const analyzer = new ChessMoveAnalyzer(pathGenerator([new Coordinates(6, 1)]));
+
+      expect(() =>
+        analyzer.createValidatedMoveContextOrNull(
+          board(movingFigure, {
+            anyFigureOnCoordinates: jest.fn().mockReturnValue(true),
+          }),
+          movement,
+        ),
+      ).toThrow(FigureMoveCollision);
+    });
+
+    it("throws FigureInvalidMove when the castling partner is not a rook", () => {
+      const movingFigure = figure({ getDirections: () => [castlingStep] });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      expect(() =>
+        analyzer.createValidatedMoveContextOrNull(
+          board(movingFigure, {
+            getFigureByCoordinatesOrThrow: jest.fn((coordinates: Coordinates) =>
+              coordinates.equals(from) ? movingFigure : figure({ getName: () => FigureName.BISHOP }),
+            ),
+          }),
+          movement,
+        ),
+      ).toThrow(FigureInvalidMove);
+    });
+
+    it("throws FigureInvalidMove when the castling partner is not friendly", () => {
+      const movingFigure = figure({ getDirections: () => [castlingStep] });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      expect(() =>
+        analyzer.createValidatedMoveContextOrNull(
+          board(movingFigure, {
+            getFigureByCoordinatesOrThrow: jest.fn((coordinates: Coordinates) =>
+              coordinates.equals(from)
+                ? movingFigure
+                : figure({ getName: () => FigureName.ROOK, isFriendly: () => true }),
+            ),
+          }),
+          movement,
+        ),
+      ).toThrow(FigureInvalidMove);
+    });
+
+    it("throws FigureInvalidMove when the castling partner has already moved", () => {
+      const rook = figure({
+        getName: () => FigureName.ROOK,
+        hasMoved: () => true,
+      });
+      const movingFigure = figure({
+        getDirections: () => [castlingStep],
+        isFriendly: (other) => other === rook,
+      });
+      const analyzer = new ChessMoveAnalyzer(pathGenerator());
+
+      expect(() =>
+        analyzer.createValidatedMoveContextOrNull(
+          board(movingFigure, {
+            getFigureByCoordinatesOrThrow: jest.fn((coordinates: Coordinates) =>
+              coordinates.equals(from) ? movingFigure : rook,
+            ),
+          }),
+          movement,
+        ),
+      ).toThrow(FigureInvalidMove);
+    });
+  });
+
+  describe("createValidatedMoveContextOrThrow", () => {
+    const movement = new Movement(new Coordinates(5, 1), new Coordinates(7, 1));
+    const board = {} as Board;
+    const analyzer = new ChessMoveAnalyzer({
+      forVectorMovementWithoutTarget: jest.fn(),
+      forDirectionOnExistingFields: jest.fn(),
+    });
+
+    it("returns the context when createValidatedMoveContextOrNull returns one", () => {
+      const context: ValidatedMoveContext = { movement, capturing: false };
+      jest.spyOn(analyzer, "createValidatedMoveContextOrNull").mockReturnValue(context);
+
+      const result = analyzer.createValidatedMoveContextOrThrow(board, movement);
+
+      expect(result).toBe(context);
+    });
+
+    it("throws FigureInvalidMove when createValidatedMoveContextOrNull returns null", () => {
+      jest.spyOn(analyzer, "createValidatedMoveContextOrNull").mockReturnValue(null);
+
+      expect(() => analyzer.createValidatedMoveContextOrThrow(board, movement)).toThrow(FigureInvalidMove);
+    });
+  });
 });

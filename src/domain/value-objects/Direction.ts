@@ -18,11 +18,6 @@ type ChessDirectionOptions = {
   castling?: boolean;
 };
 
-export type DirectionMatchingConditions = {
-  capturing?: boolean;
-  hasMoved?: boolean;
-};
-
 export class Direction {
   public readonly deltaX: number;
   public readonly deltaY: number;
@@ -61,11 +56,7 @@ export class Direction {
     });
   }
 
-  public matches(movement: Movement, conditions: DirectionMatchingConditions): boolean {
-    if (!this.matchesConditions(conditions)) {
-      return false;
-    }
-
+  public matches(movement: Movement): boolean {
     const moveX = movement.to.x - movement.from.x;
     const moveY = movement.to.y - movement.from.y;
 
@@ -98,18 +89,5 @@ export class Direction {
     }
 
     return false;
-  }
-
-  // @TODO To be moved to the MoveAnalyzer
-  private matchesConditions(conditions: DirectionMatchingConditions): boolean {
-    if (conditions.capturing && !this.canCapture) {
-      return false;
-    }
-
-    if (this.whenStartingPosition && conditions.hasMoved) {
-      return false;
-    }
-
-    return true;
   }
 }

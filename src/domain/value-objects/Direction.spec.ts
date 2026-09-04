@@ -35,15 +35,13 @@ describe("Direction", () => {
   });
 
   describe("matches", () => {
-    const conditions = { capturing: false, hasMoved: false };
-
     describe("when deltaX is 0 and deltaY is not 0", () => {
       const direction = new Direction({ deltaX: 0, deltaY: 1 });
 
       it("matches a movement along Y", () => {
         const movement = new Movement(new Coordinates(2, 1), new Coordinates(2, 4));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(true);
       });
@@ -51,7 +49,7 @@ describe("Direction", () => {
       it("does not match a movement off the Y axis", () => {
         const movement = new Movement(new Coordinates(2, 1), new Coordinates(3, 4));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -59,7 +57,7 @@ describe("Direction", () => {
       it("does not match a movement in the opposite Y direction", () => {
         const movement = new Movement(new Coordinates(2, 4), new Coordinates(2, 1));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -68,7 +66,7 @@ describe("Direction", () => {
         const stepped = new Direction({ deltaX: 0, deltaY: 2 });
         const movement = new Movement(new Coordinates(2, 1), new Coordinates(2, 4));
 
-        const matches = stepped.matches(movement, conditions);
+        const matches = stepped.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -80,7 +78,7 @@ describe("Direction", () => {
       it("matches a movement along X", () => {
         const movement = new Movement(new Coordinates(1, 2), new Coordinates(4, 2));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(true);
       });
@@ -88,7 +86,7 @@ describe("Direction", () => {
       it("does not match a movement off the X axis", () => {
         const movement = new Movement(new Coordinates(1, 2), new Coordinates(4, 3));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -96,7 +94,7 @@ describe("Direction", () => {
       it("does not match a movement in the opposite X direction", () => {
         const movement = new Movement(new Coordinates(4, 2), new Coordinates(1, 2));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -105,7 +103,7 @@ describe("Direction", () => {
         const stepped = new Direction({ deltaX: 2, deltaY: 0 });
         const movement = new Movement(new Coordinates(1, 2), new Coordinates(4, 2));
 
-        const matches = stepped.matches(movement, conditions);
+        const matches = stepped.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -117,7 +115,7 @@ describe("Direction", () => {
       it("matches a movement along the diagonal", () => {
         const movement = new Movement(new Coordinates(1, 1), new Coordinates(4, 4));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(true);
       });
@@ -125,7 +123,7 @@ describe("Direction", () => {
       it("does not match a movement off the diagonal", () => {
         const movement = new Movement(new Coordinates(1, 1), new Coordinates(4, 5));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -136,7 +134,7 @@ describe("Direction", () => {
         const direction = new Direction({ deltaX: 0, deltaY: 0 });
         const movement = new Movement(new Coordinates(1, 1), new Coordinates(4, 5));
 
-        const matches = direction.matches(movement, conditions);
+        const matches = direction.matches(movement);
 
         expect(matches).toBe(false);
       });
@@ -180,7 +178,7 @@ describe("Direction", () => {
       });
       const movementX = new Movement(new Coordinates(0, 0), new Coordinates(steps, 0));
 
-      expect(directionX.matches(movementX, conditions)).toBe(expected);
+      expect(directionX.matches(movementX)).toBe(expected);
 
       const directionY = new Direction({
         deltaX: 0,
@@ -190,7 +188,7 @@ describe("Direction", () => {
       });
       const movementY = new Movement(new Coordinates(0, 0), new Coordinates(0, steps));
 
-      expect(directionY.matches(movementY, conditions)).toBe(expected);
+      expect(directionY.matches(movementY)).toBe(expected);
     });
   });
 });

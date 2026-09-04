@@ -37,15 +37,12 @@ export class ChessMoveAnalyzer implements MoveAnalyzer {
       throw new FigureInvalidMove(`Figure cannot capture friendly figure`);
     }
 
-    const allDirections = movingFigure?.getDirections() ?? [];
+    const allDirections = movingFigure.getDirections();
     const capturing = !!targetFigure;
-
-    const directionConditions = {
-      capturing,
-      hasMoved: movingFigure.hasMoved(),
-    };
-
-    const direction = allDirections.find((direction) => direction.matches(movement, directionConditions));
+    const hasMoved = movingFigure.hasMoved();
+    const direction = allDirections.find(
+      (candidate) => this.matchesConditions(candidate, capturing, hasMoved) && candidate.matches(movement),
+    );
 
     if (!direction) {
       return null;
@@ -92,7 +89,7 @@ export class ChessMoveAnalyzer implements MoveAnalyzer {
     const availableFields: Coordinates[] = [];
 
     for (const direction of figure.getDirections()) {
-      if (direction.whenStartingPosition && figure.hasMoved()) {
+      if (!this.matchesConditions(direction, false, figure.hasMoved())) {
         continue;
       }
 
@@ -118,6 +115,18 @@ export class ChessMoveAnalyzer implements MoveAnalyzer {
     }
 
     return availableFields.map((field) => field.toKey());
+  }
+
+  private matchesConditions(direction: Direction, capturing: boolean, hasMoved: boolean): boolean {
+    if (capturing && !direction.canCapture) {
+      return false;
+    }
+
+    if (direction.whenStartingPosition && hasMoved) {
+      return false;
+    }
+
+    return true;
   }
 
   private canEnterField(direction: Direction, field: BoardFieldState): boolean {

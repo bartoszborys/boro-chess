@@ -5,6 +5,7 @@ import { ChessMoveMaker, type MoveMaker } from "./domain/services/MoveMaker";
 import { ChessMoveAnalyzer, type MoveAnalyzer } from "./domain/services/MoveAnalyzer";
 import { ChessPathGenerator, type PathGenerator } from "./domain/services/PathGenerator";
 import { ChessGameRules, type GameRules } from "./domain/services/GameRules";
+import { ChessKingCheck } from "./domain/services/KingCheck";
 import { InAppMemoryBoardRepository } from "./infrastructure/InAppMemoryBoardRepository";
 import { InAppMemoryGameRepository } from "./infrastructure/InAppMemoryGameRepository";
 import { FigureColor, FigureName } from "./domain/enums";
@@ -38,7 +39,7 @@ export const pathGenerator: PathGenerator = new ChessPathGenerator();
 export const figureBehaviorFactory = new ChessFigureBehaviorFactory();
 export const moveMaker: MoveMaker = new ChessMoveMaker(figureBehaviorFactory);
 export const moveAnalyzer: MoveAnalyzer = new ChessMoveAnalyzer(pathGenerator);
-export const gameRules: GameRules = new ChessGameRules(pathGenerator, checkRules, promotionRules);
+export const gameRules: GameRules = new ChessGameRules(new ChessKingCheck(pathGenerator, checkRules), promotionRules);
 
 // Infrastructures - application repositories
 export const gameRepository: GameRepository = new InAppMemoryGameRepository();

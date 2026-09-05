@@ -24,8 +24,6 @@ export type DrawGameEnd = {
   winner: FigureColor | null;
 };
 
-export type GameState = {};
-
 export type DrawField = {
   x: number;
   y: number;

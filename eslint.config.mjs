@@ -38,15 +38,13 @@ const moduleBoundaries = createConfig({
 
 export default defineConfig(
   {
-    ignores: ["dist/**", "coverage/**", "**/node_modules/**", "jest.config.js", "**/esbuild.config.js"],
+    ignores: ["dist/**", "coverage/**", "node_modules/**", "jest.config.js", "**/esbuild.config.js"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   eslintPluginPrettier,
   {
-    ...moduleBoundaries,
     settings: {
-      ...moduleBoundaries.settings,
       "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
@@ -54,10 +52,19 @@ export default defineConfig(
       },
     },
   },
+  moduleBoundaries,
   {
     files: ["**/*.{ts,tsx,js,mjs,cjs}"],
     rules: {
       "prettier/prettier": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 );

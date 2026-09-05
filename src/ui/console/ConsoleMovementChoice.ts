@@ -10,7 +10,7 @@ export class ConsoleMovementChoice {
   constructor(
     private readonly boardSettings: BoardSettings,
     private readonly renderCursor: (cursor: Coordinates, availableMoves?: CoordinatesKey[]) => void,
-  ) { }
+  ) {}
 
   public async pickFrom(): Promise<Coordinates> {
     return await this.askCoordinates();

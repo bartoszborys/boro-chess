@@ -92,9 +92,9 @@ describe("ChessGameRules", () => {
       const kingCheck = { isKingInCheck: jest.fn() };
       const rules = new ChessGameRules(kingCheck, []);
 
-      expect(() =>
-        rules.boardValidStateForPlayer({ figuresState: [], fieldsState: [] }, movingPlayerColor),
-      ).toThrow(KingNotFound);
+      expect(() => rules.boardValidStateForPlayer({ figuresState: [], fieldsState: [] }, movingPlayerColor)).toThrow(
+        KingNotFound,
+      );
       expect(kingCheck.isKingInCheck).not.toHaveBeenCalled();
     });
   });
@@ -141,9 +141,9 @@ describe("ChessGameRules", () => {
       const kingCheck = { isKingInCheck: jest.fn() };
       const rules = new ChessGameRules(kingCheck, []);
 
-      expect(() =>
-        rules.checkGameEndState({ figuresState: [], fieldsState: [] }, lastMovedPlayer),
-      ).toThrow(KingNotFound);
+      expect(() => rules.checkGameEndState({ figuresState: [], fieldsState: [] }, lastMovedPlayer)).toThrow(
+        KingNotFound,
+      );
       expect(kingCheck.isKingInCheck).not.toHaveBeenCalled();
     });
   });

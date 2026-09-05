@@ -15,7 +15,7 @@ export class PlayerFigureMoveUseCase {
     private readonly gameRepository: GameRepository,
     private readonly moveMaker: MoveMaker,
     private readonly gameRules: GameRules,
-  ) { }
+  ) {}
 
   public execute(movement: Movement, player: Player): PlayerFigureMoveResult {
     const game = this.gameRepository.getGame();

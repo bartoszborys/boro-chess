@@ -38,7 +38,7 @@ const moduleBoundaries = createConfig({
 
 export default defineConfig(
   {
-    ignores: ["dist/**", "coverage/**", "node_modules/**", "jest.config.js", "**/esbuild.config.js"],
+    ignores: ["dist/**", "coverage/**", "**/node_modules/**", "jest.config.js", "**/esbuild.config.js"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

@@ -18,10 +18,7 @@
 
 @keyframes piece-from-vector {
   from {
-    transform: translate(
-      calc(var(--move-x) * var(--square-size)),
-      calc(var(--move-y) * var(--square-size))
-    );
+    transform: translate(calc(var(--move-x) * var(--square-size)), calc(var(--move-y) * var(--square-size)));
   }
   to {
     transform: translate(0, 0);

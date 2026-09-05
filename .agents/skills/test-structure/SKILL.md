@@ -14,11 +14,15 @@ Wrap `it` blocks inside a `describe` named after the method being tested. Cover 
 describe("MyClass", () => {
   describe("execute", () => {
     describe("happy path", () => {
-      it("does X when ...", () => { /* ... */ });
+      it("does X when ...", () => {
+        /* ... */
+      });
     });
 
     describe("pessimistic path", () => {
-      it("throws when ...", () => { /* ... */ });
+      it("throws when ...", () => {
+        /* ... */
+      });
     });
   });
 });

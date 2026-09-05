@@ -29,13 +29,7 @@ describe("ChessKingCheck", () => {
       handlesFigure: (name) => name === FigureName.ROOK,
     };
 
-    const kingCheckWith = ({
-      path,
-      rules = [checkRule],
-    }: {
-      path: Coordinates[];
-      rules?: ChessCheckRule[];
-    }) => {
+    const kingCheckWith = ({ path, rules = [checkRule] }: { path: Coordinates[]; rules?: ChessCheckRule[] }) => {
       const pathGenerator: PathGenerator = {
         forVectorMovementWithoutTarget: jest.fn(),
         forDirectionOnExistingFields: jest.fn().mockReturnValue(path),

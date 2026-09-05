@@ -19,11 +19,7 @@ describe("ChessPromotionRule", () => {
 
   describe("isPromotable", () => {
     it("is false when the figure is not a pawn", () => {
-      const whiteQueenOnLastRank = rule.isPromotable(
-        FigureName.QUEEN,
-        FigureColor.WHITE,
-        new Coordinates(1, lastRank),
-      );
+      const whiteQueenOnLastRank = rule.isPromotable(FigureName.QUEEN, FigureColor.WHITE, new Coordinates(1, lastRank));
       const blackQueenOnFirstRank = rule.isPromotable(
         FigureName.QUEEN,
         FigureColor.BLACK,
@@ -35,11 +31,7 @@ describe("ChessPromotionRule", () => {
     });
 
     it("is true for a white pawn on the last rank", () => {
-      const whitePawnOnLastRank = rule.isPromotable(
-        FigureName.PAWN,
-        FigureColor.WHITE,
-        new Coordinates(2, lastRank),
-      );
+      const whitePawnOnLastRank = rule.isPromotable(FigureName.PAWN, FigureColor.WHITE, new Coordinates(2, lastRank));
 
       expect(whitePawnOnLastRank).toBe(true);
     });
@@ -50,22 +42,14 @@ describe("ChessPromotionRule", () => {
         FigureColor.WHITE,
         new Coordinates(2, lastRank - 1),
       );
-      const whitePawnOnFirstRank = rule.isPromotable(
-        FigureName.PAWN,
-        FigureColor.WHITE,
-        new Coordinates(2, firstRank),
-      );
+      const whitePawnOnFirstRank = rule.isPromotable(FigureName.PAWN, FigureColor.WHITE, new Coordinates(2, firstRank));
 
       expect(whitePawnOneRankBeforeLast).toBe(false);
       expect(whitePawnOnFirstRank).toBe(false);
     });
 
     it("is true for a black pawn on the first rank", () => {
-      const blackPawnOnFirstRank = rule.isPromotable(
-        FigureName.PAWN,
-        FigureColor.BLACK,
-        new Coordinates(2, firstRank),
-      );
+      const blackPawnOnFirstRank = rule.isPromotable(FigureName.PAWN, FigureColor.BLACK, new Coordinates(2, firstRank));
 
       expect(blackPawnOnFirstRank).toBe(true);
     });
@@ -76,11 +60,7 @@ describe("ChessPromotionRule", () => {
         FigureColor.BLACK,
         new Coordinates(2, firstRank + 1),
       );
-      const blackPawnOnLastRank = rule.isPromotable(
-        FigureName.PAWN,
-        FigureColor.BLACK,
-        new Coordinates(2, lastRank),
-      );
+      const blackPawnOnLastRank = rule.isPromotable(FigureName.PAWN, FigureColor.BLACK, new Coordinates(2, lastRank));
 
       expect(blackPawnOneRankAfterFirst).toBe(false);
       expect(blackPawnOnLastRank).toBe(false);

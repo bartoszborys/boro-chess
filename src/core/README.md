@@ -22,6 +22,6 @@ Chess leftovers that already exist here — extract them into `src/chess`, do no
 
 - [ ] `FigureName` (`pawn`, `knight`, `bishop`, `rook`, `queen`, `king`) — chess piece names
 - [ ] `KingNotFound` — king is a chess piece
-- [ ] `Direction.castling` / `ChessDirectionOptions` — castling
+- [ ] `ChessDirectionOptions` on `Direction` (`whenEnemy`, `canCapture`, `whenStartingPosition`, `castling`) — keep core `Direction` as a move vector (`deltaX` / `deltaY`, `minRange` / `maxRange`); move the flags to a chess-specific direction type used by piece behaviors and `ChessMoveAnalyzer`
 - [ ] `ValidatedMoveContext.castlingMovement` — rook move during castling
 - [ ] `PromotionRule` / `PendingPromotion` tied to `FigureName` — chess pawn promotion (generic promotion may stay, not in this shape)
